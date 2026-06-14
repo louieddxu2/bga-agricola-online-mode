@@ -256,7 +256,23 @@
     );
     document.querySelector('#player-boards-left-column')?.classList.remove('bga-agri-css-hidden-column');
     document.querySelector('#player-boards-separator')?.classList.remove('bga-agri-css-hidden-column');
-    document.querySelectorAll('#player-boards > .player-board-resizable').forEach(el => el.classList.remove('bga-agri-css-board-card'));
+    document.querySelectorAll('#player-boards > .player-board-resizable').forEach(el => {
+      el.classList.remove('bga-agri-css-board-card');
+      el.style.removeProperty('width');
+      el.style.removeProperty('height');
+      el.style.removeProperty('transform');
+      el.style.removeProperty('transform-origin');
+      el.style.removeProperty('overflow');
+      el.style.removeProperty('background');
+      el.style.removeProperty('position');
+      el.style.removeProperty('left');
+      el.style.removeProperty('top');
+      el.style.removeProperty('margin');
+      el.style.removeProperty('border');
+      el.style.removeProperty('box-sizing');
+      el.style.removeProperty('max-width');
+      el.style.removeProperty('max-height');
+    });
 
     for (const [el, snap] of snapshots.entries()) restoreSnapshot(el, snap);
     snapshots.clear();
@@ -463,9 +479,12 @@
     const N = resizables.length;
     if (N === 0) return;
 
-    // Use clientWidth/clientHeight minus margin padding for absolute safety
+    // Calculate expected height directly to bypass DOM reflow delay
+    const toolbarH = 32;
+    const boardH = Math.max(100, Math.round(window.innerHeight * settings.panelHeight / 100 - settings.handHeight - toolbarH));
+
     const wAvail = boards.clientWidth - 16;
-    const hAvail = boards.clientHeight - 16;
+    const hAvail = boardH - 16;
     if (wAvail <= 0 || hAvail <= 0) return;
 
     let layout = settings.layout;
@@ -474,7 +493,7 @@
     }
 
     const W_orig = 680;
-    const H_orig = 415;
+    const H_orig = 365; // Flattened height
     const Gap = 6;
     let autoScale = 0.32;
 
@@ -497,7 +516,26 @@
     const finalScale = autoScale * adjustFactor;
     const finalScaleClamped = Math.max(0.08, Math.min(1.2, finalScale));
 
-    boards.style.setProperty('--bga-agri-css-board-scale', finalScaleClamped.toFixed(4));
+    const scaleStr = finalScaleClamped.toFixed(4);
+    boards.style.setProperty('--bga-agri-css-board-scale', scaleStr);
+
+    resizables.forEach(el => {
+      // Force dimensions, scaling, and gradient backgrounds directly through JS to guarantee rendering
+      el.style.setProperty('width', '680px', 'important');
+      el.style.setProperty('height', '365px', 'important');
+      el.style.setProperty('transform', `scale(${scaleStr})`, 'important');
+      el.style.setProperty('transform-origin', 'top left', 'important');
+      el.style.setProperty('overflow', 'hidden', 'important');
+      el.style.setProperty('background', 'linear-gradient(to right, #efe0b8 462px, transparent 462px)', 'important');
+      el.style.setProperty('position', 'relative', 'important');
+      el.style.setProperty('left', 'auto', 'important');
+      el.style.setProperty('top', 'auto', 'important');
+      el.style.setProperty('margin', '0', 'important');
+      el.style.setProperty('border', '1px solid #80653b', 'important');
+      el.style.setProperty('box-sizing', 'border-box', 'important');
+      el.style.setProperty('max-width', 'none', 'important');
+      el.style.setProperty('max-height', 'none', 'important');
+    });
   }
 
   function clamp(n, min, max) { return Math.max(min, Math.min(max, n)); }

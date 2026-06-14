@@ -152,7 +152,7 @@ html.bga-agri-css-compact-active #player-boards.bga-agri-layout-4col {
 
 html.bga-agri-css-compact-active #player-boards.bga-agri-layout-2x2 {
   grid-template-columns: repeat(2, calc(680px * var(--bga-agri-css-board-scale, 0.32))) !important;
-  grid-template-rows: repeat(2, calc(415px * var(--bga-agri-css-board-scale, 0.32))) !important;
+  grid-template-rows: repeat(2, calc(365px * var(--bga-agri-css-board-scale, 0.32))) !important;
   justify-content: center !important;
 }
 
@@ -167,7 +167,7 @@ html.bga-agri-css-compact-active #player-boards > .player-board-resizable {
   top: auto !important;
   margin: 0 !important;
   width: 680px !important; /* Increased from 462px to accommodate played cards column on the right */
-  height: 415px !important;
+  height: 365px !important;
   transform: scale(var(--bga-agri-css-board-scale, 0.32)) !important;
   transform-origin: top left !important;
   overflow: hidden !important;
@@ -376,8 +376,8 @@ html.bga-agri-css-compact-active .player-board-holder .cards-wrapper {
   padding: 10px 5px !important;
   box-sizing: border-box !important;
   overflow-y: auto !important;
-  background: rgba(30, 20, 10, 0.15) !important;
-  border-left: 1px solid #80653b !important;
+  background: transparent !important;
+  border-left: none !important;
 }
 
 html.bga-agri-css-compact-active .cards-wrapper .player-card {
