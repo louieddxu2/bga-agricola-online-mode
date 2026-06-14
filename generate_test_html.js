@@ -132,6 +132,27 @@ window.addEventListener('load', () => {
       // Measure under Compact Mode
       report.cropsCompact = measureCrops();
       
+      const holder = document.querySelector('.player-board-holder');
+      if (holder) {
+        report.holderChildrenCompact = Array.from(holder.children).map(el => {
+          const r = el.getBoundingClientRect();
+          const style = window.getComputedStyle(el);
+          return {
+            tag: el.tagName.toLowerCase(),
+            cls: el.className,
+            rect: { w: Math.round(r.width), h: Math.round(r.height), top: Math.round(r.top), left: Math.round(r.left) },
+            style: {
+              position: style.position,
+              top: style.top,
+              left: style.left,
+              right: style.right,
+              bottom: style.bottom,
+              display: style.display
+            }
+          };
+        });
+      }
+      
       // Measure played cards coordinates for sorting & stack assertions
       const mockCard1 = document.getElementById('mock-occupation-0'); // grid-row 1
       const mockCard2 = document.getElementById('mock-occupation-1'); // grid-row 2

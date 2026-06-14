@@ -148,14 +148,14 @@ html.bga-agri-css-compact-active #player-boards.bga-agri-layout-4col {
   grid-template-columns: repeat(4, calc(680px * var(--bga-agri-css-board-scale))) !important;
   grid-template-rows: 1fr !important;
   justify-content: center !important;
-  --bga-agri-css-board-scale: calc(var(--bga-agri-css-board-scale-adjust, 1) * 0.95);
+  --bga-agri-css-board-scale: calc(var(--bga-agri-css-board-scale-adjust, 1) * 0.56);
 }
 
 html.bga-agri-css-compact-active #player-boards.bga-agri-layout-2x2 {
   grid-template-columns: repeat(2, calc(680px * var(--bga-agri-css-board-scale))) !important;
   grid-template-rows: repeat(2, calc(813.4px * var(--bga-agri-css-board-scale))) !important;
   justify-content: center !important;
-  --bga-agri-css-board-scale: calc(var(--bga-agri-css-board-scale-adjust, 1) * 1.9);
+  --bga-agri-css-board-scale: calc(var(--bga-agri-css-board-scale-adjust, 1) * 1.15);
 }
 
 html.bga-agri-css-compact-active #player-boards-left-column.bga-agri-css-hidden-column,
@@ -341,11 +341,24 @@ html.bga-agri-css-compact-active .player-board-holder {
 
 /* Force left-side elements to keep their original 462px width and relative layout */
 html.bga-agri-css-compact-active .player-board-holder .animals-counters,
-html.bga-agri-css-compact-active .player-board-holder .resources-bar-holder,
-html.bga-agri-css-compact-active .player-board-holder .agricola-player-board {
+html.bga-agri-css-compact-active .player-board-holder .resources-bar-holder {
+  position: relative !important;
   width: 462px !important;
   max-width: 462px !important;
+  left: 0 !important;
   margin-right: auto !important;
+}
+
+/* Force the BGA farm grid board to scale down to 0.702 to fit exactly inside 462px width */
+html.bga-agri-css-compact-active .player-board-holder .agricola-player-board {
+  position: relative !important;
+  width: 658px !important;
+  height: 405px !important;
+  transform: scale(0.702) !important;
+  transform-origin: top left !important;
+  left: 0 !important;
+  top: 0 !important;
+  margin: 0 !important;
 }
 
 /* Position cards wrapper absolutely on the right to completely isolate it from resource bar */

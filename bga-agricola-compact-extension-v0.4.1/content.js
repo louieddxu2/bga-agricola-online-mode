@@ -113,8 +113,8 @@
     if (action === 'heightUp') return save({ panelHeight: clamp(settings.panelHeight + 5, 45, 90) });
     if (action === 'handDown') return save({ handHeight: clamp(settings.handHeight - 24, 120, 380) });
     if (action === 'handUp') return save({ handHeight: clamp(settings.handHeight + 24, 120, 380) });
-    if (action === 'boardDown') return save({ boardScale: round(clamp(settings.boardScale - 0.04, 0.25, 0.85)) });
-    if (action === 'boardUp') return save({ boardScale: round(clamp(settings.boardScale + 0.04, 0.25, 0.85)) });
+    if (action === 'boardDown') return save({ boardScale: round(clamp(settings.boardScale - 0.04, 0.15, 0.85)) });
+    if (action === 'boardUp') return save({ boardScale: round(clamp(settings.boardScale + 0.04, 0.15, 0.85)) });
     if (action === 'cardDown') return save({ cardScale: round(clamp(settings.cardScale - 0.04, 0.28, 0.90)) });
     if (action === 'cardUp') return save({ cardScale: round(clamp(settings.cardScale + 0.04, 0.28, 0.90)) });
   }
