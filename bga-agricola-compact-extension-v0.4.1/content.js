@@ -147,7 +147,10 @@
       clearTimeout(resizeTimer);
       resizeTimer = setTimeout(() => {
         applyVars();
-        if (settings.enabled) applyLayoutClass();
+        if (settings.enabled) {
+          applyLayoutClass();
+          updateDynamicScale();
+        }
       }, 120);
     });
 
@@ -208,6 +211,7 @@
     applyLayoutClass();
     setupPlayedCardsObserver();
     arrangePlayedCards();
+    updateDynamicScale();
     mounted = true;
 
     if (!hand || !boards || resizables.length < 4) {
@@ -266,6 +270,11 @@
       card.style.removeProperty('grid-row');
       card.style.removeProperty('z-index');
     });
+
+    const boards = document.querySelector('#player-boards');
+    if (boards) {
+      boards.style.removeProperty('--bga-agri-css-board-scale');
+    }
 
     mounted = false;
   }
@@ -442,6 +451,53 @@
         card.style.setProperty('z-index', `${idx + 1}`, 'important');
       });
     });
+    updateDynamicScale();
+  }
+
+  function updateDynamicScale() {
+    if (!settings.enabled) return;
+    const boards = document.querySelector('#player-boards');
+    if (!boards) return;
+
+    const resizables = [...boards.querySelectorAll('.player-board-resizable')];
+    const N = resizables.length;
+    if (N === 0) return;
+
+    // Use clientWidth/clientHeight minus margin padding for absolute safety
+    const wAvail = boards.clientWidth - 16;
+    const hAvail = boards.clientHeight - 16;
+    if (wAvail <= 0 || hAvail <= 0) return;
+
+    let layout = settings.layout;
+    if (layout === 'auto') {
+      layout = window.innerWidth >= 1250 ? '4col' : '2x2';
+    }
+
+    const W_orig = 680;
+    const H_orig = 415;
+    const Gap = 6;
+    let autoScale = 0.32;
+
+    if (layout === '4col' || N <= 2) {
+      const totalW = N * W_orig + (N - 1) * Gap;
+      const scaleW = wAvail / totalW;
+      const scaleH = hAvail / H_orig;
+      autoScale = Math.min(scaleW, scaleH);
+    } else {
+      const cols = Math.ceil(N / 2);
+      const rows = 2;
+      const totalW = cols * W_orig + (cols - 1) * Gap;
+      const totalH = rows * H_orig + (rows - 1) * Gap;
+      const scaleW = wAvail / totalW;
+      const scaleH = hAvail / totalH;
+      autoScale = Math.min(scaleW, scaleH);
+    }
+
+    const adjustFactor = settings.boardScale / 0.32;
+    const finalScale = autoScale * adjustFactor;
+    const finalScaleClamped = Math.max(0.08, Math.min(1.2, finalScale));
+
+    boards.style.setProperty('--bga-agri-css-board-scale', finalScaleClamped.toFixed(4));
   }
 
   function clamp(n, min, max) { return Math.max(min, Math.min(max, n)); }
