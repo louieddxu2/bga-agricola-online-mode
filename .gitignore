@@ -1,0 +1,6 @@
+# BGA Agricola local test gitignore
+soladuck 必須放置 1 位農夫 • 農家樂 • Board Game Arena.html
+soladuck 必須放置 1 位農夫 • 農家樂 • Board Game Arena_files/
+test_injected.html
+screenshot_compact.png
+.gemini/

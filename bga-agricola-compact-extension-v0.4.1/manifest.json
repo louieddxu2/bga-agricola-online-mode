@@ -1,0 +1,30 @@
+{
+  "manifest_version": 3,
+  "name": "BGA Agricola Compact Panel",
+  "version": "0.4.1",
+  "description": "Agricola-only CSS-mode compact layout for BGA. Conservative default height and expanded mini-card zoom.",
+  "permissions": [
+    "storage"
+  ],
+  "host_permissions": [
+    "https://boardgamearena.com/*/agricola*",
+    "https://*.boardgamearena.com/*/agricola*",
+    "file:///*"
+  ],
+  "content_scripts": [
+    {
+      "matches": [
+        "https://boardgamearena.com/*/agricola*",
+        "https://*.boardgamearena.com/*/agricola*",
+        "file:///*"
+      ],
+      "js": [
+        "content.js"
+      ],
+      "css": [
+        "style.css"
+      ],
+      "run_at": "document_idle"
+    }
+  ]
+}
