@@ -31,6 +31,7 @@
   let mounted = false;
   let snapshots = new Map();
   let resizeTimer = null;
+  let playedCardsObserver = null;
 
   init();
 
@@ -205,6 +206,8 @@
     resizables.forEach(el => el.classList.add('bga-agri-css-board-card'));
 
     applyLayoutClass();
+    setupPlayedCardsObserver();
+    arrangePlayedCards();
     mounted = true;
 
     if (!hand || !boards || resizables.length < 4) {
@@ -253,6 +256,17 @@
 
     for (const [el, snap] of snapshots.entries()) restoreSnapshot(el, snap);
     snapshots.clear();
+
+    if (playedCardsObserver) {
+      playedCardsObserver.disconnect();
+      playedCardsObserver = null;
+    }
+    document.querySelectorAll('.cards-wrapper .player-card').forEach(card => {
+      card.style.removeProperty('grid-column');
+      card.style.removeProperty('grid-row');
+      card.style.removeProperty('z-index');
+    });
+
     mounted = false;
   }
 
@@ -371,6 +385,63 @@
     el.textContent = msg;
     document.documentElement.appendChild(el);
     setTimeout(() => el.remove(), 1600);
+  }
+
+  function setupPlayedCardsObserver() {
+    if (playedCardsObserver) return;
+    const boards = document.querySelector('#player-boards');
+    if (!boards) return;
+    
+    playedCardsObserver = new MutationObserver(() => {
+      arrangePlayedCards();
+    });
+    playedCardsObserver.observe(boards, { childList: true, subtree: true });
+  }
+
+  function arrangePlayedCards() {
+    if (!settings.enabled) return;
+    
+    function getPlayOrder(card, index) {
+      const orderAttr = card.getAttribute('data-play-order');
+      if (orderAttr !== null) {
+        const parsed = parseInt(orderAttr, 10);
+        if (!isNaN(parsed)) return parsed;
+      }
+      return index; // fallback
+    }
+
+    document.querySelectorAll('.cards-wrapper').forEach(wrapper => {
+      const cards = Array.from(wrapper.children).filter(el => el.classList.contains('player-card'));
+      const occupations = [];
+      const developments = [];
+      
+      cards.forEach((card, idx) => {
+        const order = getPlayOrder(card, idx);
+        card.__playOrder = order;
+        
+        if (card.classList.contains('occupation')) {
+          occupations.push(card);
+        } else {
+          developments.push(card);
+        }
+      });
+      
+      // Sort in ascending order (earliest played card first, grid-row = 1)
+      occupations.sort((a, b) => a.__playOrder - b.__playOrder);
+      developments.sort((a, b) => a.__playOrder - b.__playOrder);
+      
+      occupations.forEach((card, idx) => {
+        card.style.setProperty('grid-column', '1', 'important');
+        card.style.setProperty('grid-row', `${idx + 1}`, 'important');
+        card.style.setProperty('z-index', `${idx + 1}`, 'important');
+      });
+      
+      developments.forEach((card, idx) => {
+        card.style.setProperty('grid-column', '2', 'important');
+        card.style.setProperty('grid-row', `${idx + 1}`, 'important');
+        card.style.setProperty('z-index', `${idx + 1}`, 'important');
+      });
+    });
   }
 
   function clamp(n, min, max) { return Math.max(min, Math.min(max, n)); }

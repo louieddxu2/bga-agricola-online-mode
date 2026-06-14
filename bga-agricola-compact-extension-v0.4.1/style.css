@@ -145,14 +145,14 @@ html.bga-agri-css-compact-active #player-boards.bga-agri-css-boards-fixed {
 }
 
 html.bga-agri-css-compact-active #player-boards.bga-agri-layout-4col {
-  grid-template-columns: repeat(4, calc(462px * var(--bga-agri-css-board-scale))) !important;
+  grid-template-columns: repeat(4, calc(680px * var(--bga-agri-css-board-scale))) !important;
   grid-template-rows: 1fr !important;
   justify-content: center !important;
   --bga-agri-css-board-scale: calc(var(--bga-agri-css-board-scale-adjust, 1) * 0.95);
 }
 
 html.bga-agri-css-compact-active #player-boards.bga-agri-layout-2x2 {
-  grid-template-columns: repeat(2, calc(462px * var(--bga-agri-css-board-scale))) !important;
+  grid-template-columns: repeat(2, calc(680px * var(--bga-agri-css-board-scale))) !important;
   grid-template-rows: repeat(2, calc(813.4px * var(--bga-agri-css-board-scale))) !important;
   justify-content: center !important;
   --bga-agri-css-board-scale: calc(var(--bga-agri-css-board-scale-adjust, 1) * 1.9);
@@ -168,7 +168,7 @@ html.bga-agri-css-compact-active #player-boards > .player-board-resizable.bga-ag
   left: auto !important;
   top: auto !important;
   margin: 0 !important;
-  width: 462px !important;
+  width: 680px !important; /* Increased from 462px to accommodate played cards column on the right */
   height: 813.4px !important;
   transform: scale(var(--bga-agri-css-board-scale)) !important;
   transform-origin: top left !important;
@@ -330,5 +330,85 @@ html.bga-agri-css-compact-active #pagemaintitle_wrap:hover,
 html.bga-agri-css-compact-active #page-title:hover {
   transform: translateY(3px) !important; /* Push slightly down below topbar */
   opacity: 1 !important;
+}
+
+/* Re-planned Played Cards Layout (Absolute Position Isolation) */
+html.bga-agri-css-compact-active .player-board-holder {
+  position: relative !important;
+  width: 100% !important;
+  height: 100% !important;
+}
+
+/* Force left-side elements to keep their original 462px width and relative layout */
+html.bga-agri-css-compact-active .player-board-holder .animals-counters,
+html.bga-agri-css-compact-active .player-board-holder .resources-bar-holder,
+html.bga-agri-css-compact-active .player-board-holder .agricola-player-board {
+  width: 462px !important;
+  max-width: 462px !important;
+  margin-right: auto !important;
+}
+
+/* Position cards wrapper absolutely on the right to completely isolate it from resource bar */
+html.bga-agri-css-compact-active .player-board-holder .cards-wrapper {
+  position: absolute !important;
+  left: 462px !important;
+  top: 0 !important;
+  width: 218px !important;
+  height: 100% !important;
+  margin: 0 !important;
+  display: grid !important;
+  grid-template-columns: 100px 100px !important;
+  grid-auto-rows: 63.6px !important; /* Displays upper 2/5 of card (159px * 0.4 = 63.6px) */
+  column-gap: 8px !important;
+  row-gap: 0px !important;
+  align-items: start !important;
+  padding: 10px 5px !important;
+  box-sizing: border-box !important;
+  overflow-y: auto !important;
+  background: rgba(30, 20, 10, 0.15) !important;
+  border-left: 1px solid #80653b !important;
+}
+
+html.bga-agri-css-compact-active .cards-wrapper .player-card {
+  width: 100px !important;
+  height: 159px !important;
+  position: relative !important;
+  zoom: 1 !important;
+  transform: none !important;
+  left: auto !important;
+  top: auto !important;
+  margin: 0 !important;
+  overflow: visible !important;
+  border: 1px solid #80653b !important;
+  border-radius: 6px !important;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.35) !important;
+  box-sizing: border-box !important;
+  background-color: #efe0b8 !important; /* Fallback for card background */
+  transition: box-shadow 0.18s ease !important;
+}
+
+html.bga-agri-css-compact-active .cards-wrapper .player-card .player-card-resizable {
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 211.5px !important;
+  height: 336.6px !important;
+  transform: scale(0.472) !important; /* 100 / 211.5 = 0.4728 */
+  transform-origin: top left !important;
+  pointer-events: auto !important;
+  transition: transform 0.18s cubic-bezier(0.25, 0.8, 0.25, 1) !important;
+}
+
+/* Hover micro-animation: lift card, bring to front, scale up for perfect readability */
+html.bga-agri-css-compact-active .cards-wrapper .player-card:hover {
+  z-index: 2000000 !important; /* Floating card to the very top */
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.65) !important;
+}
+
+html.bga-agri-css-compact-active .cards-wrapper .player-card:hover .player-card-resizable {
+  transform: scale(0.85) translate(-10%, -10%) !important; /* scale up to 0.85 and offset slightly to avoid edge clipping */
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.75) !important;
+  border-radius: 8px !important;
+  z-index: 2000000 !important;
 }
 

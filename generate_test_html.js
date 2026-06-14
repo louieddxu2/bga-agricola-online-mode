@@ -10,6 +10,36 @@ const reportScript = `
 window.addEventListener('load', () => {
   // Wait 1.5s for initial layout
   setTimeout(() => {
+    // Mock extra played cards for robust stacking verification
+    const wrapper = document.querySelector('.cards-wrapper');
+    if (wrapper && wrapper.children.length > 0) {
+      console.log('Mocking extra played cards for robust stacking verification...');
+      const baseCard = wrapper.children[0];
+      wrapper.innerHTML = '';
+      
+      // Inject 5 mock occupations (Play order: 1, 3, 5, 7, 9)
+      for (let i = 0; i < 5; i++) {
+        const clone = baseCard.cloneNode(true);
+        clone.id = 'mock-occupation-' + i;
+        clone.className = 'player-card occupation mini tooltipable';
+        clone.setAttribute('data-play-order', (i * 2 + 1).toString());
+        const titleEl = clone.querySelector('.card-title');
+        if (titleEl) titleEl.textContent = '職 ' + (i * 2 + 1);
+        wrapper.appendChild(clone);
+      }
+      
+      // Inject 5 mock developments (Play order: 2, 4, 6, 8, 10)
+      for (let i = 0; i < 5; i++) {
+        const clone = baseCard.cloneNode(true);
+        clone.id = 'mock-dev-' + i;
+        clone.className = 'player-card minor mini tooltipable';
+        clone.setAttribute('data-play-order', (i * 2 + 2).toString());
+        const titleEl = clone.querySelector('.card-title');
+        if (titleEl) titleEl.textContent = '發 ' + (i * 2 + 2);
+        wrapper.appendChild(clone);
+      }
+    }
+
     // Find a mini card in the boards and click it to open zoom modal
     const miniCard = document.querySelector('#player-boards .player-card.mini');
     if (miniCard) {
@@ -102,6 +132,21 @@ window.addEventListener('load', () => {
       // Measure under Compact Mode
       report.cropsCompact = measureCrops();
       
+      // Measure played cards coordinates for sorting & stack assertions
+      const mockCard1 = document.getElementById('mock-occupation-0'); // grid-row 1
+      const mockCard2 = document.getElementById('mock-occupation-1'); // grid-row 2
+      let playedCardsStack = null;
+      if (mockCard1 && mockCard2) {
+        const r1 = mockCard1.getBoundingClientRect();
+        const r2 = mockCard2.getBoundingClientRect();
+        playedCardsStack = {
+          card1Height: Math.round(r1.height * 100) / 100,
+          topDiff: Math.round((r2.top - r1.top) * 100) / 100,
+          ratio: Math.round(((r2.top - r1.top) / r1.height) * 1000) / 1000
+        };
+      }
+      report.playedCardsStack = playedCardsStack;
+      
       // Now toggle off Compact mode to measure native layout
       const toggle = document.querySelector('#bga-agri-css-toggle');
       if (toggle) {
@@ -112,6 +157,27 @@ window.addEventListener('load', () => {
       // Wait 500ms for browser layout update after restoring native BGA
       setTimeout(() => {
         report.cropsNative = measureCrops();
+        
+        const holder = document.querySelector('.player-board-holder');
+        if (holder) {
+          report.holderChildren = Array.from(holder.children).map(el => {
+            const r = el.getBoundingClientRect();
+            const style = window.getComputedStyle(el);
+            return {
+              tag: el.tagName.toLowerCase(),
+              cls: el.className,
+              rect: { w: Math.round(r.width), h: Math.round(r.height), top: Math.round(r.top), left: Math.round(r.left) },
+              style: {
+                position: style.position,
+                top: style.top,
+                left: style.left,
+                right: style.right,
+                bottom: style.bottom,
+                display: style.display
+              }
+            };
+          });
+        }
         
         // Send report
         fetch('/report', {

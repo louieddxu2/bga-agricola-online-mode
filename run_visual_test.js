@@ -171,6 +171,26 @@ server.listen(PORT, () => {
             console.log('[PASS] Crop ratio assertion passed! Compact mode successfully matches or mimics Native BGA crop proportions.');
           }
         }
+
+        // Assert: Played cards stacking ratio
+        console.log('\n--- Played Cards Stacking Assertions (2/5 Overlap) ---');
+        const pStack = receivedReport.playedCardsStack;
+        if (pStack) {
+          console.log(`[INFO] Card 1 Height: ${pStack.card1Height}px`);
+          console.log(`[INFO] Top Coordinate Difference (Card 2 - Card 1): ${pStack.topDiff}px`);
+          console.log(`[INFO] Measured Ratio: ${pStack.ratio.toFixed(3)} (Expected: ~0.40)`);
+          
+          // Ratio should be 63.6 / 159 = 0.40. We allow [0.38, 0.42] range
+          if (pStack.ratio < 0.38 || pStack.ratio > 0.42) {
+            console.error(`[FAIL] Played cards stacking ratio (${pStack.ratio.toFixed(3)}) deviates from the expected 0.40 (2/5) ratio.`);
+            failed = true;
+          } else {
+            console.log('[PASS] Played cards stacking ratio assertion passed! Card 2 overlaps Card 1 leaving exactly 2/5 visible.');
+          }
+        } else {
+          console.error('[FAIL] Mocked played cards not found or could not be measured.');
+          failed = true;
+        }
         
         if (failed) {
           console.error('\nResult: LAYOUT VERIFICATION FAILED.');
