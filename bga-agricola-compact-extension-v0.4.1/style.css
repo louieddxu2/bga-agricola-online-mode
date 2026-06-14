@@ -161,7 +161,7 @@ html.bga-agri-css-compact-active #player-boards-separator.bga-agri-css-hidden-co
   display: none !important;
 }
 
-html.bga-agri-css-compact-active #player-boards > .player-board-resizable.bga-agri-css-board-card {
+html.bga-agri-css-compact-active #player-boards > .player-board-resizable {
   position: relative !important;
   left: auto !important;
   top: auto !important;
@@ -180,7 +180,7 @@ html.bga-agri-css-compact-active #player-boards > .player-board-resizable.bga-ag
   font-size: 30px !important; /* Restore font-size to 30px to prevent crops and meeples from shrinking due to body placement */
 }
 
-html.bga-agri-css-compact-active #player-boards > .player-board-resizable.bga-agri-css-board-card .player-card {
+html.bga-agri-css-compact-active #player-boards > .player-board-resizable .player-card {
   color: #1c1207 !important;
   cursor: zoom-in !important;
 }
