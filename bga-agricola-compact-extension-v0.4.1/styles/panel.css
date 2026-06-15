@@ -1,0 +1,93 @@
+#bga-agri-v10-panel {
+  position: fixed !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  height: var(--bga-agri-v10-total-height) !important;
+  z-index: 2147482500 !important;
+  background: #24180f !important;
+  color: #f6e7bd !important;
+  border-top: 2px solid #80653b !important;
+  box-shadow: 0 -3px 14px rgba(0,0,0,.35) !important;
+  display: grid !important;
+  grid-template-rows: 32px var(--bga-agri-v10-hand-height) var(--bga-agri-v10-board-height) !important;
+  box-sizing: border-box !important;
+  overflow: hidden !important;
+  font-family: Arial, "Noto Sans TC", sans-serif !important;
+}
+
+#bga-agri-v10-toolbar {
+  display: flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  background: #d6b879 !important;
+  color: #160e07 !important;
+  border-bottom: 1px solid #80653b !important;
+  padding: 3px 8px !important;
+  box-sizing: border-box !important;
+  overflow-x: auto !important;
+  white-space: nowrap !important;
+}
+
+#bga-agri-v10-toolbar strong {
+  font: 800 14px/1.2 Arial, "Noto Sans TC", sans-serif !important;
+}
+
+#bga-agri-v10-toolbar span {
+  opacity: .75 !important;
+  margin-right: auto !important;
+  font: 700 11px/1.2 Arial, "Noto Sans TC", sans-serif !important;
+}
+
+#bga-agri-v10-toolbar button {
+  all: unset !important;
+  display: inline-block !important;
+  padding: 3px 8px !important;
+  border: 1px solid #7c5b31 !important;
+  border-radius: 5px !important;
+  background: #f8e8be !important;
+  color: #170e06 !important;
+  font: 700 12px/1.2 Arial, "Noto Sans TC", sans-serif !important;
+  cursor: pointer !important;
+}
+
+#bga-agri-v10-hand {
+  overflow-x: auto !important;
+  overflow-y: hidden !important;
+  white-space: nowrap !important;
+  padding: 7px 10px !important;
+  background: #a6a367 !important;
+  box-sizing: border-box !important;
+}
+
+#bga-agri-v10-boards {
+  display: grid !important;
+  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  grid-template-rows: minmax(0, 1fr) !important;
+  gap: 8px !important;
+  padding: 6px !important;
+  box-sizing: border-box !important;
+  overflow: hidden !important;
+  background: #24180f !important;
+}
+
+.bga-agri-v10-player {
+  min-width: 0 !important;
+  min-height: 0 !important;
+  overflow: hidden !important;
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) 128px !important;
+  grid-template-rows: 100% !important;
+  background: #efe0b8 !important;
+  border: 1px solid #80653b !important;
+  box-sizing: border-box !important;
+}
+
+.bga-agri-v10-left {
+  min-width: 0 !important;
+  min-height: 0 !important;
+  display: grid !important;
+  grid-template-rows: 22px 20px minmax(0, 1fr) !important;
+  background: #efe0b8 !important;
+  overflow: hidden !important;
+}

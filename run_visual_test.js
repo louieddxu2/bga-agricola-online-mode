@@ -73,7 +73,7 @@ server.listen(PORT, () => {
   const screenshotPath = path.join(ROOT_DIR, 'screenshot_compact.png');
   
   // Wait up to 3 seconds for virtual time to let page load and reporting script trigger
-  const cmd = `"${chromePath}" --headless=new --disable-gpu --no-sandbox --window-size=1920,1080 --virtual-time-budget=3000 --screenshot="${screenshotPath}" http://localhost:${PORT}/test_injected.html`;
+  const cmd = `"${chromePath}" --headless=new --disable-gpu --no-sandbox --window-size=1920,1080 --virtual-time-budget=3000 --enable-logging --screenshot="${screenshotPath}" http://localhost:${PORT}/test_injected.html`;
   
   console.log('Running screenshot and rendering analysis...');
   
@@ -172,20 +172,20 @@ server.listen(PORT, () => {
           }
         }
 
-        // Assert: Played cards stacking ratio
-        console.log('\n--- Played Cards Stacking Assertions (2/5 Overlap) ---');
+        // Assert: Played cards layout ratio
+        console.log('\n--- Played Cards Layout Assertions (62px wrapper + 4px margin) ---');
         const pStack = receivedReport.playedCardsStack;
         if (pStack) {
           console.log(`[INFO] Card 1 Height: ${pStack.card1Height}px`);
           console.log(`[INFO] Top Coordinate Difference (Card 2 - Card 1): ${pStack.topDiff}px`);
-          console.log(`[INFO] Measured Ratio: ${pStack.ratio.toFixed(3)} (Expected: ~0.40)`);
+          console.log(`[INFO] Measured Ratio: ${pStack.ratio.toFixed(3)} (Expected: ~0.654)`);
           
-          // Ratio should be 63.6 / 159 = 0.40. We allow [0.38, 0.42] range
-          if (pStack.ratio < 0.38 || pStack.ratio > 0.42) {
-            console.error(`[FAIL] Played cards stacking ratio (${pStack.ratio.toFixed(3)}) deviates from the expected 0.40 (2/5) ratio.`);
+          // Ratio should be 66 / 100.98 = 0.654. We allow [0.63, 0.67] range
+          if (pStack.ratio < 0.63 || pStack.ratio > 0.67) {
+            console.error(`[FAIL] Played cards layout ratio (${pStack.ratio.toFixed(3)}) deviates from the expected 0.654 ratio.`);
             failed = true;
           } else {
-            console.log('[PASS] Played cards stacking ratio assertion passed! Card 2 overlaps Card 1 leaving exactly 2/5 visible.');
+            console.log('[PASS] Played cards layout ratio assertion passed! Cards are successfully laid out in columns with 62px wrapper height.');
           }
         } else {
           console.error('[FAIL] Mocked played cards not found or could not be measured.');

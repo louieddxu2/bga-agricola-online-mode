@@ -1,0 +1,106 @@
+.bga-agri-v10-farm-area {
+  position: relative !important;
+  min-width: 0 !important;
+  min-height: 0 !important;
+  overflow: hidden !important;
+  background: #86c24a !important;
+}
+
+.bga-agri-v10-farm-shell.player-board-wrapper {
+  position: absolute !important;
+  width: 658px !important;
+  height: 405px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  transform-origin: top left !important;
+  --agricolaPlayerBoardScale: 1 !important;
+}
+
+.bga-agri-v10-farm-holder.player-board-holder {
+  position: relative !important;
+  width: 658px !important;
+  height: 405px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  transform: none !important;
+}
+
+#bga-agri-v10-panel .bga-agri-v10-farm-area,
+#bga-agri-v10-panel .bga-agri-v10-farm-area .agricola-player-board,
+#bga-agri-v10-panel .bga-agri-v10-farm-area .player-board-grid {
+  font-size: 30px !important;
+}
+
+#bga-agri-v10-panel .animals-counters {
+  display: none !important;
+}
+
+
+/* v0.10.16: sampled farm underlay + compact layer order.
+   The farm grid has transparent .cell-virtual gaps, so the compact farm area
+   needs a farm-green underlay. This is sampled from the user-provided BGA screenshot.
+   Keep BGA's own cell sprites and controls above this underlay. */
+#bga-agri-v10-panel .bga-agri-v10-farm-area {
+  background: #86c24a !important;
+  background-color: #86c24a !important;
+}
+
+#bga-agri-v10-panel .bga-agri-v10-farm-shell,
+#bga-agri-v10-panel .bga-agri-v10-farm-holder,
+#bga-agri-v10-panel .bga-agri-v10-farm-area .agricola-player-board,
+#bga-agri-v10-panel .bga-agri-v10-farm-area .player-board-grid,
+#bga-agri-v10-panel .bga-agri-v10-farm-area .board-cell {
+  background: transparent !important;
+  background-color: transparent !important;
+}
+
+#bga-agri-v10-panel .bga-agri-v10-farm-area .board-cell {
+  position: relative !important;
+}
+
+#bga-agri-v10-panel .bga-agri-v10-farm-area .board-cell .node-background {
+  z-index: 0 !important;
+  pointer-events: none !important;
+}
+
+#bga-agri-v10-panel .bga-agri-v10-farm-area .board-cell > :not(.node-background) {
+  position: relative !important;
+  z-index: 1 !important;
+}
+
+/* v0.10.16: keep BGA animal-capacity boxes readable in the scaled clone. */
+#bga-agri-v10-panel .bga-agri-v10-farm-area .animals-control-wrapper {
+  z-index: 30 !important;
+  pointer-events: none !important;
+}
+
+#bga-agri-v10-panel .bga-agri-v10-farm-area .board-cell:has(.animals-control-wrapper) {
+  z-index: 10 !important;
+}
+
+#bga-agri-v10-panel .bga-agri-v10-farm-area .animals-control-wrapper .animals-control {
+  z-index: 31 !important;
+  opacity: 1 !important;
+  color: #21180c !important;
+  transform: scale(2.2) !important;
+  transform-origin: bottom right !important;
+}
+
+#bga-agri-v10-panel .bga-agri-v10-farm-area .animals-control-wrapper .animals-control .zone-capacity {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  color: #21180c !important;
+  background: rgba(255, 250, 211, .92) !important;
+  font-weight: 700 !important;
+  font-size: 15px !important;
+  line-height: 16px !important;
+  min-height: 16px !important;
+  text-align: center !important;
+  text-shadow: none !important;
+  white-space: nowrap !important;
+  overflow: visible !important;
+  position: relative !important;
+  z-index: 32 !important;
+}

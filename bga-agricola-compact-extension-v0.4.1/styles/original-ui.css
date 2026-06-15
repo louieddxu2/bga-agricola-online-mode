@@ -1,0 +1,234 @@
+/* v0.10.18: compact original BGA header/player areas while the panel is open. */
+html.bga-agri-v10-open.bga-agri-v10-original-compact #page-title,
+html.bga-agri-v10-open.bga-agri-v10-original-compact #after-page-title,
+html.bga-agri-v10-open.bga-agri-v10-original-compact #game-flow-panel {
+  display: none !important;
+}
+
+html.bga-agri-v10-open.bga-agri-v10-original-compact #player-boards,
+html.bga-agri-v10-open.bga-agri-v10-original-compact #alternative-hand-wrapper {
+  display: none !important;
+}
+
+html.bga-agri-v10-open.bga-agri-v10-original-compact #game_play_area {
+  margin-top: 0 !important;
+}
+
+#bga-agri-v10-original-topline {
+  box-sizing: border-box !important;
+  width: calc(100% - 104px) !important;
+  margin: 0 0 4px 52px !important;
+  min-height: 30px !important;
+  padding: 4px 8px !important;
+
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+
+  background: rgba(236, 238, 175, .93) !important;
+  border: 1px solid rgba(0, 0, 0, .28) !important;
+  border-radius: 6px !important;
+  color: #18130a !important;
+  font: 700 14px/1.25 Arial, "Noto Sans TC", sans-serif !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+
+#bga-agri-v10-original-topline .bga-agri-v10-topline-status {
+  flex: 0 1 auto !important;
+  min-width: 0 !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+
+#bga-agri-v10-original-topline .bga-agri-v10-topline-round {
+  flex: 0 0 auto !important;
+  color: #5a3200 !important;
+}
+
+#bga-agri-v10-original-topline .bga-agri-v10-topline-phases {
+  flex: 0 1 auto !important;
+  min-width: 0 !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  color: #263c18 !important;
+}
+
+#bga-agri-v10-original-topline .bga-agri-v10-topline-sep {
+  flex: 0 0 auto !important;
+  opacity: .55 !important;
+}
+
+#bga-agri-v10-original-topline .bga-agri-v10-topline-return {
+  all: unset !important;
+  flex: 0 0 auto !important;
+  margin-left: auto !important;
+  padding: 4px 10px !important;
+  border-radius: 5px !important;
+  border: 1px solid #7d231e !important;
+  background: #b6362d !important;
+  color: #fff !important;
+  font: 700 13px/1.2 Arial, "Noto Sans TC", sans-serif !important;
+  cursor: pointer !important;
+}
+
+
+/* v0.10.19: remove the upper white BGA topbar visually, but keep the top-left menu/logo button. */
+html.bga-agri-v10-open.bga-agri-v10-original-compact #topbar {
+  background: transparent !important;
+  background-color: transparent !important;
+  box-shadow: none !important;
+  border: 0 !important;
+  pointer-events: none !important;
+}
+
+html.bga-agri-v10-open.bga-agri-v10-original-compact #topbar_content {
+  background: transparent !important;
+  background-color: transparent !important;
+  box-shadow: none !important;
+  border: 0 !important;
+  pointer-events: none !important;
+}
+
+html.bga-agri-v10-open.bga-agri-v10-original-compact #topbar .topbar_middle_content,
+html.bga-agri-v10-open.bga-agri-v10-original-compact #topbar #current_header_infos_wrap,
+html.bga-agri-v10-open.bga-agri-v10-original-compact #topbar #upperrightmenu,
+html.bga-agri-v10-open.bga-agri-v10-original-compact #topbar #ingame_menu_content {
+  display: none !important;
+}
+
+/* Keep only the BGA logo/back-to-table button at the top-left. */
+html.bga-agri-v10-open.bga-agri-v10-original-compact #topbar .topbar_left_content {
+  display: flex !important;
+  align-items: center !important;
+  pointer-events: none !important;
+}
+
+html.bga-agri-v10-open.bga-agri-v10-original-compact #topbar .topbar_left_content > *:not(#logoicon):not(#logoicon_inprogress) {
+  display: none !important;
+}
+
+html.bga-agri-v10-open.bga-agri-v10-original-compact #logoicon,
+html.bga-agri-v10-open.bga-agri-v10-original-compact #logoicon_inprogress {
+  display: block !important;
+  pointer-events: auto !important;
+}
+
+html.bga-agri-v10-open.bga-agri-v10-original-compact #logoicon img,
+html.bga-agri-v10-open.bga-agri-v10-original-compact #logoicon_inprogress img {
+  pointer-events: auto !important;
+}
+
+/* Pull the merged first row closer after removing the visual topbar/page-title clutter. */
+html.bga-agri-v10-open.bga-agri-v10-original-compact #bga-agri-v10-original-topline {
+  margin-top: 0 !important;
+}
+
+
+/* v0.10.20: the top-left menu/logo button is merged into the first status row.
+   The original topbar is now only a hidden source for the delegated click. */
+html.bga-agri-v10-open.bga-agri-v10-original-compact #topbar {
+  opacity: 0 !important;
+  height: 0 !important;
+  min-height: 0 !important;
+  max-height: 0 !important;
+  overflow: hidden !important;
+  pointer-events: none !important;
+}
+
+#bga-agri-v10-original-topline .bga-agri-v10-topline-logo {
+  all: unset !important;
+  flex: 0 0 34px !important;
+  width: 34px !important;
+  height: 26px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  cursor: pointer !important;
+  border-radius: 6px !important;
+  background: rgba(255,255,255,.82) !important;
+  border: 1px solid rgba(0,0,0,.25) !important;
+  overflow: hidden !important;
+}
+
+#bga-agri-v10-original-topline .bga-agri-v10-topline-logo img {
+  max-width: 28px !important;
+  max-height: 24px !important;
+  display: block !important;
+}
+
+
+/* v0.10.21: experimental physical-board-like round layout.
+   BGA puts rounds left-to-right; physical board continues downward within each stage
+   and moves to a new column at harvest. Do not move DOM; only override absolute coordinates. */
+html.bga-agri-v10-open.bga-agri-v10-original-compact #main-boards {
+  height: 650px !important;
+  width: max-content !important;
+}
+
+html.bga-agri-v10-open.bga-agri-v10-original-compact #position-wrapper {
+  min-height: 650px !important;
+}
+
+html.bga-agri-v10-open.bga-agri-v10-original-compact #central-board-holder {
+  width: 1320px !important;
+  height: 650px !important;
+  overflow: visible !important;
+}
+
+html.bga-agri-v10-open.bga-agri-v10-original-compact #central-board {
+  width: 1320px !important;
+  height: 650px !important;
+  overflow: visible !important;
+  /* Keep original background at its native size for now; do not stretch it to the new wide layout. */
+  background-size: 830px auto !important;
+  background-repeat: no-repeat !important;
+}
+
+/* Stage 1: 1, 2, then downward 3,4, harvest */
+html.bga-agri-v10-open.bga-agri-v10-original-compact #central-board #turn_1  { left: 167px !important; top:   2px !important; }
+html.bga-agri-v10-open.bga-agri-v10-original-compact #central-board #turn_2  { left: 331px !important; top:   1px !important; }
+html.bga-agri-v10-open.bga-agri-v10-original-compact #central-board #turn_3  { left: 331px !important; top: 156px !important; }
+html.bga-agri-v10-open.bga-agri-v10-original-compact #central-board #turn_4  { left: 331px !important; top: 311px !important; }
+html.bga-agri-v10-open.bga-agri-v10-original-compact #central-board #harvest-slot-4  { left: 383px !important; top: 461px !important; }
+
+/* Stage 2: 5,6,7, harvest */
+html.bga-agri-v10-open.bga-agri-v10-original-compact #central-board #turn_5  { left: 493px !important; top:   1px !important; }
+html.bga-agri-v10-open.bga-agri-v10-original-compact #central-board #turn_6  { left: 493px !important; top: 156px !important; }
+html.bga-agri-v10-open.bga-agri-v10-original-compact #central-board #turn_7  { left: 493px !important; top: 311px !important; }
+html.bga-agri-v10-open.bga-agri-v10-original-compact #central-board #harvest-slot-7  { left: 545px !important; top: 461px !important; }
+
+/* Stage 3: 8,9, harvest */
+html.bga-agri-v10-open.bga-agri-v10-original-compact #central-board #turn_8  { left: 657px !important; top:   1px !important; }
+html.bga-agri-v10-open.bga-agri-v10-original-compact #central-board #turn_9  { left: 657px !important; top: 156px !important; }
+html.bga-agri-v10-open.bga-agri-v10-original-compact #central-board #harvest-slot-9  { left: 709px !important; top: 306px !important; }
+
+/* Stage 4: 10,11, harvest */
+html.bga-agri-v10-open.bga-agri-v10-original-compact #central-board #turn_10 { left: 821px !important; top:   1px !important; }
+html.bga-agri-v10-open.bga-agri-v10-original-compact #central-board #turn_11 { left: 821px !important; top: 156px !important; }
+html.bga-agri-v10-open.bga-agri-v10-original-compact #central-board #harvest-slot-11 { left: 873px !important; top: 306px !important; }
+
+/* Stage 5: 12,13, harvest */
+html.bga-agri-v10-open.bga-agri-v10-original-compact #central-board #turn_12 { left: 985px !important; top:   1px !important; }
+html.bga-agri-v10-open.bga-agri-v10-original-compact #central-board #turn_13 { left: 985px !important; top: 156px !important; }
+html.bga-agri-v10-open.bga-agri-v10-original-compact #central-board #harvest-slot-13 { left: 1037px !important; top: 306px !important; }
+
+/* Stage 6: 14, final harvest */
+html.bga-agri-v10-open.bga-agri-v10-original-compact #central-board #turn_14 { left: 1149px !important; top: 1px !important; }
+html.bga-agri-v10-open.bga-agri-v10-original-compact #central-board #harvest-slot-14 { left: 1201px !important; top: 151px !important; }
+
+/* Keep harvest tokens visible after moving them below their stage. */
+html.bga-agri-v10-open.bga-agri-v10-original-compact #central-board .harvest-slot {
+  z-index: 40 !important;
+}
+
+html.bga-agri-v10-open.bga-agri-v10-original-compact #central-board .harvest-icon {
+  z-index: 41 !important;
+}
+
+/* The modal buttons otherwise land in the middle of the new round layout. */
+html.bga-agri-v10-open.bga-agri-v10-original-compact #central-board #modal-buttons-holder {
+  left: 1149px !important;
+  top: 230px !important;
+}

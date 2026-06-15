@@ -2,8 +2,36 @@ const fs = require('fs');
 const path = require('path');
 
 const htmlPath = path.join(__dirname, 'soladuck 必須放置 1 位農夫 • 農家樂 • Board Game Arena.html');
-const cssInject = '<link rel="stylesheet" href="bga-agricola-compact-extension-v0.4.1/style.css">';
-const jsInject = '<script defer src="bga-agricola-compact-extension-v0.4.1/content.js"></script>';
+const manifestPath = path.join(__dirname, 'bga-agricola-compact-extension-v0.4.1', 'manifest.json');
+const manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
+
+const cssInject = manifest.content_scripts[0].css.map(file => {
+  return `<link rel="stylesheet" href="bga-agricola-compact-extension-v0.4.1/${file}">`;
+}).join('\n');
+
+const jsInject = manifest.content_scripts[0].js.map(file => {
+  return `<script defer src="bga-agricola-compact-extension-v0.4.1/${file}"></script>`;
+}).join('\n');
+
+const chromeMock = `
+<script>
+window.chrome = {
+  storage: {
+    local: {
+      get(keys, callback) {
+        const stored = {};
+        for (const [k, v] of Object.entries(keys)) {
+          stored[k] = v;
+        }
+        stored.enabled = true;
+        callback(stored);
+      },
+      set(data) {}
+    }
+  }
+};
+</script>
+`;
 
 const reportScript = `
 <script>
@@ -11,7 +39,7 @@ window.addEventListener('load', () => {
   // Wait 1.5s for initial layout
   setTimeout(() => {
     // Mock extra played cards for robust stacking verification
-    const wrapper = document.querySelector('.cards-wrapper');
+    const wrapper = document.querySelector('#player-boards .cards-wrapper');
     if (wrapper && wrapper.children.length > 0) {
       console.log('Mocking extra played cards for robust stacking verification...');
       const baseCard = wrapper.children[0];
@@ -38,15 +66,21 @@ window.addEventListener('load', () => {
         if (titleEl) titleEl.textContent = '發 ' + (i * 2 + 2);
         wrapper.appendChild(clone);
       }
+
+      // Refresh compact panel to copy the mock cards
+      if (window.AgriCompact && window.AgriCompact.refresh) {
+        console.log('Refreshing compact panel to sync mock cards...');
+        window.AgriCompact.refresh();
+      }
     }
 
-    // Find a mini card in the boards and click it to open zoom modal
-    const miniCard = document.querySelector('#player-boards .player-card.mini');
+    // Find a card in the compact boards and click it to open zoom modal
+    const miniCard = document.querySelector('#bga-agri-v10-boards .player-card');
     if (miniCard) {
-      console.log('Found mini card, clicking to open zoom modal...');
+      console.log('Found compact card, clicking to open zoom modal...');
       miniCard.click();
     } else {
-      console.log('No mini card found to click');
+      console.log('No compact card found to click');
     }
     
     // Wait another 800ms for zoom modal to mount and render
@@ -59,13 +93,13 @@ window.addEventListener('load', () => {
       };
       
       const targets = {
-        toolbar: '#bga-agri-css-toolbar',
-        hand: '#alternative-hand-wrapper',
-        boards: '#player-boards',
-        zoomOverlay: '#bga-agri-css-zoom',
-        zoomCard: '#bga-agri-css-zoom .player-card',
-        zoomCardDesc: '#bga-agri-css-zoom .player-card .card-desc',
-        zoomCardDescScroller: '#bga-agri-css-zoom .player-card .card-desc .card-desc-scroller'
+        toolbar: '#bga-agri-v10-toolbar',
+        hand: '#bga-agri-v10-hand',
+        boards: '#bga-agri-v10-boards',
+        zoomOverlay: '#bga-agri-v10-zoom',
+        zoomCard: '#bga-agri-v10-zoom .player-card',
+        zoomCardDesc: '#bga-agri-v10-zoom .player-card .card-desc',
+        zoomCardDescScroller: '#bga-agri-v10-zoom .player-card .card-desc .card-desc-scroller'
       };
       
       for (const [key, selector] of Object.entries(targets)) {
@@ -111,8 +145,9 @@ window.addEventListener('load', () => {
       }
       
       // Helper to measure field grain meeple size and ratio
-      function measureCrops() {
-        const fieldEl = document.querySelector('.meeple-field');
+      function measureCrops(parentSelector) {
+        const parent = parentSelector ? document.querySelector(parentSelector) : document;
+        const fieldEl = parent ? parent.querySelector('.meeple-field') : null;
         const grainEl = fieldEl ? fieldEl.querySelector('.meeple-grain') : null;
         if (!fieldEl || !grainEl) {
           return { found: false };
@@ -130,9 +165,9 @@ window.addEventListener('load', () => {
       }
       
       // Measure under Compact Mode
-      report.cropsCompact = measureCrops();
+      report.cropsCompact = measureCrops('#bga-agri-v10-boards');
       
-      const holder = document.querySelector('.player-board-holder');
+      const holder = document.querySelector('#bga-agri-v10-boards .player-board-holder');
       if (holder) {
         report.holderChildrenCompact = Array.from(holder.children).map(el => {
           const r = el.getBoundingClientRect();
@@ -154,8 +189,8 @@ window.addEventListener('load', () => {
       }
       
       // Measure played cards coordinates for sorting & stack assertions
-      const mockCard1 = document.getElementById('mock-occupation-0'); // grid-row 1
-      const mockCard2 = document.getElementById('mock-occupation-1'); // grid-row 2
+      const mockCard1 = document.querySelector('#bga-agri-v10-boards #mock-occupation-0'); // grid-row 1
+      const mockCard2 = document.querySelector('#bga-agri-v10-boards #mock-occupation-1'); // grid-row 2
       let playedCardsStack = null;
       if (mockCard1 && mockCard2) {
         const r1 = mockCard1.getBoundingClientRect();
@@ -169,7 +204,7 @@ window.addEventListener('load', () => {
       report.playedCardsStack = playedCardsStack;
       
       // Now toggle off Compact mode to measure native layout
-      const toggle = document.querySelector('#bga-agri-css-toggle');
+      const toggle = document.querySelector('#bga-agri-v10-toggle');
       if (toggle) {
         console.log('Toggling off compact mode...');
         toggle.click();
@@ -177,9 +212,9 @@ window.addEventListener('load', () => {
       
       // Wait 500ms for browser layout update after restoring native BGA
       setTimeout(() => {
-        report.cropsNative = measureCrops();
+        report.cropsNative = measureCrops('#player-boards');
         
-        const holder = document.querySelector('.player-board-holder');
+        const holder = document.querySelector('#player-boards .player-board-holder');
         if (holder) {
           report.holderChildren = Array.from(holder.children).map(el => {
             const r = el.getBoundingClientRect();
@@ -222,7 +257,7 @@ if (!fs.existsSync(htmlPath)) {
 
 let html = fs.readFileSync(htmlPath, 'utf8');
 
-const injections = `${cssInject}\n${jsInject}\n${reportScript}`;
+const injections = `${cssInject}\n${chromeMock}\n${jsInject}\n${reportScript}`;
 if (html.includes('</head>')) {
   html = html.replace('</head>', `${injections}\n</head>`);
 } else {
