@@ -30,14 +30,6 @@
     document.documentElement.classList.add('bga-agri-v10-open');
     document.getElementById(AC.IDS.panel)?.remove();
 
-    // 強制隱藏所有可能的大容器滾動條，釋放寬度 (JS 最高優先權內聯樣式覆蓋)
-    document.documentElement.style.setProperty('overflow-y', 'hidden', 'important');
-    document.body.style.setProperty('overflow-y', 'hidden', 'important');
-    ['ebd-body', 'overall-content', 'game_play_area', 'page-content'].forEach(id => {
-      const el = document.getElementById(id);
-      if (el) el.style.setProperty('overflow-y', 'hidden', 'important');
-    });
-
     const panel = document.createElement('section');
     panel.id = AC.IDS.panel;
     panel.innerHTML = `
@@ -72,11 +64,6 @@
     };
     window.addEventListener('resize', AC.onResize);
     AC.observer.start();
-
-    // 手動觸發一次 resize 事件，強制瀏覽器與擴充功能立即重新計算隱藏滾動條後的寬度並放大圖板
-    setTimeout(() => {
-      window.dispatchEvent(new Event('resize'));
-    }, 100);
   };
 
   AC.closePanel = function closePanel() {
@@ -85,14 +72,6 @@
     document.getElementById(AC.IDS.panel)?.remove();
     document.getElementById(AC.IDS.zoom)?.remove();
     AC.observer.stop();
-
-    // 還原所有大容器的滾動條屬性
-    document.documentElement.style.removeProperty('overflow-y');
-    document.body.style.removeProperty('overflow-y');
-    ['ebd-body', 'overall-content', 'game_play_area', 'page-content'].forEach(id => {
-      const el = document.getElementById(id);
-      if (el) el.style.removeProperty('overflow-y');
-    });
 
     if (AC.onResize) {
       window.removeEventListener('resize', AC.onResize);
