@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
   "name": "BGA Agricola Compact Panel",
-  "version": "0.10.24",
-  "description": "Use minimal transparent card preview: no close X, no visible proxy button, outside click closes preview.",
+  "version": "0.10.49",
+  "description": "Remove all padding around the compact played-card area.",
   "permissions": [
     "storage"
   ],

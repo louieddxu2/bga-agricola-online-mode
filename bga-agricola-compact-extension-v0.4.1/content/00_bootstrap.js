@@ -5,7 +5,7 @@
   const isAgricolaPage =
     /(^|\/)agricola($|[/?#])/.test(location.pathname) ||
     document.querySelector('link[href*="agricola.css"]') ||
-    document.querySelector('#player-boards, #alternative-hand-wrapper #hand-container');
+    document.querySelector('#player-boards, #alternative-hand-wrapper #hand-container, #player-boards #hand-container');
   console.log('isAgricolaPage:', !!isAgricolaPage);
 
   if (!isAgricolaPage) return;

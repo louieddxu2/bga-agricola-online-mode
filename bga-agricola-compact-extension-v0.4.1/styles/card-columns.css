@@ -91,3 +91,15 @@
   visibility: hidden !important;
   pointer-events: none !important;
 }
+
+
+/* v0.10.48: remove the left padding gap of the played-card area. */
+.bga-agri-v10-cards {
+  padding-left: 0 !important;
+}
+
+
+/* v0.10.49: remove all padding around the played-card area. */
+.bga-agri-v10-cards {
+  padding: 0 !important;
+}

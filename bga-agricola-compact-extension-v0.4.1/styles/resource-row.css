@@ -280,3 +280,106 @@
 #bga-agri-v10-panel .bga-agri-v10-resource-row .agricola-meeple {
   transform-origin: center center !important;
 }
+
+
+/* v0.10.45: visually center the second-row primary resources. Keep the row compact,
+   but use a fixed icon slot and scale the inner sprite instead of the container. */
+.bga-agri-v10-resource-row {
+  height: 26px !important;
+  min-height: 26px !important;
+  padding: 1px 6px !important;
+  align-items: center !important;
+}
+
+.bga-agri-v10-resource-left {
+  align-items: center !important;
+  height: 24px !important;
+}
+
+.bga-agri-v10-resource-row .player-resource {
+  height: 24px !important;
+  min-height: 24px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 4px !important;
+  line-height: 1 !important;
+  transform: translateY(0) !important;
+}
+
+#bga-agri-v10-panel .bga-agri-v10-resource-row .player-resource span {
+  height: 22px !important;
+  min-height: 22px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  line-height: 22px !important;
+  font-size: 15px !important;
+  font-weight: 900 !important;
+  transform: translateY(0) !important;
+}
+
+#bga-agri-v10-panel .bga-agri-v10-resource-row .meeple-container {
+  width: 18px !important;
+  height: 18px !important;
+  min-width: 18px !important;
+  min-height: 18px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  line-height: 0 !important;
+  overflow: visible !important;
+  transform: none !important;
+  vertical-align: middle !important;
+}
+
+#bga-agri-v10-panel .bga-agri-v10-resource-row .agricola-meeple {
+  display: block !important;
+  margin: 0 !important;
+  transform: scale(1.13) !important;
+  transform-origin: center center !important;
+}
+
+
+/* v0.10.46: make the primary-resource row spacing compress before content is clipped. */
+.bga-agri-v10-resource-left {
+  justify-content: space-between !important;
+  gap: 1px !important;
+  column-gap: 1px !important;
+}
+
+.bga-agri-v10-resource-row .player-resource {
+  flex: 0 1 auto !important;
+  min-width: 0 !important;
+  gap: 2px !important;
+  padding: 0 !important;
+}
+
+#bga-agri-v10-panel .bga-agri-v10-resource-row .meeple-container {
+  flex: 0 0 18px !important;
+}
+
+#bga-agri-v10-panel .bga-agri-v10-resource-row .player-resource span {
+  flex: 0 0 auto !important;
+  margin: 0 !important;
+}
+
+
+/* v0.10.47: show Agricola food as current/harvest-needed when BGA provides
+   span.resource_food[data-harvest], e.g. 9/6. The data-harvest value already
+   includes the slash in BGA's DOM. */
+#bga-agri-v10-panel .bga-agri-v10-resource-row .resource-food span[data-harvest]:not([data-harvest=""])::after {
+  content: attr(data-harvest) !important;
+  font-size: .78em !important;
+  font-weight: 800 !important;
+  line-height: 1 !important;
+  opacity: .82 !important;
+  margin-left: 1px !important;
+}
+
+#bga-agri-v10-panel .bga-agri-v10-resource-row .resource-food span[data-harvest] {
+  min-width: 2.4ch !important;
+  letter-spacing: -0.02em !important;
+}

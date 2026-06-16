@@ -3,21 +3,44 @@
   if (!AC) return;
 
   AC.cards = {
+    findHandCards() {
+      // BGA can render the player's hand in different places depending on the
+      // table display preference. The original version only read the bottom
+      // alternative hand wrapper. Also read the hand container embedded below
+      // the player/farm board area.
+      const selectors = [
+        '#alternative-hand-wrapper #hand-container > .player-card',
+        '#player-boards #player-boards-left-column #hand-container > .player-card',
+        '#player-boards #hand-container > .player-card'
+      ];
+
+      const seen = new Set();
+      const cards = [];
+      selectors.forEach(selector => {
+        document.querySelectorAll(selector).forEach(card => {
+          if (card.closest(`#${AC.IDS.panel}, #${AC.IDS.zoom}`)) return;
+          const key = card.id || card.dataset.id || card;
+          if (seen.has(key)) return;
+          seen.add(key);
+          cards.push(card);
+        });
+      });
+      return cards;
+    },
+
     renderHand() {
       const hand = document.getElementById(AC.IDS.hand);
       if (!hand) return;
       hand.textContent = '';
 
-      [...document.querySelectorAll('#alternative-hand-wrapper #hand-container > .player-card')]
-        .filter(el => !el.closest(`#${AC.IDS.panel}`))
-        .forEach(source => {
-          const wrap = document.createElement('div');
-          wrap.className = 'bga-agri-v10-hand-card';
-          const clone = AC.dom.cloneWithSource(source);
-          clone.dataset.sourceId = source.id || '';
-          wrap.appendChild(clone);
-          hand.appendChild(wrap);
-        });
+      AC.cards.findHandCards().forEach(source => {
+        const wrap = document.createElement('div');
+        wrap.className = 'bga-agri-v10-hand-card';
+        const clone = AC.dom.cloneWithSource(source);
+        clone.dataset.sourceId = source.id || '';
+        wrap.appendChild(clone);
+        hand.appendChild(wrap);
+      });
     },
 
     renderCardColumns(player) {

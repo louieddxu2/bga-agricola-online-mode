@@ -6,6 +6,8 @@ html.bga-agri-v10-open.bga-agri-v10-original-compact #game-flow-panel {
 }
 
 html.bga-agri-v10-open.bga-agri-v10-original-compact #player-boards,
+html.bga-agri-v10-open.bga-agri-v10-original-compact #player_boards,
+html.bga-agri-v10-open.bga-agri-v10-original-compact #player_boards_wrap,
 html.bga-agri-v10-open.bga-agri-v10-original-compact #alternative-hand-wrapper {
   display: none !important;
 }
@@ -231,4 +233,223 @@ html.bga-agri-v10-open.bga-agri-v10-original-compact #central-board .harvest-ico
 html.bga-agri-v10-open.bga-agri-v10-original-compact #central-board #modal-buttons-holder {
   left: 1149px !important;
   top: 230px !important;
+}
+
+
+/* v0.10.27: runtime-cropped round background tiles.
+   These tiles reuse the live BGA board image and crop the screenshot-proven
+   first-round source rectangle with CSS background-position. */
+html.bga-agri-v10-open.bga-agri-v10-original-compact #central-board #bga-agri-v10-round-bg-layer {
+  position: absolute !important;
+  left: 0 !important;
+  top: 0 !important;
+  width: 1320px !important;
+  height: 650px !important;
+  pointer-events: none !important;
+  z-index: 1 !important;
+}
+
+
+html.bga-agri-v10-open.bga-agri-v10-original-compact #central-board .bga-agri-v10-board-bg-left {
+  position: absolute !important;
+  box-sizing: border-box !important;
+  background-repeat: no-repeat !important;
+  pointer-events: none !important;
+  z-index: 1 !important;
+}
+
+html.bga-agri-v10-open.bga-agri-v10-original-compact #central-board .bga-agri-v10-round-bg-tile {
+  position: absolute !important;
+  box-sizing: border-box !important;
+  background-repeat: no-repeat !important;
+  pointer-events: none !important;
+  z-index: 1 !important;
+}
+
+html.bga-agri-v10-open.bga-agri-v10-original-compact #central-board .turn-action-container {
+  z-index: 20 !important;
+}
+
+
+/* v0.10.29: visible debug for runtime round backgrounds. */
+html.bga-agri-v10-open.bga-agri-v10-original-compact #central-board #bga-agri-v10-bg-status {
+  position: absolute !important;
+  right: 8px !important;
+  top: 8px !important;
+  z-index: 1000 !important;
+  max-width: 420px !important;
+  padding: 4px 8px !important;
+  border-radius: 6px !important;
+  font: 700 12px/1.2 Arial, "Noto Sans TC", sans-serif !important;
+  pointer-events: none !important;
+  box-shadow: 0 1px 5px rgba(0,0,0,.35) !important;
+}
+
+html.bga-agri-v10-open.bga-agri-v10-original-compact #central-board #bga-agri-v10-bg-status.bga-agri-v10-bg-status-ok {
+  background: rgba(213,255,204,.94) !important;
+  color: #0a4a12 !important;
+  border: 1px solid rgba(10,74,18,.55) !important;
+}
+
+html.bga-agri-v10-open.bga-agri-v10-original-compact #central-board #bga-agri-v10-bg-status.bga-agri-v10-bg-status-error {
+  background: rgba(255,220,220,.96) !important;
+  color: #8a0000 !important;
+  border: 1px solid rgba(138,0,0,.55) !important;
+}
+
+html.bga-agri-v10-open.bga-agri-v10-original-compact #central-board #bga-agri-v10-round-bg-layer.bga-agri-v10-round-bg-layer-debug {
+  z-index: 80 !important;
+}
+
+html.bga-agri-v10-open.bga-agri-v10-original-compact #central-board #bga-agri-v10-round-bg-layer.bga-agri-v10-round-bg-layer-debug .bga-agri-v10-round-bg-tile {
+  z-index: 80 !important;
+  opacity: .92 !important;
+  outline: 3px dashed rgba(255,0,0,.9) !important;
+  background-color: rgba(255,0,0,.08) !important;
+}
+
+html.bga-agri-v10-open.bga-agri-v10-original-compact #central-board #bga-agri-v10-round-bg-layer.bga-agri-v10-round-bg-layer-debug .bga-agri-v10-round-bg-tile::after {
+  content: attr(data-round) !important;
+  position: absolute !important;
+  left: 4px !important;
+  top: 4px !important;
+  padding: 2px 5px !important;
+  border-radius: 999px !important;
+  background: rgba(255,255,255,.95) !important;
+  color: #9a0000 !important;
+  font: 800 13px/1 Arial, sans-serif !important;
+}
+
+
+/* v0.10.30: stronger background preview diagnostic. This is intentionally visible. */
+html.bga-agri-v10-open.bga-agri-v10-original-compact #central-board #bga-agri-v10-round-bg-layer.bga-agri-v10-round-bg-layer-debug .bga-agri-v10-round-bg-tile {
+  opacity: .92 !important;
+  outline: 4px solid rgba(255,0,0,.95) !important;
+  box-shadow: inset 0 0 0 2px rgba(255,255,255,.8), 0 0 8px rgba(255,0,0,.65) !important;
+}
+
+
+/* v0.10.35: keep harvest icons visible above diagnostic background tiles. */
+html.bga-agri-v10-open.bga-agri-v10-original-compact #central-board .harvest-slot {
+  z-index: 130 !important;
+}
+
+html.bga-agri-v10-open.bga-agri-v10-original-compact #central-board .harvest-icon {
+  z-index: 131 !important;
+}
+
+
+/* v0.10.42: move game status into a compact upper-right info card and hide the original right player list. */
+html.bga-agri-v10-open.bga-agri-v10-original-compact #game_play_area {
+  position: relative !important;
+}
+
+html.bga-agri-v10-open.bga-agri-v10-original-compact #bga-agri-v10-original-topline {
+  position: absolute !important;
+  left: 0 !important;
+  right: 0 !important;
+  top: 0 !important;
+  z-index: 160 !important;
+  width: 1320px !important;
+  min-height: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  display: block !important;
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  pointer-events: none !important;
+  overflow: visible !important;
+  white-space: normal !important;
+}
+
+html.bga-agri-v10-open.bga-agri-v10-original-compact #bga-agri-v10-original-topline .bga-agri-v10-topline-logo {
+  position: absolute !important;
+  left: 8px !important;
+  top: 6px !important;
+  pointer-events: auto !important;
+}
+
+html.bga-agri-v10-open.bga-agri-v10-original-compact #bga-agri-v10-original-topline .bga-agri-v10-topline-info {
+  position: absolute !important;
+  right: 12px !important;
+  top: 8px !important;
+  width: 330px !important;
+  max-width: 330px !important;
+  padding: 7px 10px !important;
+  border-radius: 8px !important;
+  background: rgba(236, 238, 175, .94) !important;
+  border: 1px solid rgba(0,0,0,.34) !important;
+  box-shadow: 0 2px 7px rgba(0,0,0,.22) !important;
+  color: #18130a !important;
+  font: 700 13px/1.28 Arial, "Noto Sans TC", sans-serif !important;
+  pointer-events: none !important;
+}
+
+html.bga-agri-v10-open.bga-agri-v10-original-compact #bga-agri-v10-original-topline .bga-agri-v10-topline-status,
+html.bga-agri-v10-open.bga-agri-v10-original-compact #bga-agri-v10-original-topline .bga-agri-v10-topline-round,
+html.bga-agri-v10-open.bga-agri-v10-original-compact #bga-agri-v10-original-topline .bga-agri-v10-topline-phases {
+  display: block !important;
+  min-width: 0 !important;
+  max-width: 100% !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+}
+
+html.bga-agri-v10-open.bga-agri-v10-original-compact #bga-agri-v10-original-topline .bga-agri-v10-topline-round {
+  margin-top: 2px !important;
+  color: #5a3200 !important;
+}
+
+html.bga-agri-v10-open.bga-agri-v10-original-compact #bga-agri-v10-original-topline .bga-agri-v10-topline-phases {
+  margin-top: 2px !important;
+  color: #263c18 !important;
+}
+
+html.bga-agri-v10-open.bga-agri-v10-original-compact #bga-agri-v10-original-topline .bga-agri-v10-topline-sep,
+html.bga-agri-v10-open.bga-agri-v10-original-compact #bga-agri-v10-original-topline .bga-agri-v10-topline-return {
+  display: none !important;
+}
+
+
+/* v0.10.43: put the status box above the BGA log/action history column, not over the board. */
+html.bga-agri-v10-open.bga-agri-v10-original-compact #right-side-first-part,
+html.bga-agri-v10-open.bga-agri-v10-original-compact #player_boards,
+html.bga-agri-v10-open.bga-agri-v10-original-compact #player_boards_wrap {
+  display: none !important;
+}
+
+html.bga-agri-v10-open.bga-agri-v10-original-compact #right-side-second-part #bga-agri-v10-original-topline {
+  position: relative !important;
+  left: auto !important;
+  right: auto !important;
+  top: auto !important;
+  width: auto !important;
+  min-height: 0 !important;
+  margin: 0 0 8px 0 !important;
+  padding: 0 !important;
+  display: block !important;
+  z-index: 1 !important;
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  pointer-events: none !important;
+  overflow: visible !important;
+}
+
+html.bga-agri-v10-open.bga-agri-v10-original-compact #right-side-second-part #bga-agri-v10-original-topline .bga-agri-v10-topline-logo {
+  display: none !important;
+}
+
+html.bga-agri-v10-open.bga-agri-v10-original-compact #right-side-second-part #bga-agri-v10-original-topline .bga-agri-v10-topline-info {
+  position: static !important;
+  width: auto !important;
+  max-width: none !important;
+  margin: 0 !important;
+  padding: 7px 10px !important;
+  border-radius: 8px !important;
+  background: rgba(236, 238, 175, .94) !important;
+  border: 1px solid rgba(0,0,0,.34) !important;
+  box-shadow: 0 2px 7px rgba(0,0,0,.22) !important;
 }
