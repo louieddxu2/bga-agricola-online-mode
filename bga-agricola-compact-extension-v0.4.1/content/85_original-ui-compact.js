@@ -547,7 +547,10 @@
       if (playerBoards.dataset.bgaAgriV10HandGapOriginalStyle === undefined) {
         playerBoards.dataset.bgaAgriV10HandGapOriginalStyle = playerBoards.getAttribute('style') || '';
       }
-      playerBoards.style.setProperty('margin-top', `${Math.ceil(handHeight + 8)}px`, 'important');
+      const currentMarginTop = parseFloat(playerBoards.style.marginTop) || 0;
+      const naturalBoardsTop = playerBoards.getBoundingClientRect().top - currentMarginTop;
+      const neededGap = Math.max(0, targetViewportTop + handHeight + 8 - naturalBoardsTop);
+      playerBoards.style.setProperty('margin-top', `${Math.ceil(neededGap)}px`, 'important');
     }
 
     const stackRow = (list, rowIndex) => {
