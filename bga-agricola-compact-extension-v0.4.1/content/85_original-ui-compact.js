@@ -438,6 +438,219 @@
     });
   }
 
+  function backupStyle(el, key) {
+    if (!el || el.dataset[key] !== undefined) return;
+    el.dataset[key] = el.getAttribute('style') || '';
+  }
+
+  function restoreStyle(el, key) {
+    if (!el || el.dataset[key] === undefined) return;
+    const old = el.dataset[key];
+    if (old) el.setAttribute('style', old);
+    else el.removeAttribute('style');
+    delete el.dataset[key];
+  }
+
+  function playerActionCardsEnabled() {
+    return document.querySelector('#preference_control_150')?.value === '1';
+  }
+
+  function actionCardLayoutRects() {
+    const central = document.querySelector('#central-board');
+    if (!central) return null;
+
+    const centralRect = central.getBoundingClientRect();
+    const round14Bg = document.querySelector('#bga-agri-v10-round-bg-layer .bga-agri-v10-round-bg-tile[data-round="14"]');
+    const turn14 = document.getElementById('turn_14');
+    const rightSource = round14Bg || turn14;
+    if (!rightSource) return null;
+
+    const roundRect = rightSource.getBoundingClientRect();
+    const rightSideRect = (document.querySelector('#right-side') || document.querySelector('#right-side-second-part'))?.getBoundingClientRect();
+    const rightLimit = rightSideRect?.left || window.innerWidth;
+    const left = roundRect.right + 8;
+    const availableW = Math.max(0, rightLimit - left - 8);
+    if (availableW < 40) return null;
+
+    const turnSize = getTurnSize();
+    const slotMaxW = Math.max(40, Math.min(roundRect.width || turnSize.width, availableW));
+    const slotMaxH = Math.max(40, roundRect.height || turnSize.height);
+    const gap = 8;
+    const columns = availableW >= (slotMaxW * 2 + gap) ? 2 : 1;
+    const slotW = Math.max(40, Math.min(slotMaxW, (availableW - gap * (columns - 1)) / columns));
+    const slotH = slotMaxH;
+    const availableH = Math.max(slotH, centralRect.bottom - roundRect.top);
+
+    return {
+      left,
+      top: roundRect.top,
+      width: Math.max(slotW, columns * slotW + (columns - 1) * gap),
+      height: availableH,
+      columns,
+      slotW,
+      slotH,
+      gap
+    };
+  }
+
+  function layoutPlayerActionCards() {
+    const holder = document.querySelector('#action-cards-holder');
+    if (!holder) return;
+
+    const groups = [...holder.querySelectorAll('.action-cards-player-group')];
+    const activeGroups = groups.filter(group => group.querySelector('.player-card'));
+    if (!playerActionCardsEnabled() || !activeGroups.length) {
+      restorePlayerActionCards();
+      return;
+    }
+
+    const layout = actionCardLayoutRects();
+    if (!layout) {
+      restorePlayerActionCards();
+      return;
+    }
+
+    const leftColumn = holder.closest('#player-boards-left-column');
+    if (leftColumn) {
+      backupStyle(leftColumn, 'bgaAgriV10ActionCardsAncestorOriginalStyle');
+      leftColumn.dataset.bgaAgriV10ActionCardsAncestor = '1';
+      leftColumn.style.setProperty('display', 'block', 'important');
+      leftColumn.style.setProperty('position', 'static', 'important');
+      leftColumn.style.setProperty('width', '0px', 'important');
+      leftColumn.style.setProperty('height', '0px', 'important');
+      leftColumn.style.setProperty('overflow', 'visible', 'important');
+      leftColumn.style.setProperty('pointer-events', 'none', 'important');
+    }
+
+    backupStyle(holder, 'bgaAgriV10ActionCardsOriginalStyle');
+    holder.dataset.bgaAgriV10ActionCardsManaged = '1';
+
+    const offsetParent = holder.offsetParent;
+    const parentRect = offsetParent
+      ? offsetParent.getBoundingClientRect()
+      : { left: -window.scrollX, top: -window.scrollY };
+    const targetLeft = layout.left + window.scrollX - (parentRect.left + window.scrollX);
+    const targetTop = layout.top + window.scrollY - (parentRect.top + window.scrollY);
+
+    holder.style.setProperty('display', 'block', 'important');
+    holder.style.setProperty('position', 'absolute', 'important');
+    holder.style.setProperty('left', `${Math.round(targetLeft)}px`, 'important');
+    holder.style.setProperty('top', `${Math.round(targetTop)}px`, 'important');
+    holder.style.setProperty('width', `${Math.round(layout.width)}px`, 'important');
+    holder.style.setProperty('height', `${Math.round(layout.height)}px`, 'important');
+    holder.style.setProperty('margin', '0', 'important');
+    holder.style.setProperty('padding', '0', 'important');
+    holder.style.setProperty('background', 'transparent', 'important');
+    holder.style.setProperty('overflow', 'visible', 'important');
+    holder.style.setProperty('z-index', '110', 'important');
+    holder.style.setProperty('pointer-events', 'auto', 'important');
+
+    const wrapper = document.querySelector('.player-board-wrapper');
+    const sourceStyle = wrapper ? getComputedStyle(wrapper) : getComputedStyle(document.documentElement);
+    const varW = parseFloat(sourceStyle.getPropertyValue('--agricolaCardWidth'));
+    const varH = parseFloat(sourceStyle.getPropertyValue('--agricolaCardHeight'));
+    const cardW = (Number.isFinite(varW) && varW > 50) ? varW : 211.5;
+    const cardH = (Number.isFinite(varH) && varH > 50) ? varH : 336.6;
+
+    groups.forEach(group => {
+      backupStyle(group, 'bgaAgriV10ActionCardsOriginalStyle');
+      const isActive = activeGroups.includes(group);
+      if (!isActive) {
+        group.style.setProperty('display', 'none', 'important');
+      }
+    });
+
+    activeGroups.forEach((group, index) => {
+      const row = Math.floor(index / layout.columns);
+      const col = index % layout.columns;
+      const header = group.querySelector('.action-cards-player-header');
+      const cardsWrap = group.querySelector('.action-cards-player-cards');
+      const cards = [...group.querySelectorAll('.player-card')];
+
+      backupStyle(header, 'bgaAgriV10ActionCardsOriginalStyle');
+      backupStyle(cardsWrap, 'bgaAgriV10ActionCardsOriginalStyle');
+      cards.forEach(card => backupStyle(card, 'bgaAgriV10ActionCardsOriginalStyle'));
+
+      const headerH = Math.max(18, Math.min(28, header?.getBoundingClientRect().height || 22));
+      const scale = AC.utils.clamp(
+        Math.min((layout.slotW - 6) / cardW, (layout.slotH - headerH - 8) / cardH),
+        0.16,
+        0.9
+      );
+      const scaledCardW = cardW * scale;
+      const scaledCardH = cardH * scale;
+      const innerLeft = Math.max(0, (layout.slotW - scaledCardW) / 2);
+      const cardStep = cards.length <= 1
+        ? 0
+        : Math.max(0, Math.min(scaledCardH + 4, (layout.slotH - headerH - scaledCardH - 4) / (cards.length - 1)));
+
+      group.dataset.bgaAgriV10ActionCardsManaged = '1';
+      group.style.setProperty('display', 'block', 'important');
+      group.style.setProperty('position', 'absolute', 'important');
+      group.style.setProperty('left', `${Math.round(col * (layout.slotW + layout.gap))}px`, 'important');
+      group.style.setProperty('top', `${Math.round(row * (layout.slotH + layout.gap))}px`, 'important');
+      group.style.setProperty('width', `${Math.round(layout.slotW)}px`, 'important');
+      group.style.setProperty('height', `${Math.round(layout.slotH)}px`, 'important');
+      group.style.setProperty('margin', '0', 'important');
+      group.style.setProperty('padding', '0', 'important');
+      group.style.setProperty('box-sizing', 'border-box', 'important');
+      group.style.setProperty('overflow', 'visible', 'important');
+      group.style.setProperty('z-index', `${10 + index}`, 'important');
+      group.style.setProperty('pointer-events', 'auto', 'important');
+
+      if (header) {
+        header.style.setProperty('display', 'block', 'important');
+        header.style.setProperty('position', 'relative', 'important');
+        header.style.setProperty('height', `${headerH}px`, 'important');
+        header.style.setProperty('line-height', `${headerH - 2}px`, 'important');
+        header.style.setProperty('margin', '0', 'important');
+        header.style.setProperty('padding', '0 2px', 'important');
+        header.style.setProperty('box-sizing', 'border-box', 'important');
+        header.style.setProperty('overflow', 'hidden', 'important');
+        header.style.setProperty('pointer-events', 'none', 'important');
+      }
+
+      if (cardsWrap) {
+        cardsWrap.style.setProperty('display', 'block', 'important');
+        cardsWrap.style.setProperty('position', 'absolute', 'important');
+        cardsWrap.style.setProperty('left', '0px', 'important');
+        cardsWrap.style.setProperty('right', '0px', 'important');
+        cardsWrap.style.setProperty('top', `${headerH + 2}px`, 'important');
+        cardsWrap.style.setProperty('height', `${Math.max(0, layout.slotH - headerH - 2)}px`, 'important');
+        cardsWrap.style.setProperty('overflow', 'visible', 'important');
+        cardsWrap.style.setProperty('pointer-events', 'auto', 'important');
+      }
+
+      cards.forEach((card, cardIndex) => {
+        card.style.setProperty('display', 'block', 'important');
+        card.style.setProperty('position', 'absolute', 'important');
+        card.style.setProperty('left', `${innerLeft}px`, 'important');
+        card.style.setProperty('top', `${Math.round(cardIndex * cardStep)}px`, 'important');
+        card.style.setProperty('margin', '0', 'important');
+        card.style.setProperty('padding', '0', 'important');
+        card.style.setProperty('overflow', 'visible', 'important');
+        card.style.setProperty('box-sizing', 'border-box', 'important');
+        card.style.setProperty('transform', `scale(${scale})`, 'important');
+        card.style.setProperty('transform-origin', 'top left', 'important');
+        card.style.setProperty('z-index', `${20 + cardIndex}`, 'important');
+        card.style.setProperty('--bga-agri-v10-card-title-font-size', `${handCardTitleFontSize(card, cardW, scale)}px`);
+        card.style.setProperty('--bga-agri-v10-card-title-width', `${cardW}px`);
+      });
+    });
+  }
+
+  function restorePlayerActionCards() {
+    document.querySelectorAll('[data-bga-agri-v10-action-cards-managed="1"], [data-bga-agri-v10-action-cards-original-style]').forEach(el => {
+      restoreStyle(el, 'bgaAgriV10ActionCardsOriginalStyle');
+      delete el.dataset.bgaAgriV10ActionCardsManaged;
+    });
+
+    document.querySelectorAll('[data-bga-agri-v10-action-cards-ancestor="1"], [data-bga-agri-v10-action-cards-ancestor-original-style]').forEach(el => {
+      restoreStyle(el, 'bgaAgriV10ActionCardsAncestorOriginalStyle');
+      delete el.dataset.bgaAgriV10ActionCardsAncestor;
+    });
+  }
+
   function handTitleWeight(text) {
     return [...String(text || '').trim()].reduce((sum, ch) => {
       if (/\s/.test(ch)) return sum + 0.3;
@@ -772,18 +985,21 @@
         layoutPhysicalRounds();
         layoutRightLogLimit();
         layoutHandCards();
+        layoutPlayerActionCards();
       });
       if (!AC.originalUiCompact._onResize) {
         AC.originalUiCompact._onResize = () => requestAnimationFrame(() => {
           layoutPhysicalRounds();
           layoutRightLogLimit();
           layoutHandCards();
+          layoutPlayerActionCards();
         });
       }
       window.addEventListener('resize', AC.originalUiCompact._onResize);
     },
 
     disable() {
+      restorePlayerActionCards();
       restoreHandCards();
       restoreStableBgaPreferences();
       document.documentElement.classList.remove('bga-agri-v10-original-compact');
