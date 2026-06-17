@@ -78,7 +78,7 @@
     const boards = [...root.querySelectorAll(':scope > .player-board-resizable')];
     const columnCount = 4;
     const playerTargetW = Math.max(1, window.innerWidth / columnCount);
-    const farmRatio = 0.70;
+    const farmRatio = 0.67;
     const farmTargetW = playerTargetW * farmRatio;
     const cardTargetW = playerTargetW - farmTargetW;
 

@@ -1,3 +1,13 @@
+# BGA Agricola Compact Panel v0.12.37-wider-played-cards
+
+Changes in this build:
+
+- Gives the played-card side 33% of each player column, up from 30%, making each played-card column 10% wider.
+- Shrinks the farm/resource side from 70% to 67%.
+- Slightly enlarges farm animal-capacity labels inside the original player boards.
+
+---
+
 # BGA Agricola Compact Panel v0.12.36-adaptive-card-title-scrollbar
 
 Changes in this build:

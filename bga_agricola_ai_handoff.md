@@ -21,7 +21,7 @@ bga-agricola-compact-extension-v0.4.1\
 Current extension version:
 
 ```text
-0.12.36
+0.12.37
 ```
 
 Current branch:
@@ -33,6 +33,9 @@ master
 Recent important commits:
 
 - `572ca7e fix: let right sidebar render naturally`
+- `a31037e fix: restore stable compact card title scaling`
+- current implementation: played-card side is widened from 30% to 33%, making
+  card columns 10% wider.
 - `13a8669 fix: size card title rows by six full-width chars` (later corrected)
 - `33565a2 fix: enlarge and center compact card titles`
 - `46fbf01 fix: adapt card titles and hide compact scrollbars`
@@ -88,11 +91,14 @@ Key behavior:
 - Uses BGA's real `#player-boards`.
 - Lays four players across the viewport, each at `window.innerWidth / 4`.
 - Splits each player column into:
-  - 70% farm/resource area
-  - 30% played-card area
+  - 67% farm/resource area
+  - 33% played-card area
 - The played-card area is two columns:
   - occupations
   - improvements
+- The 33% played-card side makes each card column 10% wider than the previous
+  30% split. The farm side is smaller, so animal-capacity labels are slightly
+  enlarged in scoped CSS.
 - `.cards-wrapper` is inside `.player-board-holder`, not beside it.
 - Cards are not moved out of BGA's DOM; they are positioned in place.
 

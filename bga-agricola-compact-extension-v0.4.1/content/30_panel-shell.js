@@ -39,7 +39,7 @@
     panel.innerHTML = `
       <div id="${AC.IDS.toolbar}">
         <strong>Agricola Compact</strong>
-        <span>v0.12.36 adaptive card titles</span>
+        <span>v0.12.37 wider cards</span>
         <button data-action="refresh">更新</button>
         <button data-action="debug">複製偵測</button>
         <button data-action="boardDown">板區高-</button>

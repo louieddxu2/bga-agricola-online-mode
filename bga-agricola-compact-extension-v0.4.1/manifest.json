@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
   "name": "BGA Agricola Compact Panel",
-  "version": "0.12.36",
-  "description": "Uses adaptive played-card title sizing and hides outer page scrollbars in compact mode.",
+  "version": "0.12.37",
+  "description": "Gives played cards 10% more width and improves farm capacity label readability.",
   "permissions": [
     "storage"
   ],
