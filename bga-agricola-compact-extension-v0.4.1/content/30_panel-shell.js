@@ -36,19 +36,6 @@
 
     const panel = document.createElement('section');
     panel.id = AC.IDS.panel;
-    panel.innerHTML = `
-      <div id="${AC.IDS.toolbar}">
-        <strong>Agricola Compact</strong>
-        <span>v0.12.37 wider cards</span>
-        <button data-action="refresh">更新</button>
-        <button data-action="debug">複製偵測</button>
-        <button data-action="boardDown">板區高-</button>
-        <button data-action="boardUp">板區高+</button>
-        <button data-action="reset">重置</button>
-        <button data-action="close">收合</button>
-      </div>
-    `;
-    panel.addEventListener('click', AC.interactions.handlePanelClick, true);
     document.documentElement.appendChild(panel);
 
     AC.refresh();
@@ -107,6 +94,7 @@
   AC.positionToggle = function positionToggle() {
     const btn = document.getElementById(AC.IDS.toggle);
     if (!btn) return;
+    btn.textContent = AC.state.settings?.enabled ? `收合 v${AC.VERSION}` : 'Agricola Compact';
 
     btn.style.setProperty('display', 'inline-flex', 'important');
     btn.style.setProperty('width', 'max-content', 'important');
@@ -116,8 +104,9 @@
 
     const panel = document.getElementById(AC.IDS.panel);
 
-    if (AC.state.settings?.enabled && panel) {
-      const pr = panel.getBoundingClientRect();
+    if (AC.state.settings?.enabled) {
+      const boards = document.querySelector('#player-boards');
+      const anchorRect = boards?.getBoundingClientRect?.() || panel?.getBoundingClientRect?.();
 
       // First neutralize the closed-state anchors, then measure the real button size.
       btn.style.setProperty('right', 'auto', 'important');
@@ -127,8 +116,8 @@
 
       const br = btn.getBoundingClientRect();
       const gap = 8;
-      const left = Math.max(0, Math.round(pr.right - br.width - gap));
-      const top = Math.max(0, Math.round(pr.top - br.height - gap));
+      const left = Math.max(0, Math.round((anchorRect?.right || window.innerWidth) - br.width - gap));
+      const top = Math.max(0, Math.round((anchorRect?.top || window.innerHeight) - br.height - gap));
 
       btn.style.setProperty('left', `${left}px`, 'important');
       btn.style.setProperty('top', `${top}px`, 'important');

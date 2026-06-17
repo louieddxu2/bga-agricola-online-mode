@@ -1,3 +1,13 @@
+# BGA Agricola Compact Panel v0.12.38-no-toolbar
+
+Changes in this build:
+
+- Removes the horizontal compact toolbar.
+- Keeps the floating toggle as the only compact control.
+- When compact mode is open, the toggle becomes the collapse button and displays the version label, e.g. `收合 v0.12.38`.
+
+---
+
 # BGA Agricola Compact Panel v0.12.37-wider-played-cards
 
 Changes in this build:

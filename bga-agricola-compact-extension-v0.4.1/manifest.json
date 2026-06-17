@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
   "name": "BGA Agricola Compact Panel",
-  "version": "0.12.37",
-  "description": "Gives played cards 10% more width and improves farm capacity label readability.",
+  "version": "0.12.38",
+  "description": "Removes the horizontal compact toolbar and labels the collapse button with the version.",
   "permissions": [
     "storage"
   ],

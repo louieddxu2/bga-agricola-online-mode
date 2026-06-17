@@ -16,41 +16,6 @@
   font-family: Arial, "Noto Sans TC", sans-serif !important;
 }
 
-#bga-agri-v10-toolbar {
-  display: flex !important;
-  align-items: center !important;
-  gap: 6px !important;
-  background: #d6b879 !important;
-  color: #160e07 !important;
-  border-bottom: 1px solid #80653b !important;
-  padding: 3px 8px !important;
-  box-sizing: border-box !important;
-  overflow-x: auto !important;
-  white-space: nowrap !important;
-}
-
-#bga-agri-v10-toolbar strong {
-  font: 800 14px/1.2 Arial, "Noto Sans TC", sans-serif !important;
-}
-
-#bga-agri-v10-toolbar span {
-  opacity: .75 !important;
-  margin-right: auto !important;
-  font: 700 11px/1.2 Arial, "Noto Sans TC", sans-serif !important;
-}
-
-#bga-agri-v10-toolbar button {
-  all: unset !important;
-  display: inline-block !important;
-  padding: 3px 8px !important;
-  border: 1px solid #7c5b31 !important;
-  border-radius: 5px !important;
-  background: #f8e8be !important;
-  color: #170e06 !important;
-  font: 700 12px/1.2 Arial, "Noto Sans TC", sans-serif !important;
-  cursor: pointer !important;
-}
-
 #bga-agri-v10-hand {
   overflow-x: auto !important;
   overflow-y: hidden !important;
@@ -93,16 +58,20 @@
 }
 
 
-/* v0.11.0 original-player-boards prototype: keep only the compact toolbar;
-   BGA's real #player-boards is fixed below it. */
+/* v0.12.38: original-player-boards mode no longer has a horizontal toolbar.
+   Keep #bga-agri-v10-panel only as an invisible state marker. */
 #bga-agri-v10-panel {
-  height: 32px !important;
-  bottom: var(--bga-agri-v10-board-height) !important;
-  grid-template-rows: 32px !important;
-  overflow: visible !important;
+  width: 0 !important;
+  height: 0 !important;
+  min-height: 0 !important;
+  max-height: 0 !important;
+  bottom: auto !important;
+  grid-template-rows: none !important;
+  overflow: hidden !important;
   background: transparent !important;
   border-top: 0 !important;
   box-shadow: none !important;
+  pointer-events: none !important;
 }
 
 #bga-agri-v10-hand,
@@ -110,24 +79,11 @@
   display: none !important;
 }
 
-#bga-agri-v10-toolbar {
-  height: 32px !important;
-  min-height: 32px !important;
-  overflow-x: auto !important;
-}
-
-
-/* v0.11.1: no cloned player-board shell at all. The panel is toolbar-only and
-   should not create an invisible overlay over the game area. */
+/* v0.11.1: no cloned player-board shell at all. */
 #bga-agri-v10-panel {
-  height: 32px !important;
-  min-height: 32px !important;
-  max-height: 32px !important;
+  min-height: 0 !important;
+  max-height: 0 !important;
   pointer-events: none !important;
-}
-
-#bga-agri-v10-toolbar {
-  pointer-events: auto !important;
 }
 
 #bga-agri-v10-panel .bga-agri-v10-player,
@@ -143,15 +99,7 @@
 }
 
 
-/* v0.11.5: lift the toolbar just above the moved original player boards, so the
-   adjustment controls do not sit on top of the player-board resource/farm area. */
+/* v0.11.5/v0.11.6 toolbar positioning is obsolete in v0.12.38. */
 #bga-agri-v10-panel {
-  bottom: calc(var(--bga-agri-v10-board-height) + 6px) !important;
-}
-
-
-/* v0.11.6: JS recalculates this from the actual #player-boards top after layout.
-   This CSS value is only the fallback before the first layout pass. */
-#bga-agri-v10-panel {
-  bottom: calc(var(--bga-agri-v10-board-height) + 12px) !important;
+  bottom: auto !important;
 }

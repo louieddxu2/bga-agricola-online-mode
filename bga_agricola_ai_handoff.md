@@ -21,7 +21,7 @@ bga-agricola-compact-extension-v0.4.1\
 Current extension version:
 
 ```text
-0.12.37
+0.12.38
 ```
 
 Current branch:
@@ -32,6 +32,8 @@ master
 
 Recent important commits:
 
+- current implementation: horizontal compact toolbar is removed; the floating
+  toggle becomes `收合 v<version>` when compact mode is open.
 - `572ca7e fix: let right sidebar render naturally`
 - `a31037e fix: restore stable compact card title scaling`
 - current implementation: played-card side is widened from 30% to 33%, making
@@ -193,8 +195,9 @@ Current version string should match `manifest.json`.
 
 ### `content/30_panel-shell.js`
 
-Creates the compact toolbar only. It no longer creates a cloned board/hand
-panel as the main UI.
+Creates the floating toggle/collapse control. It no longer creates the
+horizontal compact toolbar, and it no longer creates a cloned board/hand panel
+as the main UI.
 
 ### `content/50_farm-view.js`
 
