@@ -830,3 +830,16 @@ html.bga-agri-v10-open.bga-agri-v10-original-compact #bga-agri-v10-original-topl
   visibility: hidden !important;
   pointer-events: none !important;
 }
+
+
+/* 嵌入式手牌區輔助樣式 */
+html.bga-agri-v10-open.bga-agri-v10-original-compact #central-board > #hand-container {
+  display: block !important;
+  overflow: visible !important;
+}
+
+html.bga-agri-v10-open.bga-agri-v10-original-compact #central-board > #hand-container > .player-card {
+  display: block !important;
+  position: absolute !important;
+}
+

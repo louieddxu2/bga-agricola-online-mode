@@ -410,20 +410,129 @@
     });
   }
 
+  function layoutHandCards() {
+    const handContainer = document.querySelector('#alternative-hand-wrapper #hand-container') || document.querySelector('#player-boards #hand-container');
+    const central = document.querySelector('#central-board');
+    if (!handContainer || !central) return;
 
+    // 備份原生父節點與容器樣式
+    if (!handContainer.dataset.bgaAgriV10OriginalParentId) {
+      handContainer.dataset.bgaAgriV10OriginalParentId = handContainer.parentElement.id || 'alternative-hand-wrapper';
+    }
+    if (!handContainer.dataset.bgaAgriV10OriginalStyle) {
+      handContainer.dataset.bgaAgriV10OriginalStyle = handContainer.getAttribute('style') || '';
+    }
+
+    // 將容器移至中央圖板以同步縮放
+    if (handContainer.parentElement !== central) {
+      central.appendChild(handContainer);
+    }
+
+    // 動態計算可用寬度 (延伸至右側歷史紀錄面板左緣)
+    const rightLogPanel = document.querySelector('#right-side-second-part') || document.querySelector('#right-side');
+    let availableW = 630;
+    if (rightLogPanel) {
+      const centralRect = central.getBoundingClientRect();
+      const logRect = rightLogPanel.getBoundingClientRect();
+      const computedW = (logRect.left - centralRect.left) - 657 - 12;
+      availableW = Math.max(630, computedW);
+    }
+
+    // 設定嵌入容器樣式
+    handContainer.style.setProperty('position', 'absolute', 'important');
+    handContainer.style.setProperty('left', '657px', 'important');
+    handContainer.style.setProperty('top', '340px', 'important');
+    handContainer.style.setProperty('width', `${availableW}px`, 'important');
+    handContainer.style.setProperty('height', '260px', 'important');
+    handContainer.style.setProperty('z-index', '100', 'important');
+    handContainer.style.setProperty('background', 'transparent', 'important');
+    handContainer.style.setProperty('margin', '0', 'important');
+    handContainer.style.setProperty('padding', '0', 'important');
+    handContainer.style.setProperty('overflow', 'visible', 'important');
+
+    const allCards = [...handContainer.querySelectorAll(':scope > .player-card')];
+    const occupationCards = allCards.filter(card => card.classList.contains('occupation'));
+    const improvementCards = allCards.filter(card => !card.classList.contains('occupation'));
+
+    // 固定卡片縮放比為 0.28
+    const cardScale = 0.28;
+    const cardW = 235;
+    const cardH = 374;
+    const scaledCardW = cardW * cardScale; // 約 65.8px
+    const scaledCardH = cardH * cardScale; // 約 104.72px
+    const rowHeight = 130; // 兩列垂直間距
+
+    const stackRow = (list, rowIndex) => {
+      const n = list.length;
+      // 計算水平步長，若卡片少則保留間距，卡片多則自動收縮重疊
+      const stepX = n <= 1
+        ? 0
+        : Math.max(0, Math.min(scaledCardW + 8, (availableW - scaledCardW) / (n - 1)));
+
+      list.forEach((card, index) => {
+        if (!card.dataset.bgaAgriV10HandOriginalStyle) {
+          card.dataset.bgaAgriV10HandOriginalStyle = card.getAttribute('style') || '';
+        }
+        card.style.setProperty('position', 'absolute', 'important');
+        card.style.setProperty('left', `${index * stepX}px`, 'important');
+        card.style.setProperty('top', `${rowIndex * rowHeight}px`, 'important');
+        card.style.setProperty('width', `${cardW}px`, 'important');
+        card.style.setProperty('height', `${cardH}px`, 'important');
+        card.style.setProperty('margin', '0', 'important');
+        card.style.setProperty('padding', '0', 'important');
+        card.style.setProperty('overflow', 'visible', 'important');
+        card.style.setProperty('box-sizing', 'border-box', 'important');
+        card.style.setProperty('z-index', `${10 + index}`, 'important');
+        card.style.setProperty('transform', `scale(${cardScale})`, 'important');
+        card.style.setProperty('transform-origin', 'top left', 'important');
+      });
+    };
+
+    stackRow(occupationCards, 0); // 第一列：職業卡 (top = 0px)
+    stackRow(improvementCards, 1); // 第二列：發展卡 (top = 130px)
+  }
+
+  function restoreHandCards() {
+    const handContainer = document.querySelector('#central-board > #hand-container');
+    if (handContainer) {
+      handContainer.querySelectorAll(':scope > .player-card').forEach(card => {
+        if (card.dataset.bgaAgriV10HandOriginalStyle !== undefined) {
+          const old = card.dataset.bgaAgriV10HandOriginalStyle;
+          if (old) card.setAttribute('style', old);
+          else card.removeAttribute('style');
+          delete card.dataset.bgaAgriV10HandOriginalStyle;
+        }
+      });
+
+      const oldStyle = handContainer.dataset.bgaAgriV10OriginalStyle;
+      if (oldStyle) handContainer.setAttribute('style', oldStyle);
+      else handContainer.removeAttribute('style');
+      delete handContainer.dataset.bgaAgriV10OriginalStyle;
+
+      const parentId = handContainer.dataset.bgaAgriV10OriginalParentId;
+      if (parentId) {
+        const parent = document.getElementById(parentId);
+        if (parent) parent.appendChild(handContainer);
+        delete handContainer.dataset.bgaAgriV10OriginalParentId;
+      }
+    }
+  }
 
   AC.originalUiCompact = {
+    layoutHandCards,
     enable() {
       document.documentElement.classList.add('bga-agri-v10-original-compact');
       // Native #page-title is kept visible; no duplicate compact topline is created.
       requestAnimationFrame(() => {
         layoutPhysicalRounds();
         layoutRightLogLimit();
+        layoutHandCards();
       });
       if (!AC.originalUiCompact._onResize) {
         AC.originalUiCompact._onResize = () => requestAnimationFrame(() => {
           layoutPhysicalRounds();
           layoutRightLogLimit();
+          layoutHandCards();
         });
       }
       window.addEventListener('resize', AC.originalUiCompact._onResize);
@@ -435,6 +544,7 @@
       clearPhysicalRoundLayout();
       clearRoundBackgroundLayer();
       clearRightLogLimit();
+      restoreHandCards();
       document.getElementById('bga-agri-v10-original-topline')?.remove();
     }
   };

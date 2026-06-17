@@ -80,6 +80,11 @@
     document.getElementById(AC.IDS.boards)?.remove();
     document.querySelectorAll('.bga-agri-v10-player, .bga-agri-v10-hand-card').forEach(el => el.remove());
 
-    requestAnimationFrame(() => AC.layoutOriginalPlayerBoards?.());
+    requestAnimationFrame(() => {
+      AC.layoutOriginalPlayerBoards?.();
+      if (document.documentElement.classList.contains('bga-agri-v10-original-compact')) {
+        AC.originalUiCompact?.layoutHandCards?.();
+      }
+    });
   };
 })();
