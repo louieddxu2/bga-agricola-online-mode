@@ -591,7 +591,33 @@
     const scaledCardW = cardW * cardScale;
     const scaledCardH = cardH * cardScale;
     const rowHeight = scaledCardH;
-    const handHeight = rowHeight * 2;
+    let handHeight = rowHeight * 2;
+    let handViewportLeft = targetViewportLeft;
+    let handViewportTop = targetViewportTop;
+    let handAvailableW = availableW;
+    let handLayoutMode = 'right-two-row';
+
+    const playerBoards = document.querySelector('#player-boards');
+    if (playerBoards) {
+      const currentMarginTop = parseFloat(playerBoards.style.marginTop) || 0;
+      const boardsRect = playerBoards.getBoundingClientRect();
+      const naturalBoardsTop = boardsRect.top - currentMarginTop;
+      const naturalBoardsBottom = boardsRect.bottom - currentMarginTop;
+      const centralToBoardsGap = Math.max(0, naturalBoardsTop - centralRect.bottom);
+      const boardsToViewportGap = Math.max(0, window.innerHeight - naturalBoardsBottom);
+      const canUseBelowBoards = centralToBoardsGap + boardsToViewportGap > scaledCardH;
+
+      if (canUseBelowBoards) {
+        const rightSideRect = (document.querySelector('#right-side') || document.querySelector('#right-side-second-part'))?.getBoundingClientRect();
+        const rightEdge = rightSideRect?.left || window.innerWidth;
+        handLayoutMode = 'below-boards-row';
+        handViewportLeft = Math.max(0, boardsRect.left);
+        handViewportTop = naturalBoardsBottom + 4;
+        handAvailableW = Math.max(120, rightEdge - handViewportLeft - 12);
+        handHeight = scaledCardH;
+        restoreHandBoardGap();
+      }
+    }
 
     handContainer.style.setProperty('position', 'absolute', 'important');
     handContainer.style.setProperty('display', 'block', 'important');
@@ -600,12 +626,12 @@
     const parentRect = offsetParent
       ? offsetParent.getBoundingClientRect()
       : { left: -window.scrollX, top: -window.scrollY };
-    const targetLeft = targetViewportLeft + window.scrollX - (parentRect.left + window.scrollX);
-    const targetTop = targetViewportTop + window.scrollY - (parentRect.top + window.scrollY);
+    const targetLeft = handViewportLeft + window.scrollX - (parentRect.left + window.scrollX);
+    const targetTop = handViewportTop + window.scrollY - (parentRect.top + window.scrollY);
 
     handContainer.style.setProperty('left', `${targetLeft}px`, 'important');
     handContainer.style.setProperty('top', `${targetTop}px`, 'important');
-    handContainer.style.setProperty('width', `${availableW}px`, 'important');
+    handContainer.style.setProperty('width', `${handAvailableW}px`, 'important');
     handContainer.style.setProperty('height', `${handHeight}px`, 'important');
     handContainer.style.setProperty('z-index', '100', 'important');
     handContainer.style.setProperty('background', 'transparent', 'important');
@@ -619,13 +645,12 @@
     const occupationCards = allCards.filter(card => card.classList.contains('occupation'));
     const improvementCards = allCards.filter(card => !card.classList.contains('occupation'));
 
-    const playerBoards = document.querySelector('#player-boards');
-    if (playerBoards && !handContainer.closest('#player-boards')) {
+    if (playerBoards && handLayoutMode === 'right-two-row' && !handContainer.closest('#player-boards')) {
       const gapTargets = [playerBoards];
       const firstGapTarget = gapTargets[0];
       const currentMarginTop = parseFloat(firstGapTarget?.style.marginTop) || 0;
       const naturalBoardsTop = (firstGapTarget?.getBoundingClientRect().top ?? playerBoards.getBoundingClientRect().top) - currentMarginTop;
-      const neededGap = Math.max(0, targetViewportTop + handHeight + 8 - naturalBoardsTop);
+      const neededGap = Math.max(0, handViewportTop + handHeight + 8 - naturalBoardsTop);
       gapTargets.forEach(el => {
         if (!el) return;
         if (el === playerBoards) {
@@ -643,7 +668,7 @@
       const n = list.length;
       const stepX = n <= 1
         ? 0
-        : Math.max(0, Math.min(slotW, (availableW - scaledCardW) / (n - 1)));
+        : Math.max(0, Math.min(slotW, (handAvailableW - scaledCardW) / (n - 1)));
 
       list.forEach((card, index) => {
         if (!card.dataset.bgaAgriV10HandOriginalStyle) {
@@ -668,8 +693,34 @@
       });
     };
 
-    stackRow(occupationCards, 0);
-    stackRow(improvementCards, 1);
+    if (handLayoutMode === 'below-boards-row') {
+      const allVisibleCards = [...occupationCards, ...improvementCards];
+      const n = allVisibleCards.length;
+      const stepX = n <= 1
+        ? 0
+        : Math.max(0, Math.min(scaledCardW + 8, (handAvailableW - scaledCardW) / (n - 1)));
+
+      allVisibleCards.forEach((card, index) => {
+        if (!card.dataset.bgaAgriV10HandOriginalStyle) {
+          card.dataset.bgaAgriV10HandOriginalStyle = card.getAttribute('style') || '';
+        }
+        card.style.setProperty('position', 'absolute', 'important');
+        card.style.setProperty('left', `${index * stepX}px`, 'important');
+        card.style.setProperty('top', '0px', 'important');
+        card.style.setProperty('margin', '0', 'important');
+        card.style.setProperty('padding', '0', 'important');
+        card.style.setProperty('overflow', 'visible', 'important');
+        card.style.setProperty('box-sizing', 'border-box', 'important');
+        card.style.setProperty('z-index', `${10 + index}`, 'important');
+        card.style.setProperty('transform', `scale(${cardScale})`, 'important');
+        card.style.setProperty('transform-origin', 'top left', 'important');
+        card.style.setProperty('--bga-agri-v10-card-title-font-size', `${handCardTitleFontSize(card, cardW, cardScale)}px`);
+        card.style.setProperty('--bga-agri-v10-card-title-width', `${cardW}px`);
+      });
+    } else {
+      stackRow(occupationCards, 0);
+      stackRow(improvementCards, 1);
+    }
   }
 
   function restoreHandCards() {
