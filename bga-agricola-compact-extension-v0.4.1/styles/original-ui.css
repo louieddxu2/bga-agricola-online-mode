@@ -781,10 +781,16 @@ html.bga-agri-v10-open.bga-agri-v10-original-compact .log_history::-webkit-scrol
 /* v0.12.36: size only the small right-side played-card titles from JS.
    Scope to #player-boards so BGA's full native card preview/popins are unchanged. */
 html.bga-agri-v10-open.bga-agri-v10-original-compact #player-boards .cards-wrapper > .player-card .card-title {
+  box-sizing: border-box !important;
+  display: block !important;
+  width: var(--bga-agri-v10-card-title-width, 100%) !important;
+  max-width: 100% !important;
   font-size: var(--bga-agri-v10-card-title-font-size, 120%) !important;
-  line-height: 1.05 !important;
+  line-height: 1 !important;
   overflow: visible !important;
-  white-space: normal !important;
+  white-space: nowrap !important;
+  overflow-wrap: normal !important;
+  word-break: normal !important;
 }
 
 

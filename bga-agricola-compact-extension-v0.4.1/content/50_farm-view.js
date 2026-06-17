@@ -52,7 +52,7 @@
     const title = card.querySelector('.card-title')?.textContent || '';
     const visibleCardW = Math.max(1, unscaledCardW * boardScale);
     const weight = Math.max(4, titleWeight(title));
-    const visibleFontSize = AC.utils.clamp((visibleCardW * 0.68) / weight, 8.5, 11.2);
+    const visibleFontSize = AC.utils.clamp((visibleCardW * 0.96) / weight, 7, 18);
     return AC.utils.round(visibleFontSize / Math.max(boardScale, 0.05));
   }
 
@@ -334,6 +334,7 @@
             card.style.setProperty('box-sizing', 'border-box', 'important');
             card.style.setProperty('z-index', `${10 + index}`, 'important');
             card.style.setProperty('--bga-agri-v10-card-title-font-size', `${cardTitleFontSize(card, colW, scale)}px`);
+            card.style.setProperty('--bga-agri-v10-card-title-width', `${colW}px`);
           });
         };
 
