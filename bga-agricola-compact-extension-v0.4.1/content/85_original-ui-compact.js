@@ -410,64 +410,86 @@
     });
   }
 
+  function restoreHandAncestors() {
+    document.querySelectorAll('[data-bga-agri-v10-hand-ancestor="1"]').forEach(el => {
+      const oldStyle = el.dataset.bgaAgriV10HandAncestorOriginalStyle;
+      if (oldStyle !== undefined) {
+        if (oldStyle) el.setAttribute('style', oldStyle);
+        else el.removeAttribute('style');
+        delete el.dataset.bgaAgriV10HandAncestorOriginalStyle;
+      }
+      delete el.dataset.bgaAgriV10HandAncestor;
+    });
+  }
+
+  function handTitleWeight(text) {
+    return [...String(text || '').trim()].reduce((sum, ch) => {
+      if (/\s/.test(ch)) return sum + 0.3;
+      if (/[\u0000-\u007f]/.test(ch)) return sum + 0.58;
+      return sum + 1;
+    }, 0);
+  }
+
+  function handCardTitleFontSize(card, unscaledTitleW, handScale) {
+    const title = card.querySelector('.card-title')?.textContent || '';
+    const visibleCardW = Math.max(1, unscaledTitleW * handScale);
+    const weight = Math.max(4, handTitleWeight(title));
+    const visibleFontSize = AC.utils.clamp((visibleCardW * 1.08) / weight, 15, 20);
+    return AC.utils.round(visibleFontSize / Math.max(handScale, 0.05));
+  }
+
   function layoutHandCards() {
     const central = document.querySelector('#central-board');
     if (!central) return;
 
-    // 先在中央圖板下找是否已嵌入手牌
-    let handContainer = central.querySelector(':scope > #hand-container');
-    
-    // 若尚未嵌入，從原生地點尋找手牌容器
-    if (!handContainer) {
-      handContainer = document.querySelector('#alternative-hand-wrapper #hand-container') || 
-                      document.querySelector('#player-boards #player-boards-left-column #hand-container') ||
-                      document.querySelector('#player-boards #hand-container') ||
-                      document.querySelector('#hand-container');
-    }
+    // Keep the native hand DOM in its original BGA parent.  Do not append it to
+    // #central-board; only position it visually with fixed coordinates.
+    const handContainer = document.querySelector('#alternative-hand-wrapper #hand-container') ||
+                          document.querySelector('#player-boards #player-boards-left-column #hand-container') ||
+                          document.querySelector('#player-boards #hand-container') ||
+                          document.querySelector('#hand-container');
     if (!handContainer) return;
 
-    // 檢查玩家是否設定了模態視窗手牌 (ID 108, '0' 為模態視窗)
-    // 或是當前手牌/備份的原生父節點屬於彈出視窗 (popin)
+    // Do not touch modal/popin hand mode.
     const pref108 = document.querySelector('#preference_control_108')?.value;
     const isModal = pref108 === '0' ||
                     handContainer.closest('#popin_showHand_contents') !== null ||
-                    handContainer.closest('.agricola_popin') !== null ||
-                    (handContainer.dataset.bgaAgriV10OriginalParentId && 
-                     (handContainer.dataset.bgaAgriV10OriginalParentId.includes('popin') || 
-                      handContainer.dataset.bgaAgriV10OriginalParentId === 'popin_showHand_contents'));
+                    handContainer.closest('.agricola_popin') !== null;
 
     if (isModal) {
       restoreHandCards();
       return;
     }
 
-    // 備份原生父節點與容器樣式
-    if (!handContainer.dataset.bgaAgriV10OriginalParentId) {
-      handContainer.dataset.bgaAgriV10OriginalParentId = handContainer.parentElement.id || 'alternative-hand-wrapper';
-    }
-    if (handContainer.dataset.bgaAgriV10OriginalStyle === undefined) {
+    if (!handContainer.dataset.bgaAgriV10OriginalStyle) {
       handContainer.dataset.bgaAgriV10OriginalStyle = handContainer.getAttribute('style') || '';
     }
+    handContainer.dataset.bgaAgriV10HandFixed = '1';
 
-    // 將容器移至中央圖板以同步縮放
-    if (handContainer.parentElement !== central) {
-      central.appendChild(handContainer);
-    }
-
-    // 動態計算可用寬度 (延伸至右側歷史紀錄面板左緣)
+    const centralRect = central.getBoundingClientRect();
     const rightLogPanel = document.querySelector('#right-side-second-part') || document.querySelector('#right-side');
-    let availableW = 630;
-    if (rightLogPanel) {
-      const centralRect = central.getBoundingClientRect();
-      const logRect = rightLogPanel.getBoundingClientRect();
-      let computedW = (logRect.left - centralRect.left) - 657 - 12;
-      if (Number.isNaN(computedW) || !Number.isFinite(computedW)) {
-        computedW = 630;
-      }
-      availableW = Math.max(630, computedW);
-    }
+    const logRect = rightLogPanel?.getBoundingClientRect();
 
-    // 讀取原生面板的變數（局部變數繼承補償）
+    // Anchor the fixed hand area directly in viewport coordinates.
+    // Required visual anchors:
+    //   left edge = right edge of the round-7 background tile, not the action-card DOM
+    //   top edge  = bottom edge of round 9 / harvest-slot-9
+    const round7Bg = document.querySelector('#bga-agri-v10-round-bg-layer .bga-agri-v10-round-bg-tile[data-round="7"]');
+    const turn7 = document.getElementById('turn_7');
+    const harvest9 = document.getElementById('harvest-slot-9');
+    const turn9 = document.getElementById('turn_9');
+
+    const targetLeft = round7Bg?.getBoundingClientRect().right ??
+                       turn7?.getBoundingClientRect().right ??
+                       (centralRect.left + 657 * (centralRect.width / (central.offsetWidth || 1320) || 1));
+    const targetTop = harvest9?.getBoundingClientRect().bottom ??
+                      turn9?.getBoundingClientRect().bottom ??
+                      (centralRect.top + 334 * (centralRect.height / (central.offsetHeight || 620) || 1));
+
+    let availableW = logRect ? (logRect.left - targetLeft - 12) : 630;
+    if (Number.isNaN(availableW) || !Number.isFinite(availableW)) availableW = 630;
+    availableW = Math.max(120, availableW);
+
     const wrapper = document.querySelector('.player-board-wrapper');
     const sourceStyle = wrapper ? getComputedStyle(wrapper) : getComputedStyle(document.documentElement);
     const varW = parseFloat(sourceStyle.getPropertyValue('--agricolaCardWidth'));
@@ -478,37 +500,21 @@
     const cardH = (Number.isFinite(varH) && varH > 50) ? varH : 336.6;
     const cardScaleVal = (Number.isFinite(varScale) && varScale > 0.1) ? varScale : 0.72;
 
-    // 將變數寫入手牌容器的 style，使其子元素卡片能正確繼承尺寸與縮放
     handContainer.style.setProperty('--agricolaCardWidth', `${cardW}px`);
     handContainer.style.setProperty('--agricolaCardHeight', `${cardH}px`);
     handContainer.style.setProperty('--agricolaCardScale', `${cardScaleVal}`);
 
-    // 取得第 9 回合收穫標記 (harvest-slot-9) 的下緣作為手牌頂部位置
-    const harvest9 = document.getElementById('harvest-slot-9');
-    const turn9 = document.getElementById('turn_9');
-    let handTop = 334; // 預設精準貼齊下緣
-    if (harvest9) {
-      handTop = harvest9.offsetTop + harvest9.offsetHeight;
-    } else if (turn9) {
-      handTop = turn9.offsetTop + turn9.offsetHeight + 38; // 38px 估算為收穫圖示高度及間距
-    }
-
-    // 動態計算卡片縮放比，填滿手牌區域可用高度，消除上下 Padding
-    const centralBoardH = 620; // central-board 固定高度
-    const availableH = Math.max(80, centralBoardH - handTop);
-    const cardScale = Math.min(0.6, availableH / (2 * cardH)); // 上限 0.6 防止過大
+    const availableH = Math.max(80, centralRect.bottom - targetTop);
+    const cardScale = Math.min(0.6, availableH / (2 * cardH));
     const scaledCardW = cardW * cardScale;
     const scaledCardH = cardH * cardScale;
-    const rowHeight = scaledCardH; // 兩列垂直間距動態對齊縮放後卡片高度
-    const handHeight = rowHeight * 2; // 手牌容器總高度精確為兩列高度之和，無額外 padding
+    const rowHeight = scaledCardH;
+    const handHeight = rowHeight * 2;
 
-
-
-    // 設定嵌入容器樣式，強制將 padding/margin/gap 歸零
-    handContainer.style.setProperty('position', 'absolute', 'important');
+    handContainer.style.setProperty('position', 'fixed', 'important');
     handContainer.style.setProperty('display', 'block', 'important');
-    handContainer.style.setProperty('left', '657px', 'important');
-    handContainer.style.setProperty('top', `${handTop}px`, 'important');
+    handContainer.style.setProperty('left', `${targetLeft}px`, 'important');
+    handContainer.style.setProperty('top', `${targetTop}px`, 'important');
     handContainer.style.setProperty('width', `${availableW}px`, 'important');
     handContainer.style.setProperty('height', `${handHeight}px`, 'important');
     handContainer.style.setProperty('z-index', '100', 'important');
@@ -517,6 +523,7 @@
     handContainer.style.setProperty('padding', '0', 'important');
     handContainer.style.setProperty('gap', '0', 'important');
     handContainer.style.setProperty('overflow', 'visible', 'important');
+    handContainer.style.setProperty('pointer-events', 'auto', 'important');
 
     const allCards = [...handContainer.querySelectorAll('.player-card')];
     const occupationCards = allCards.filter(card => card.classList.contains('occupation'));
@@ -524,7 +531,6 @@
 
     const stackRow = (list, rowIndex) => {
       const n = list.length;
-      // 計算水平步長，若卡片少則保留間距，卡片多則自動收縮重疊
       const stepX = n <= 1
         ? 0
         : Math.max(0, Math.min(scaledCardW + 8, (availableW - scaledCardW) / (n - 1)));
@@ -536,7 +542,6 @@
         card.style.setProperty('position', 'absolute', 'important');
         card.style.setProperty('left', `${index * stepX}px`, 'important');
         card.style.setProperty('top', `${rowIndex * rowHeight}px`, 'important');
-        // 不強制設定 width 與 height，讓其繼承原生卡片大小，防止尺寸拉伸產生 padding
         card.style.setProperty('margin', '0', 'important');
         card.style.setProperty('padding', '0', 'important');
         card.style.setProperty('overflow', 'visible', 'important');
@@ -544,39 +549,44 @@
         card.style.setProperty('z-index', `${10 + index}`, 'important');
         card.style.setProperty('transform', `scale(${cardScale})`, 'important');
         card.style.setProperty('transform-origin', 'top left', 'important');
+
+        // Hand cards are small enough that each row normally has enough width
+        // for the usual 7 occupations / 7 improvements.  Size titles from the
+        // full card width, matching the played-card logic beside player boards.
+        card.style.setProperty('--bga-agri-v10-card-title-font-size', `${handCardTitleFontSize(card, cardW, cardScale)}px`);
+        card.style.setProperty('--bga-agri-v10-card-title-width', `${cardW}px`);
       });
     };
 
-    stackRow(occupationCards, 0); // 第一列：職業卡 (top = 0px)
-    stackRow(improvementCards, 1); // 第二列：發展卡 (top = rowHeight)
+    stackRow(occupationCards, 0);
+    stackRow(improvementCards, 1);
   }
 
   function restoreHandCards() {
-    const handContainer = document.querySelector('#central-board > #hand-container');
-    if (handContainer) {
-      handContainer.querySelectorAll('.player-card').forEach(card => {
-        if (card.dataset.bgaAgriV10HandOriginalStyle !== undefined) {
-          const old = card.dataset.bgaAgriV10HandOriginalStyle;
-          if (old) card.setAttribute('style', old);
-          else card.removeAttribute('style');
-          delete card.dataset.bgaAgriV10HandOriginalStyle;
-        }
-      });
-
-      const oldStyle = handContainer.dataset.bgaAgriV10OriginalStyle;
-      if (oldStyle !== undefined) {
-        if (oldStyle) handContainer.setAttribute('style', oldStyle);
-        else handContainer.removeAttribute('style');
-        delete handContainer.dataset.bgaAgriV10OriginalStyle;
-      }
-
-      const parentId = handContainer.dataset.bgaAgriV10OriginalParentId;
-      if (parentId) {
-        const parent = document.getElementById(parentId);
-        if (parent) parent.appendChild(handContainer);
-        delete handContainer.dataset.bgaAgriV10OriginalParentId;
-      }
+    const handContainer = document.querySelector('#hand-container[data-bga-agri-v10-hand-fixed="1"]') || document.querySelector('#hand-container');
+    if (!handContainer) {
+      restoreHandAncestors();
+      return;
     }
+
+    handContainer.querySelectorAll('.player-card').forEach(card => {
+      if (card.dataset.bgaAgriV10HandOriginalStyle !== undefined) {
+        const old = card.dataset.bgaAgriV10HandOriginalStyle;
+        if (old) card.setAttribute('style', old);
+        else card.removeAttribute('style');
+        delete card.dataset.bgaAgriV10HandOriginalStyle;
+      }
+    });
+
+    const oldStyle = handContainer.dataset.bgaAgriV10OriginalStyle;
+    if (oldStyle !== undefined) {
+      if (oldStyle) handContainer.setAttribute('style', oldStyle);
+      else handContainer.removeAttribute('style');
+      delete handContainer.dataset.bgaAgriV10OriginalStyle;
+    }
+    delete handContainer.dataset.bgaAgriV10HandFixed;
+    delete handContainer.dataset.bgaAgriV10OriginalParentId;
+    restoreHandAncestors();
   }
 
   AC.originalUiCompact = {
@@ -600,12 +610,12 @@
     },
 
     disable() {
+      restoreHandCards();
       document.documentElement.classList.remove('bga-agri-v10-original-compact');
       if (AC.originalUiCompact._onResize) window.removeEventListener('resize', AC.originalUiCompact._onResize);
       clearPhysicalRoundLayout();
       clearRoundBackgroundLayer();
       clearRightLogLimit();
-      restoreHandCards();
       document.getElementById('bga-agri-v10-original-topline')?.remove();
     }
   };

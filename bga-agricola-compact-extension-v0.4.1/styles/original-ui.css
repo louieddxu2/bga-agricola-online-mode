@@ -5,10 +5,16 @@ html.bga-agri-v10-open.bga-agri-v10-original-compact #game-flow-panel {
   display: none !important;
 }
 
-html.bga-agri-v10-open.bga-agri-v10-original-compact #player-boards,
-html.bga-agri-v10-open.bga-agri-v10-original-compact #alternative-hand-wrapper {
+html.bga-agri-v10-open.bga-agri-v10-original-compact #player-boards {
   display: none !important;
 }
+
+html.bga-agri-v10-open.bga-agri-v10-original-compact #alternative-hand-wrapper {
+  display: block !important;
+  visibility: visible !important;
+  overflow: visible !important;
+}
+
 
 html.bga-agri-v10-open.bga-agri-v10-original-compact #game_play_area {
   margin-top: 0 !important;
@@ -792,11 +798,14 @@ html.bga-agri-v10-open.bga-agri-v10-original-compact .log_history::-webkit-scrol
   display: none !important;
 }
 
-/* v0.12.36: size only the small right-side played-card titles from JS.
-   Scope to #player-boards so BGA's full native card preview/popins are unchanged. */
+/* v0.12.48: size only the small right-side played-card titles from JS,
+   and raise titles above requirement/condition badges. Scope to #player-boards
+   so BGA's full native card preview/popins are unchanged. */
 html.bga-agri-v10-open.bga-agri-v10-original-compact #player-boards .cards-wrapper > .player-card .card-title {
   box-sizing: border-box !important;
   display: block !important;
+  position: relative !important;
+  z-index: 999 !important;
   left: 0 !important;
   right: 0 !important;
   width: var(--bga-agri-v10-card-title-width, 100%) !important;
@@ -833,7 +842,7 @@ html.bga-agri-v10-open.bga-agri-v10-original-compact #bga-agri-v10-original-topl
 
 
 /* 嵌入式手牌區輔助樣式 */
-html.bga-agri-v10-open.bga-agri-v10-original-compact #central-board > #hand-container {
+html.bga-agri-v10-open.bga-agri-v10-original-compact #hand-container[data-bga-agri-v10-hand-fixed="1"] {
   --agricolaCardWidth: 211.5px;
   --agricolaCardHeight: 336.6px;
   --agricolaCardScale: 0.72;
@@ -850,18 +859,45 @@ html.bga-agri-v10-open.bga-agri-v10-original-compact #central-board > #hand-cont
   box-shadow: none !important;
 }
 
-html.bga-agri-v10-open.bga-agri-v10-original-compact #central-board > #hand-container .player-card {
+html.bga-agri-v10-open.bga-agri-v10-original-compact #hand-container[data-bga-agri-v10-hand-fixed="1"] .player-card {
   display: block !important;
   position: absolute !important;
   margin: 0 !important;
   padding: 0 !important;
 }
 
-html.bga-agri-v10-open.bga-agri-v10-original-compact #central-board > #hand-container .player-card.occupation {
+html.bga-agri-v10-open.bga-agri-v10-original-compact #hand-container[data-bga-agri-v10-hand-fixed="1"] .player-card.occupation {
   top: 0px !important;
 }
 
-html.bga-agri-v10-open.bga-agri-v10-original-compact #central-board > #hand-container .player-card:not(.occupation) {
+html.bga-agri-v10-open.bga-agri-v10-original-compact #hand-container[data-bga-agri-v10-hand-fixed="1"] .player-card:not(.occupation) {
   /* top 由 JS 動態計算注入，此處不硬寫死以避免與動態縮放比衝突 */
 }
 
+
+
+/* v0.12.47: title sizing for fixed native hand cards. It uses the same
+   full-card-width variables as played cards, and raises the title above small
+   condition/requirement badges on improvement cards. */
+html.bga-agri-v10-open.bga-agri-v10-original-compact #hand-container[data-bga-agri-v10-hand-fixed="1"] .player-card .card-title {
+  box-sizing: border-box !important;
+  display: block !important;
+  position: relative !important;
+  z-index: 999 !important;
+  left: 0 !important;
+  right: 0 !important;
+  width: var(--bga-agri-v10-card-title-width, 100%) !important;
+  max-width: 100% !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  padding-left: 1px !important;
+  padding-right: 1px !important;
+  font-size: var(--bga-agri-v10-card-title-font-size, 135%) !important;
+  line-height: 1 !important;
+  text-align: center !important;
+  overflow: hidden !important;
+  white-space: nowrap !important;
+  text-overflow: clip !important;
+  overflow-wrap: normal !important;
+  word-break: normal !important;
+}

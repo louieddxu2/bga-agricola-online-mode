@@ -1,4 +1,44 @@
-# BGA Agricola Compact Panel v0.12.39-capacity-boxes
+# v0.12.49-hand-anchor-round-bg7
+
+Changes the fixed hand area anchor from the round-7 action-card right edge to the right edge of the round-7 background tile (`.bga-agri-v10-round-bg-tile[data-round="7"]`). The top edge is computed from `harvest-slot-9`/round-9 bottom with `getBoundingClientRect()`.
+
+# v0.12.49-played-title-zfix
+
+Applies the same `.card-title` layer fix to played cards beside player boards, so improvement-card titles are raised above condition/requirement badges there as well as in the fixed hand area.
+
+# v0.12.49-hand-title-full-width-zfix
+
+Reverts fixed hand-card title sizing to full card width, matching played-card title logic. Also raises `.card-title` above small condition/requirement badges on improvement cards.
+
+# v0.12.49-hand-title-slot-width
+
+Refines hand-card title sizing: because fixed hand cards overlap horizontally, each title is sized to the visible slot before the next card rather than the full card width. This prevents card-title text from bleeding rightward or being covered by neighboring hand cards.
+
+# v0.12.49-hand-card-title-scale
+
+Adds the same adaptive card-title sizing logic used by played cards beside player boards to the fixed two-row native hand cards. Only the hand card title text is enlarged; card size and positioning are unchanged.
+
+# v0.12.49-hand-scale-from-central-size
+
+Fixes the non-DOM-moving hand coordinates. Previous fixed positioning converted local round-card coordinates using the original 830x795 board image size, but the compact `#central-board` local coordinate system is widened to 1320x620. This version converts using `central.offsetWidth/offsetHeight`, so the hand anchors to round 7 right edge and round 9 bottom edge correctly.
+
+# v0.12.49-hand-anchor-turn7
+
+Keeps the non-DOM-moving hand layout, but fixes the hand area anchor: left edge follows the right edge of round 7; top edge follows the bottom edge of round 9 / harvest-slot-9.
+
+# v0.12.49-fixed-hand-no-hide
+
+Keeps the native `#hand-container` in its original BGA parent, positions it with `position: fixed`, and no longer hides or zeroes the original hand wrapper/ancestors. This avoids changing DOM parentage and avoids the hidden-parent workaround from v0.12.41.
+
+# v0.12.49-fixed-hand-visible-restore
+
+Fixes the non-DOM-moving hand layout: the native `#hand-container` stays in its BGA parent, ancestors that were previously hidden are temporarily made visible with zero height, and close/disable restores both the hand and ancestor styles.
+
+# v0.12.49-fixed-hand-no-dom
+
+Keeps the native `#hand-container` in its original BGA parent and positions it visually with `position: fixed` instead of appending it to `#central-board`. The hand remains in two horizontal rows matching the v0.12.39 visual layout as closely as possible.
+
+# BGA Agricola Compact Panel v0.12.49-capacity-boxes
 
 Changes in this build:
 
