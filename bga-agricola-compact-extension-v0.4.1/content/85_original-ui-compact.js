@@ -493,6 +493,26 @@
     };
   }
 
+  function playerActionCardPlan(activeGroups, layout) {
+    const totalCards = activeGroups.reduce((sum, group) => sum + group.querySelectorAll('.player-card').length, 0);
+    const useClearLayout = totalCards <= 4;
+    const groupCount = activeGroups.length;
+    const twoColumnGroups = layout.columns >= 2 && groupCount === 4 && activeGroups.every(group => group.querySelectorAll('.player-card').length === 1);
+    const rows = twoColumnGroups ? 2 : groupCount;
+    const rowH = rows > 0
+      ? Math.min(layout.slotH, (layout.height - layout.gap * Math.max(0, rows - 1)) / rows)
+      : layout.slotH;
+
+    return {
+      totalCards,
+      useClearLayout,
+      groupColumns: twoColumnGroups ? 2 : 1,
+      groupRows: rows,
+      groupW: twoColumnGroups ? layout.slotW : Math.max(layout.slotW, layout.columns * layout.slotW + layout.gap * Math.max(0, layout.columns - 1)),
+      groupH: useClearLayout ? rowH : layout.slotH
+    };
+  }
+
   function layoutPlayerActionCards() {
     const holder = document.querySelector('#action-cards-holder');
     if (!holder) return;
@@ -551,6 +571,7 @@
     const varH = parseFloat(sourceStyle.getPropertyValue('--agricolaCardHeight'));
     const cardW = (Number.isFinite(varW) && varW > 50) ? varW : 211.5;
     const cardH = (Number.isFinite(varH) && varH > 50) ? varH : 336.6;
+    const plan = playerActionCardPlan(activeGroups, layout);
 
     groups.forEach(group => {
       backupStyle(group, 'bgaAgriV10ActionCardsOriginalStyle');
@@ -561,8 +582,8 @@
     });
 
     activeGroups.forEach((group, index) => {
-      const row = Math.floor(index / layout.columns);
-      const col = index % layout.columns;
+      const row = Math.floor(index / plan.groupColumns);
+      const col = index % plan.groupColumns;
       const header = group.querySelector('.action-cards-player-header');
       const cardsWrap = group.querySelector('.action-cards-player-cards');
       const cards = [...group.querySelectorAll('.player-card')];
@@ -572,25 +593,33 @@
       cards.forEach(card => backupStyle(card, 'bgaAgriV10ActionCardsOriginalStyle'));
 
       const headerH = Math.max(18, Math.min(28, header?.getBoundingClientRect().height || 22));
+      const groupW = plan.groupW;
+      const groupH = plan.groupH;
+      const cardColumns = plan.useClearLayout && cards.length > 1 && groupW >= (layout.slotW * 2 + layout.gap) ? 2 : 1;
+      const cardRows = plan.useClearLayout ? Math.ceil(cards.length / cardColumns) : 1;
+      const cardAreaH = Math.max(1, groupH - headerH - 4);
+      const cardCellW = (groupW - layout.gap * Math.max(0, cardColumns - 1)) / cardColumns;
+      const cardCellH = plan.useClearLayout
+        ? (cardAreaH - layout.gap * Math.max(0, cardRows - 1)) / Math.max(1, cardRows)
+        : cardAreaH;
       const scale = AC.utils.clamp(
-        Math.min((layout.slotW - 6) / cardW, (layout.slotH - headerH - 8) / cardH),
+        Math.min((cardCellW - 6) / cardW, (cardCellH - 4) / cardH),
         0.16,
         0.9
       );
       const scaledCardW = cardW * scale;
       const scaledCardH = cardH * scale;
-      const innerLeft = Math.max(0, (layout.slotW - scaledCardW) / 2);
-      const cardStep = cards.length <= 1
+      const overlapStep = cards.length <= 1
         ? 0
-        : Math.max(0, Math.min(scaledCardH + 4, (layout.slotH - headerH - scaledCardH - 4) / (cards.length - 1)));
+        : Math.max(0, Math.min(scaledCardH + 4, (cardAreaH - scaledCardH) / (cards.length - 1)));
 
       group.dataset.bgaAgriV10ActionCardsManaged = '1';
       group.style.setProperty('display', 'block', 'important');
       group.style.setProperty('position', 'absolute', 'important');
-      group.style.setProperty('left', `${Math.round(col * (layout.slotW + layout.gap))}px`, 'important');
-      group.style.setProperty('top', `${Math.round(row * (layout.slotH + layout.gap))}px`, 'important');
-      group.style.setProperty('width', `${Math.round(layout.slotW)}px`, 'important');
-      group.style.setProperty('height', `${Math.round(layout.slotH)}px`, 'important');
+      group.style.setProperty('left', `${Math.round(col * (groupW + layout.gap))}px`, 'important');
+      group.style.setProperty('top', `${Math.round(row * (groupH + layout.gap))}px`, 'important');
+      group.style.setProperty('width', `${Math.round(groupW)}px`, 'important');
+      group.style.setProperty('height', `${Math.round(groupH)}px`, 'important');
       group.style.setProperty('margin', '0', 'important');
       group.style.setProperty('padding', '0', 'important');
       group.style.setProperty('box-sizing', 'border-box', 'important');
@@ -616,7 +645,7 @@
         cardsWrap.style.setProperty('left', '0px', 'important');
         cardsWrap.style.setProperty('right', '0px', 'important');
         cardsWrap.style.setProperty('top', `${headerH + 2}px`, 'important');
-        cardsWrap.style.setProperty('height', `${Math.max(0, layout.slotH - headerH - 2)}px`, 'important');
+        cardsWrap.style.setProperty('height', `${Math.max(0, groupH - headerH - 2)}px`, 'important');
         cardsWrap.style.setProperty('overflow', 'visible', 'important');
         cardsWrap.style.setProperty('pointer-events', 'auto', 'important');
       }
@@ -624,8 +653,14 @@
       cards.forEach((card, cardIndex) => {
         card.style.setProperty('display', 'block', 'important');
         card.style.setProperty('position', 'absolute', 'important');
-        card.style.setProperty('left', `${innerLeft}px`, 'important');
-        card.style.setProperty('top', `${Math.round(cardIndex * cardStep)}px`, 'important');
+        const cardCol = plan.useClearLayout ? cardIndex % cardColumns : 0;
+        const cardRow = plan.useClearLayout ? Math.floor(cardIndex / cardColumns) : cardIndex;
+        const cellLeft = cardCol * (cardCellW + layout.gap);
+        const cellTop = plan.useClearLayout ? cardRow * (cardCellH + layout.gap) : cardIndex * overlapStep;
+        const innerLeft = cellLeft + Math.max(0, (cardCellW - scaledCardW) / 2);
+        const innerTop = cellTop + (plan.useClearLayout ? Math.max(0, (cardCellH - scaledCardH) / 2) : 0);
+        card.style.setProperty('left', `${Math.round(innerLeft)}px`, 'important');
+        card.style.setProperty('top', `${Math.round(innerTop)}px`, 'important');
         card.style.setProperty('margin', '0', 'important');
         card.style.setProperty('padding', '0', 'important');
         card.style.setProperty('overflow', 'visible', 'important');
