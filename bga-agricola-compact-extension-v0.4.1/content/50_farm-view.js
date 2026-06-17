@@ -40,6 +40,22 @@
     });
   };
 
+  function titleWeight(text) {
+    return [...String(text || '').trim()].reduce((sum, ch) => {
+      if (/\s/.test(ch)) return sum + 0.3;
+      if (/[\u0000-\u007f]/.test(ch)) return sum + 0.58;
+      return sum + 1;
+    }, 0);
+  }
+
+  function cardTitleFontSize(card, unscaledCardW, boardScale) {
+    const title = card.querySelector('.card-title')?.textContent || '';
+    const visibleCardW = Math.max(1, unscaledCardW * boardScale);
+    const weight = Math.max(4, titleWeight(title));
+    const visibleFontSize = AC.utils.clamp((visibleCardW * 0.68) / weight, 8.5, 11.2);
+    return AC.utils.round(visibleFontSize / Math.max(boardScale, 0.05));
+  }
+
   // v0.12.10: original-DOM player boards in a normal-flow four-column row.
   // Important DOM finding from runtime inspection: .cards-wrapper is inside
   // .player-board-holder, not a sibling of .player-board-holder. Therefore the
@@ -317,6 +333,7 @@
             card.style.setProperty('overflow', 'visible', 'important');
             card.style.setProperty('box-sizing', 'border-box', 'important');
             card.style.setProperty('z-index', `${10 + index}`, 'important');
+            card.style.setProperty('--bga-agri-v10-card-title-font-size', `${cardTitleFontSize(card, colW, scale)}px`);
           });
         };
 

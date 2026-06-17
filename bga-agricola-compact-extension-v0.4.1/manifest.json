@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
   "name": "BGA Agricola Compact Panel",
-  "version": "0.12.35",
-  "description": "Removes the duplicate compact status line and restores the native right-side player list while keeping log bottom aligned.",
+  "version": "0.12.36",
+  "description": "Uses adaptive played-card title sizing and hides outer page scrollbars in compact mode.",
   "permissions": [
     "storage"
   ],

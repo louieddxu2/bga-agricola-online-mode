@@ -1,3 +1,12 @@
+# BGA Agricola Compact Panel v0.12.36-adaptive-card-title-scrollbar
+
+Changes in this build:
+
+- Sizes played-card title text from the measured card column width and title length instead of using a fixed 150% title scale.
+- Extends compact-mode scrollbar hiding to the outer page/right-side containers, not only the log/history panels.
+
+---
+
 # BGA Agricola Compact Panel v0.12.35-native-title-right-players
 
 基於 v0.12.34。

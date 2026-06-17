@@ -749,6 +749,11 @@ html.bga-agri-v10-open.bga-agri-v10-original-compact #player-boards .player-pane
 /* v0.12.32: keep the right-side log/action-history panels scrollable, but hide
    their visual scrollbars so the moved player boards are not covered on the
    right edge. */
+html.bga-agri-v10-open.bga-agri-v10-original-compact,
+html.bga-agri-v10-open.bga-agri-v10-original-compact body,
+html.bga-agri-v10-open.bga-agri-v10-original-compact #overall-content,
+html.bga-agri-v10-open.bga-agri-v10-original-compact #page-content,
+html.bga-agri-v10-open.bga-agri-v10-original-compact #right-side,
 html.bga-agri-v10-open.bga-agri-v10-original-compact #right-side-second-part,
 html.bga-agri-v10-open.bga-agri-v10-original-compact #logs_wrap,
 html.bga-agri-v10-open.bga-agri-v10-original-compact #logs,
@@ -758,6 +763,11 @@ html.bga-agri-v10-open.bga-agri-v10-original-compact .log_history {
   -ms-overflow-style: none !important;
 }
 
+html.bga-agri-v10-open.bga-agri-v10-original-compact::-webkit-scrollbar,
+html.bga-agri-v10-open.bga-agri-v10-original-compact body::-webkit-scrollbar,
+html.bga-agri-v10-open.bga-agri-v10-original-compact #overall-content::-webkit-scrollbar,
+html.bga-agri-v10-open.bga-agri-v10-original-compact #page-content::-webkit-scrollbar,
+html.bga-agri-v10-open.bga-agri-v10-original-compact #right-side::-webkit-scrollbar,
 html.bga-agri-v10-open.bga-agri-v10-original-compact #right-side-second-part::-webkit-scrollbar,
 html.bga-agri-v10-open.bga-agri-v10-original-compact #logs_wrap::-webkit-scrollbar,
 html.bga-agri-v10-open.bga-agri-v10-original-compact #logs::-webkit-scrollbar,
@@ -768,10 +778,10 @@ html.bga-agri-v10-open.bga-agri-v10-original-compact .log_history::-webkit-scrol
   display: none !important;
 }
 
-/* v0.12.33: enlarge only the title text on the small right-side played cards.
+/* v0.12.36: size only the small right-side played-card titles from JS.
    Scope to #player-boards so BGA's full native card preview/popins are unchanged. */
 html.bga-agri-v10-open.bga-agri-v10-original-compact #player-boards .cards-wrapper > .player-card .card-title {
-  font-size: 150% !important;
+  font-size: var(--bga-agri-v10-card-title-font-size, 120%) !important;
   line-height: 1.05 !important;
   overflow: visible !important;
   white-space: normal !important;
