@@ -438,6 +438,19 @@
     return AC.utils.round(visibleFontSize / Math.max(handScale, 0.05));
   }
 
+  function handDisplayMode(handContainer) {
+    const pref108 = document.querySelector('#preference_control_108')?.value;
+    const isModal = pref108 === '0' ||
+                    handContainer.closest('#popin_showHand_contents') !== null ||
+                    handContainer.closest('.agricola_popin') !== null;
+    if (isModal) return 'modal';
+
+    // BGA also supports board-bottom and screen-bottom hand positions. Until the
+    // screen-bottom variant gets its own compact layout, treat both non-modal
+    // modes as central-board anchored hands.
+    return 'board-anchored';
+  }
+
   function layoutHandCards() {
     const central = document.querySelector('#central-board');
     if (!central) return;
@@ -451,13 +464,9 @@
                           document.querySelector('#hand-container');
     if (!handContainer) return;
 
-    // Do not touch modal/popin hand mode.
-    const pref108 = document.querySelector('#preference_control_108')?.value;
-    const isModal = pref108 === '0' ||
-                    handContainer.closest('#popin_showHand_contents') !== null ||
-                    handContainer.closest('.agricola_popin') !== null;
-
-    if (isModal) {
+    // Do not touch modal/popin hand mode. Non-modal BGA hand positions share
+    // the compact central-board anchored layout for now.
+    if (handDisplayMode(handContainer) === 'modal') {
       restoreHandCards();
       return;
     }
