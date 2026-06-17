@@ -149,7 +149,10 @@
       const cardBandTop = 0;
       const cardBandH = Math.max(1, panelH + farmH);
       const holderW = farmW + sideW;
-      const holderH = Math.max(nonCardBottom, cardBandH, 1);
+      // 農莊底部柵欄通常以 position:absolute 向下延伸，不被 offsetHeight 計入；
+      // 加入 fenceOverhang 緩衝確保柵欄不被 holder/board 的固定高度截斷。
+      const fenceOverhang = 20;
+      const holderH = Math.max(nonCardBottom, cardBandH, 1) + fenceOverhang;
       const scaledH = Math.ceil(holderH * scale);
 
       board.style.setProperty('width', '100%', 'important');
