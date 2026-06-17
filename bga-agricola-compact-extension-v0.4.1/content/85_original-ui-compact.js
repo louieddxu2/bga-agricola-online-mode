@@ -430,6 +430,12 @@
       else playerBoards.removeAttribute('style');
       delete playerBoards.dataset.bgaAgriV10HandGapOriginalStyle;
     }
+    document.querySelectorAll('[data-bga-agri-v10-hand-board-gap-original-style]').forEach(el => {
+      const old = el.dataset.bgaAgriV10HandBoardGapOriginalStyle;
+      if (old) el.setAttribute('style', old);
+      else el.removeAttribute('style');
+      delete el.dataset.bgaAgriV10HandBoardGapOriginalStyle;
+    });
   }
 
   function handTitleWeight(text) {
@@ -461,6 +467,35 @@
     return 'board-anchored';
   }
 
+  function chooseHandContainer() {
+    const pref108 = document.querySelector('#preference_control_108')?.value;
+    const selectors = pref108 === '1'
+      ? [
+          '#player-boards #player-boards-left-column #hand-container',
+          '#player-boards #hand-container',
+          '#alternative-hand-wrapper #hand-container',
+          '#hand-container'
+        ]
+      : [
+          '#alternative-hand-wrapper #hand-container',
+          '#player-boards #player-boards-left-column #hand-container',
+          '#player-boards #hand-container',
+          '#hand-container'
+        ];
+
+    const seen = new Set();
+    const candidates = selectors
+      .flatMap(selector => [...document.querySelectorAll(selector)])
+      .filter(el => {
+        if (seen.has(el)) return false;
+        seen.add(el);
+        if (el.closest(`#${AC.IDS.panel}, #${AC.IDS.zoom}`)) return false;
+        return true;
+      });
+
+    return candidates.find(el => el.querySelector(':scope > .player-card')) || candidates[0] || null;
+  }
+
   function layoutHandCards() {
     const central = document.querySelector('#central-board');
     if (!central) return;
@@ -468,10 +503,7 @@
     // Keep the native hand DOM in its original BGA parent. Do not append it to
     // #central-board; position it visually with page coordinates so it scrolls
     // with the central board instead of floating in the viewport.
-    const handContainer = document.querySelector('#alternative-hand-wrapper #hand-container') ||
-                          document.querySelector('#player-boards #player-boards-left-column #hand-container') ||
-                          document.querySelector('#player-boards #hand-container') ||
-                          document.querySelector('#hand-container');
+    const handContainer = chooseHandContainer();
     if (!handContainer) return;
 
     // Do not touch modal/popin hand mode. Non-modal BGA hand positions share
@@ -563,13 +595,23 @@
 
     const playerBoards = document.querySelector('#player-boards');
     if (playerBoards) {
-      if (playerBoards.dataset.bgaAgriV10HandGapOriginalStyle === undefined) {
-        playerBoards.dataset.bgaAgriV10HandGapOriginalStyle = playerBoards.getAttribute('style') || '';
-      }
-      const currentMarginTop = parseFloat(playerBoards.style.marginTop) || 0;
-      const naturalBoardsTop = playerBoards.getBoundingClientRect().top - currentMarginTop;
+      const boardEls = AC.dom.findPlayerBoards ? AC.dom.findPlayerBoards(playerBoards) : [...playerBoards.querySelectorAll('.player-board-resizable')];
+      const gapTargets = handContainer.closest('#player-boards') ? boardEls : [playerBoards];
+      const firstGapTarget = gapTargets[0];
+      const currentMarginTop = parseFloat(firstGapTarget?.style.marginTop) || 0;
+      const naturalBoardsTop = (firstGapTarget?.getBoundingClientRect().top ?? playerBoards.getBoundingClientRect().top) - currentMarginTop;
       const neededGap = Math.max(0, targetViewportTop + handHeight + 8 - naturalBoardsTop);
-      playerBoards.style.setProperty('margin-top', `${Math.ceil(neededGap)}px`, 'important');
+      gapTargets.forEach(el => {
+        if (!el) return;
+        if (el === playerBoards) {
+          if (el.dataset.bgaAgriV10HandGapOriginalStyle === undefined) {
+            el.dataset.bgaAgriV10HandGapOriginalStyle = el.getAttribute('style') || '';
+          }
+        } else if (el.dataset.bgaAgriV10HandBoardGapOriginalStyle === undefined) {
+          el.dataset.bgaAgriV10HandBoardGapOriginalStyle = el.getAttribute('style') || '';
+        }
+        el.style.setProperty('margin-top', `${Math.ceil(neededGap)}px`, 'important');
+      });
     }
 
     const stackRow = (list, rowIndex) => {
