@@ -1,3 +1,35 @@
+# BGA Agricola Compact Panel v0.12.35-native-title-right-players
+
+基於 v0.12.34。
+
+本版移除自訂重複狀態列的建立與定時更新流程，保留 BGA 原生 `#page-title` 橫列。右側原生玩家列表 `#right-side-first-part` 還原顯示；它會自然推擠底下的遊戲歷程。`#right-side-second-part/#logs_wrap` 的高度仍由 JS 依 `#ActionFishing` 下緣限制，讓遊戲歷程下邊界維持在中央版圖釣魚格下緣。
+
+---
+
+# BGA Agricola Compact Panel v0.12.34-keep-page-title
+
+基於 v0.12.33。
+
+本版恢復 BGA 原生 `#page-title` 橫列，保留原本的狀態文字與行動按鈕插槽（確認、重置、特殊行動等）。只維持隱藏最上方白色 `#topbar` 設定列，並隱藏本擴充先前建立的重複狀態列 `#bga-agri-v10-original-topline`。
+
+---
+
+# BGA Agricola Compact Panel v0.12.33-card-title-scale
+
+基於 v0.12.32。
+
+本版只放大右側小卡片的卡片名稱文字：`#player-boards .cards-wrapper > .player-card .card-title { font-size: 150%; }`。不放大整張卡、不改卡片堆疊、不影響 BGA 原生完整卡片預覽。
+
+---
+
+# BGA Agricola Compact Panel v0.12.32-hide-scrollbars
+
+基於 v0.12.31。
+
+本版只隱藏右側紀錄欄相關容器的可見滑動條，保持內容仍可滾動：`#right-side-second-part`、`#logs_wrap`、`#logs`、`#log_history`、`.log_history`。玩家面板與資源列排版維持 v0.12.31 穩定狀態。
+
+---
+
 # BGA Agricola Compact Panel v0.12.31-first-row-normal
 
 基於 v0.12.26。

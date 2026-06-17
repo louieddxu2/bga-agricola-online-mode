@@ -1,6 +1,6 @@
 /* v0.10.18: compact original BGA header/player areas while the panel is open. */
-html.bga-agri-v10-open.bga-agri-v10-original-compact #page-title,
-html.bga-agri-v10-open.bga-agri-v10-original-compact #after-page-title,
+/* v0.12.34: keep BGA's original page-title/action row visible. Only the
+   top white settings/topbar is hidden later in this file. */
 html.bga-agri-v10-open.bga-agri-v10-original-compact #game-flow-panel {
   display: none !important;
 }
@@ -413,8 +413,8 @@ html.bga-agri-v10-open.bga-agri-v10-original-compact #bga-agri-v10-original-topl
 }
 
 
-/* v0.10.43: put the status box above the BGA log/action history column, not over the board. */
-html.bga-agri-v10-open.bga-agri-v10-original-compact #right-side-first-part,
+/* v0.12.35: restore BGA's right-side player list. Still hide the old duplicated
+   player-board containers that conflict with the moved original boards. */
 html.bga-agri-v10-open.bga-agri-v10-original-compact #player_boards,
 html.bga-agri-v10-open.bga-agri-v10-original-compact #player_boards_wrap {
   display: none !important;
@@ -744,4 +744,61 @@ html.bga-agri-v10-open.bga-agri-v10-original-compact #player-boards .player-pane
 html.bga-agri-v10-open.bga-agri-v10-original-compact #player-boards .player-panel-personal-resources .player-resource,
 html.bga-agri-v10-open.bga-agri-v10-original-compact #player-boards .player-panel-resources .player-resource {
   flex: 0 0 auto !important;
+}
+
+/* v0.12.32: keep the right-side log/action-history panels scrollable, but hide
+   their visual scrollbars so the moved player boards are not covered on the
+   right edge. */
+html.bga-agri-v10-open.bga-agri-v10-original-compact #right-side-second-part,
+html.bga-agri-v10-open.bga-agri-v10-original-compact #logs_wrap,
+html.bga-agri-v10-open.bga-agri-v10-original-compact #logs,
+html.bga-agri-v10-open.bga-agri-v10-original-compact #log_history,
+html.bga-agri-v10-open.bga-agri-v10-original-compact .log_history {
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
+}
+
+html.bga-agri-v10-open.bga-agri-v10-original-compact #right-side-second-part::-webkit-scrollbar,
+html.bga-agri-v10-open.bga-agri-v10-original-compact #logs_wrap::-webkit-scrollbar,
+html.bga-agri-v10-open.bga-agri-v10-original-compact #logs::-webkit-scrollbar,
+html.bga-agri-v10-open.bga-agri-v10-original-compact #log_history::-webkit-scrollbar,
+html.bga-agri-v10-open.bga-agri-v10-original-compact .log_history::-webkit-scrollbar {
+  width: 0 !important;
+  height: 0 !important;
+  display: none !important;
+}
+
+/* v0.12.33: enlarge only the title text on the small right-side played cards.
+   Scope to #player-boards so BGA's full native card preview/popins are unchanged. */
+html.bga-agri-v10-open.bga-agri-v10-original-compact #player-boards .cards-wrapper > .player-card .card-title {
+  font-size: 150% !important;
+  line-height: 1.05 !important;
+  overflow: visible !important;
+  white-space: normal !important;
+}
+
+
+/* v0.12.34: restore the native BGA page-title row, including the original
+   status/action button slots (#generalactions, #customActions, #restartAction,
+   #anytimeActions). Hide our compact duplicated status line so it does not
+   duplicate the restored native row. */
+html.bga-agri-v10-open.bga-agri-v10-original-compact #page-title,
+html.bga-agri-v10-open.bga-agri-v10-original-compact #after-page-title {
+  display: block !important;
+  visibility: visible !important;
+}
+
+html.bga-agri-v10-open.bga-agri-v10-original-compact #bga-agri-v10-original-topline {
+  display: none !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+
+
+/* v0.12.35: keep the native right-side player list visible. It naturally pushes
+   the action/history log down; JS then limits the log column bottom to the
+   fishing action-space bottom edge. */
+html.bga-agri-v10-open.bga-agri-v10-original-compact #right-side-first-part {
+  display: block !important;
+  visibility: visible !important;
 }

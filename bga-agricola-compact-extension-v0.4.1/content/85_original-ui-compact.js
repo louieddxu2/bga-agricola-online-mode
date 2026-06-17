@@ -2,56 +2,8 @@
   const AC = window.AgriCompact;
   if (!AC) return;
 
-  const TOPLINE_ID = 'bga-agri-v10-original-topline';
   let cachedBoardBackgroundInfo = null;
 
-  function textOf(el) {
-    return (el?.textContent || '').replace(/\s+/g, ' ').trim();
-  }
-
-  function findLogoAction() {
-    return document.querySelector('#logoicon:not([style*="display:none"]), #logoicon_inprogress:not([style*="display:none"]), #logoicon, #logoicon_inprogress');
-  }
-
-  function findReturnAction() {
-    const candidates = [
-      ...document.querySelectorAll(
-        '#pagemaintitle_wrap button, #pagemaintitle_wrap a, #pagemaintitle_wrap .bgabutton, ' +
-        '#page-title button, #page-title a, #page-title .bgabutton, ' +
-        '#game_play_area button, #game_play_area a, #game_play_area .bgabutton'
-      )
-    ];
-    return candidates.find(el => /返回|回到|目錄|列表|Return|Back/i.test(textOf(el))) || null;
-  }
-
-  function hideOriginalReturnAction() {
-    const el = findReturnAction();
-    if (!el) return;
-    if (!el.dataset.bgaAgriV10OldDisplay) {
-      el.dataset.bgaAgriV10OldDisplay = el.style.display || '__empty__';
-    }
-    el.style.setProperty('display', 'none', 'important');
-  }
-
-  function restoreOriginalReturnAction() {
-    document.querySelectorAll('[data-bga-agri-v10-old-display]').forEach(el => {
-      const oldDisplay = el.dataset.bgaAgriV10OldDisplay;
-      if (oldDisplay === '__empty__') el.style.removeProperty('display');
-      else el.style.setProperty('display', oldDisplay);
-      delete el.dataset.bgaAgriV10OldDisplay;
-    });
-  }
-
-  function getFlowParts() {
-    const flow = document.querySelector('#game-flow-panel');
-    if (!flow) return { round: '', phases: '' };
-
-    const round = textOf(flow.querySelector('.gf-round')) || '';
-    const cloned = flow.cloneNode(true);
-    cloned.querySelector('.gf-round')?.remove();
-    const phases = textOf(cloned);
-    return { round, phases };
-  }
 
 
 
@@ -413,37 +365,7 @@
     ensureRoundBackgroundLayer({ x, topY, topBgY, midY, bottomY, turnW, turnH });
   }
 
-  function updateTopline() {
-    const row = document.getElementById(TOPLINE_ID);
-    if (!row) return;
 
-    const titleText = textOf(document.querySelector('#pagemaintitletext'));
-    const originalLogo = findLogoAction();
-    const { round, phases } = getFlowParts();
-    hideOriginalReturnAction();
-
-    const logoBtn = row.querySelector('[data-part="logo"]');
-    if (originalLogo) {
-      const img = originalLogo.querySelector('img');
-      const href = originalLogo.getAttribute('href') || originalLogo.href || '';
-      logoBtn.innerHTML = img?.src ? `<img src="${img.src}" alt="回到目錄">` : '☰';
-      logoBtn.style.display = '';
-      if (href) logoBtn.setAttribute('href', href);
-      else logoBtn.removeAttribute('href');
-      logoBtn.onclick = null;
-    } else {
-      logoBtn.textContent = '☰';
-      logoBtn.style.display = '';
-      logoBtn.removeAttribute('href');
-      logoBtn.onclick = null;
-    }
-
-    row.querySelector('[data-part="status"]').textContent = titleText || ' ';
-    row.querySelector('[data-part="round"]').textContent = round || ' ';
-    row.querySelector('[data-part="phases"]').textContent = phases || ' ';
-
-    requestAnimationFrame(layoutPhysicalRounds);
-  }
 
 
   function layoutRightLogLimit() {
@@ -461,9 +383,7 @@
     rightLogPanel.style.setProperty('max-height', `${targetHeight}px`, 'important');
     rightLogPanel.style.setProperty('overflow', 'hidden', 'important');
 
-    const topline = document.getElementById(TOPLINE_ID);
-    const toplineH = topline ? Math.ceil(topline.getBoundingClientRect().height) + 8 : 0;
-    const logsHeight = Math.max(40, targetHeight - toplineH);
+    const logsHeight = Math.max(40, targetHeight);
     logsWrap.style.setProperty('height', `${logsHeight}px`, 'important');
     logsWrap.style.setProperty('max-height', `${logsHeight}px`, 'important');
     logsWrap.style.setProperty('overflow-y', 'auto', 'important');
@@ -483,45 +403,16 @@
     });
   }
 
-  function ensureTopline() {
-    let row = document.getElementById(TOPLINE_ID);
-    if (!row) {
-      row = document.createElement('div');
-      row.id = TOPLINE_ID;
-      row.innerHTML = `
-        <a class="bga-agri-v10-topline-logo" data-part="logo" title="回到目錄"></a>
-        <div class="bga-agri-v10-topline-info" aria-live="polite">
-          <div class="bga-agri-v10-topline-status" data-part="status"></div>
-          <div class="bga-agri-v10-topline-round" data-part="round"></div>
-          <div class="bga-agri-v10-topline-phases" data-part="phases"></div>
-        </div>
-      `;
 
-      const rightLogPanel = document.querySelector('#right-side-second-part');
-      const logsWrap = document.querySelector('#logs_wrap');
-      if (rightLogPanel) rightLogPanel.insertBefore(row, logsWrap || rightLogPanel.firstChild);
-      else if (logsWrap?.parentElement) logsWrap.parentElement.insertBefore(row, logsWrap);
-      else {
-        const gameArea = document.querySelector('#game_play_area');
-        if (gameArea) gameArea.insertBefore(row, gameArea.firstChild);
-        else document.body.prepend(row);
-      }
-    }
-
-    updateTopline();
-    return row;
-  }
 
   AC.originalUiCompact = {
     enable() {
       document.documentElement.classList.add('bga-agri-v10-original-compact');
-      ensureTopline();
+      // Native #page-title is kept visible; no duplicate compact topline is created.
       requestAnimationFrame(() => {
         layoutPhysicalRounds();
         layoutRightLogLimit();
       });
-      clearInterval(AC.originalUiCompact._timer);
-      AC.originalUiCompact._timer = setInterval(updateTopline, 1000);
       if (!AC.originalUiCompact._onResize) {
         AC.originalUiCompact._onResize = () => requestAnimationFrame(() => {
           layoutPhysicalRounds();
@@ -533,14 +424,11 @@
 
     disable() {
       document.documentElement.classList.remove('bga-agri-v10-original-compact');
-      clearInterval(AC.originalUiCompact._timer);
-      AC.originalUiCompact._timer = null;
       if (AC.originalUiCompact._onResize) window.removeEventListener('resize', AC.originalUiCompact._onResize);
       clearPhysicalRoundLayout();
       clearRoundBackgroundLayer();
       clearRightLogLimit();
-      restoreOriginalReturnAction();
-      document.getElementById(TOPLINE_ID)?.remove();
+      document.getElementById('bga-agri-v10-original-topline')?.remove();
     }
   };
 

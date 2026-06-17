@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
   "name": "BGA Agricola Compact Panel",
-  "version": "0.12.31",
-  "description": "Keeps BGA original first-row player name layout and uses stable 2x lower resource rows without animal wrapping.",
+  "version": "0.12.35",
+  "description": "Removes the duplicate compact status line and restores the native right-side player list while keeping log bottom aligned.",
   "permissions": [
     "storage"
   ],

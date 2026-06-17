@@ -14,7 +14,7 @@
   window.__BGA_AGRICOLA_COMPACT_V011_ORIGINAL_BOARDS__ = true;
 
   window.AgriCompact = {
-    VERSION: '0.12.31',
+    VERSION: '0.12.35',
     IDS: {
       toggle: 'bga-agri-v10-toggle',
       panel: 'bga-agri-v10-panel',
