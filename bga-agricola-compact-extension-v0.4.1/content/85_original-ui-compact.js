@@ -432,8 +432,8 @@
       return;
     }
 
-    // 備份容器原始 style（不再備份父節點）
-    if (!handContainer.dataset.bgaAgriV10OriginalStyle) {
+    // 備份容器原始 style（只備份一次；用 === undefined 判斷，避免空字串被誤判為未備份）
+    if (handContainer.dataset.bgaAgriV10OriginalStyle === undefined) {
       handContainer.dataset.bgaAgriV10OriginalStyle = handContainer.getAttribute('style') || '';
     }
 
