@@ -445,6 +445,44 @@
     requestAnimationFrame(layoutPhysicalRounds);
   }
 
+
+  function layoutRightLogLimit() {
+    const fishing = document.querySelector('#ActionFishing');
+    const rightLogPanel = document.querySelector('#right-side-second-part');
+    const logsWrap = document.querySelector('#logs_wrap');
+    if (!fishing || !rightLogPanel || !logsWrap) return;
+
+    const fishingRect = fishing.getBoundingClientRect();
+    const panelRect = rightLogPanel.getBoundingClientRect();
+    const targetHeight = Math.floor(fishingRect.bottom - panelRect.top);
+    if (!Number.isFinite(targetHeight) || targetHeight < 80) return;
+
+    rightLogPanel.style.setProperty('height', `${targetHeight}px`, 'important');
+    rightLogPanel.style.setProperty('max-height', `${targetHeight}px`, 'important');
+    rightLogPanel.style.setProperty('overflow', 'hidden', 'important');
+
+    const topline = document.getElementById(TOPLINE_ID);
+    const toplineH = topline ? Math.ceil(topline.getBoundingClientRect().height) + 8 : 0;
+    const logsHeight = Math.max(40, targetHeight - toplineH);
+    logsWrap.style.setProperty('height', `${logsHeight}px`, 'important');
+    logsWrap.style.setProperty('max-height', `${logsHeight}px`, 'important');
+    logsWrap.style.setProperty('overflow-y', 'auto', 'important');
+    logsWrap.style.setProperty('overflow-x', 'hidden', 'important');
+  }
+
+  function clearRightLogLimit() {
+    const rightLogPanel = document.querySelector('#right-side-second-part');
+    const logsWrap = document.querySelector('#logs_wrap');
+    [rightLogPanel, logsWrap].forEach(el => {
+      if (!el) return;
+      el.style.removeProperty('height');
+      el.style.removeProperty('max-height');
+      el.style.removeProperty('overflow');
+      el.style.removeProperty('overflow-y');
+      el.style.removeProperty('overflow-x');
+    });
+  }
+
   function ensureTopline() {
     let row = document.getElementById(TOPLINE_ID);
     if (!row) {
@@ -478,11 +516,17 @@
     enable() {
       document.documentElement.classList.add('bga-agri-v10-original-compact');
       ensureTopline();
-      requestAnimationFrame(layoutPhysicalRounds);
+      requestAnimationFrame(() => {
+        layoutPhysicalRounds();
+        layoutRightLogLimit();
+      });
       clearInterval(AC.originalUiCompact._timer);
       AC.originalUiCompact._timer = setInterval(updateTopline, 1000);
       if (!AC.originalUiCompact._onResize) {
-        AC.originalUiCompact._onResize = () => requestAnimationFrame(layoutPhysicalRounds);
+        AC.originalUiCompact._onResize = () => requestAnimationFrame(() => {
+          layoutPhysicalRounds();
+          layoutRightLogLimit();
+        });
       }
       window.addEventListener('resize', AC.originalUiCompact._onResize);
     },
@@ -494,6 +538,7 @@
       if (AC.originalUiCompact._onResize) window.removeEventListener('resize', AC.originalUiCompact._onResize);
       clearPhysicalRoundLayout();
       clearRoundBackgroundLayer();
+      clearRightLogLimit();
       restoreOriginalReturnAction();
       document.getElementById(TOPLINE_ID)?.remove();
     }

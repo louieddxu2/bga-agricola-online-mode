@@ -1,3 +1,77 @@
+# BGA Agricola Compact Panel v0.12.31-first-row-normal
+
+基於 v0.12.26。
+
+本版撤回 v0.12.27～v0.12.30 對第一列的 2 倍放大實驗，讓 BGA 原本的玩家名稱 / 米寶 / 起始玩家標記維持原生位置與大小。第二、第三列仍維持 v0.12.26：玩家配件 + 動物、主要資源皆 2 倍顯示，動物列禁止換行，右邊界不侵入卡片欄。
+
+---
+
+# BGA Agricola Compact Panel v0.12.26 - Animal No-Wrap
+
+Changes in this build:
+
+- Keeps v0.12.25 two-row native panel and 2x row scaling.
+- Gives the animal side of row 1 more width: personal pieces 52%, animals 48%.
+- Forces personal pieces, animals, and primary resources to stay on one line.
+- Begging remains in the primary resource row with wood/clay/stone/reed/grain/vegetable/food.
+
+# BGA Agricola Compact Panel v0.12.25 - Resource Rows ×2
+
+Changes in this build:
+
+- Keeps v0.12.24 stable native BGA panel layout.
+- Scales only the second and third resource rows by 2x.
+- Compensates each row width by the same factor so the visual right edge still stops at the farm-board boundary.
+- The first BGA row is left unchanged in this build.
+- Keeps no-hover behavior and dynamic right-side card stacking.
+
+# BGA Agricola Compact Panel v0.12.24 - Native Panel Two Rows
+
+Changes in this build:
+
+- Uses v0.12.12 no-hover as the clean base, avoiding the previous fake background and counter-scale experiments.
+- Leaves BGA's original first row alone.
+- Uses the native `.agricola-player-pannel` as the frame for the lower resource area.
+- Expands that native panel to two rows:
+  - row 1: personal pieces + animals
+  - row 2: primary resources
+- Keeps all left-side rows constrained to the farm-board width.
+- Does not add fake background; does not scale icons.
+
+# BGA Agricola Compact Panel v0.12.12 - No Custom Card Hover
+
+Changes in this build:
+
+- Removes the custom `.player-card:hover { z-index: 9999 }` rule.
+- Keeps BGA's native hover/preview behavior for stacked cards.
+- Keeps v0.12.11 dynamic card stacking and original-DOM layout.
+
+# BGA Agricola Compact Panel v0.12.11 - Dynamic Card Stack
+
+Changes in this build:
+
+- Keeps original BGA card DOM in the original `.cards-wrapper`; no card nodes are moved or cloned.
+- Positions `.cards-wrapper` to the right of `.agricola-player-board`, as in v0.12.10.
+- Computes an exact stack step independently for occupation and improvement columns.
+- The vertical card band starts at the farm-board top edge and ends at the farm-board bottom edge.
+- For each column with `n` cards and mini-card height `h` inside available height `H`:
+  - If `n <= 1`, step is `0`.
+  - Otherwise `step = min(h, max(0, (H - h) / (n - 1)))`.
+  - Overlap ratio is `(h - step) / h`.
+- Hover raises the corresponding card above neighboring stacked cards; click preview remains BGA's original behavior.
+
+# BGA Agricola Compact Panel v0.12.10 - Holder Card Side Layout
+
+Changes in this build:
+
+- Uses the actual runtime DOM structure: `.cards-wrapper` is inside `.player-board-holder`, not a sibling of it.
+- Keeps DOM nodes in place; no card/farm nodes are moved or cloned.
+- Positions the original `.cards-wrapper` absolutely inside `.player-board-holder`, to the right of `.agricola-player-board`.
+- Forces `.cards-wrapper` to grid layout for occupation/improvement columns, because BGA's computed display can remain `flex`.
+- Computes each player column as viewport width / 4, then splits it as 70% farm and 30% cards.
+- Shrinks BGA mini-card CSS variables so each card fits within its 15% occupation/development column.
+- Keeps the stable v0.12 central round layout and the low runtime background layer.
+
 # BGA Agricola Compact Panel v0.10.37 - Harvest Overlap
 
 Changes in this build:
@@ -210,3 +284,131 @@ Update in v0.10.48: set the played-card area left padding to 0 so cards sit flus
 
 
 Update in v0.10.49: set played-card area padding to 0 on all sides.
+
+
+Update in v0.10.50: set the played-card two-column gap to 0 and replace the card item border with an inset shadow so the border no longer consumes width and clips the right edge.
+
+
+Update in v0.11.0: prototype original-DOM player board mode. The extension no longer renders cloned farm/card player panels as the main bottom area. Instead, BGA's real #player-boards is kept visible and fixed at the bottom, while the central round-card reconstruction remains in place. This is intended to test whether BGA's family/resource movement animations stay understandable when the original player boards are repositioned instead of cloned.
+
+
+Update in v0.11.1: remove the cloned hand/board containers from the panel HTML entirely. Earlier v0.11.0 still created hidden clone containers; this version uses a toolbar-only shell and aggressively removes stale .bga-agri-v10-player / hand-card clones so the real BGA #player-boards can be tested without clone overlays.
+
+
+## v0.12.9-grid-card-side-no-dom
+
+- Removed the prototype's extremely high z-index from the moved original `#player-boards`; it now stays at `z-index: auto` so BGA's own flying animations are less likely to be hidden behind the player boards.
+- Adjusted original-player-board scaling to use viewport width divided by four as the primary width target.
+- Kept the central round-card reconstruction unchanged.
+- Card layout/reflow is intentionally not addressed in this version.
+
+
+## v0.12.9-grid-card-side-no-dom
+
+- Keeps the `#player-boards` z-index at `auto` from v0.11.2.
+- Fixes the overly large original-player-board scaling by measuring the real `.player-board-wrapper` natural width/height instead of using the old fixed fallback width.
+- Still targets viewport width divided by four for the bottom four-column layout.
+- Card layout is intentionally not redesigned in this version.
+
+
+## v0.12.9-grid-card-side-no-dom
+
+- Hides the BGA middle menu/footer chrome that appears between the central board and the fixed original player boards: `#maingameview_menufooter`, `#overall-footer`, and `#overall-footer-spacer`.
+- Limits the right-side action log column so its bottom stops at the bottom of `#ActionFishing`, preventing it from covering the moved player boards.
+- Keeps the original DOM player-board route, the v0.11.3 natural-width scaling, and the central round-card reconstruction unchanged.
+
+
+## v0.12.9-grid-card-side-no-dom
+
+- Moves the compact toolbar 6px above the top edge of the fixed original `#player-boards` area, including all right-side toolbar buttons.
+- Makes the fixed `#player-boards` container and each player slot background transparent, so the beige sheet no longer blocks BGA's flying animations.
+- Does not change card layout.
+- Per-player wheel scrolling is intentionally not implemented yet because the current scaled absolute-wrapper layout does not naturally produce scroll height; it needs a separate spacer/scroll design.
+
+
+## v0.12.9-grid-card-side-no-dom
+
+- Positions the compact toolbar from the actual top edge of the moved `#player-boards`, rather than relying only on the board-height variable.
+- Raises the toolbar 12px above the measured top edge of the player boards.
+- Changes moved `#player-boards` and each `.player-board-resizable` slot to `overflow: visible` so BGA's flying family-member/resource animations are not clipped by the fixed bottom player-board containers.
+- Keeps transparent player-board backgrounds from v0.11.5.
+- Card layout and per-player wheel scrolling are still not changed.
+
+
+## v0.12.9-grid-card-side-no-dom
+
+- Keeps the v0.11.6 fixed-original-player-board route.
+- Changes `#player-boards .cards-wrapper` from `overflow: hidden` to `overflow: visible`.
+- Also allows overflow through `.player-board-wrapper`, `.player-board-holder`, and `.player-card` under `#player-boards`, aiming to preserve development-card/card-play animations.
+- This may let cards visually overflow; this prototype prioritizes animation visibility over final card layout.
+
+
+## v0.12.9-grid-card-side-no-dom
+
+- Starts a new normal-flow original-DOM prototype.
+- `#player-boards` is no longer fixed to the viewport bottom. It is restored to normal document flow (`position: static`, `z-index: auto`) to better preserve BGA's native animation behavior.
+- On open, older prototype inline sizing/transform on original player boards is restored.
+- Keeps middle BGA menu/footer hiding, right-log limiting, and central round-card reconstruction.
+- Does not redesign card layout or per-player scrolling.
+
+
+## v0.12.9-grid-card-side-no-dom
+
+- Fixes v0.12.0 layout regression: the previous normal-flow override forced `width:auto`, `height:auto`, and `position:static` on BGA child player-board elements, stretching resource rows across the page.
+- Keeps only the root `#player-boards` normal-flow override and preserves BGA's own child layout/inline sizes.
+- Still restores any inline sizing/transform left by v0.11.x prototypes on open.
+
+
+## v0.12.9-grid-card-side-no-dom
+
+- Keeps `#player-boards` in normal document flow, not fixed to the viewport.
+- Arranges the original BGA player boards as a four-column horizontal row.
+- Scales each original `.player-board-wrapper` to fit one quarter of the current `#player-boards` width while preserving its internal BGA layout.
+- Cleans stale v0.11 inline styles before measuring and applying the row scale.
+
+
+## v0.12.9-grid-card-side-no-dom
+
+- Directly uses `window.innerWidth / 4` as each player's target width.
+- CSS sets the original `#player-boards` row to `width: 100vw` and `grid-template-columns: repeat(4, 25vw)`.
+- Keeps the normal-flow original DOM route; `#player-boards` is still not fixed to the viewport.
+
+
+## v0.12.9-grid-card-side-no-dom
+
+- Reverts to the v0.12.3 central-board / round-card behavior. No v0.12.4/v0.12.5 central-board z-index or direct-child positioning fixes are included.
+- Keeps the normal-flow original player-board route and viewport-width / 4 player columns.
+- Adds only the CSS-only played-card split:
+  - occupations in the left column;
+  - minor/major improvements in the right column.
+
+
+## v0.12.9-grid-card-side-no-dom
+
+- Applies the central-board background-layer fix in the intended minimal way:
+  - `#central-board` gets a local isolated stacking context.
+  - the inserted runtime background layer uses `z-index: -1`.
+  - no BGA action-card/resource child positioning is changed.
+- Moves each original BGA `cards-wrapper` to the right side of its original `player-board-holder` by CSS/inline positioning, without moving card DOM or cloning cards.
+- Keeps occupation/improvement two-column split inside the right-side card area.
+
+
+## v0.12.9-grid-card-side-no-dom
+
+- Recalculates each player's visual width as exactly `window.innerWidth / 4`.
+- Splits that player width into three no-gap visual columns:
+  - farm area: 70%;
+  - occupation cards: 15%;
+  - improvement cards: 15%.
+- The farm is scaled down based on the 70% farm area; cards are positioned to the right, still inside the original `cards-wrapper`.
+- Removes margin/padding/gap between farm and the two card columns.
+
+
+## v0.12.9-grid-card-side-no-dom
+
+- Does not move or clone card DOM nodes.
+- Uses CSS grid layout on the existing original `.player-board-wrapper`:
+  - left grid column: original `.player-board-holder` farm area;
+  - right grid column: original `.cards-wrapper`.
+- Uses non-direct selectors for `.player-board-holder` and `.cards-wrapper` to handle BGA structure variations.
+- Keeps the visual total at `window.innerWidth / 4`, with farm 70% and the two card columns sharing the remaining 30%.

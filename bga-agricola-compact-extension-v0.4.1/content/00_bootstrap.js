@@ -10,11 +10,11 @@
 
   if (!isAgricolaPage) return;
   console.log('00_bootstrap.js past page check');
-  if (window.__BGA_AGRICOLA_COMPACT_V010_MODULAR__) return;
-  window.__BGA_AGRICOLA_COMPACT_V010_MODULAR__ = true;
+  if (window.__BGA_AGRICOLA_COMPACT_V011_ORIGINAL_BOARDS__) return;
+  window.__BGA_AGRICOLA_COMPACT_V011_ORIGINAL_BOARDS__ = true;
 
   window.AgriCompact = {
-    VERSION: '0.10.21',
+    VERSION: '0.12.31',
     IDS: {
       toggle: 'bga-agri-v10-toggle',
       panel: 'bga-agri-v10-panel',

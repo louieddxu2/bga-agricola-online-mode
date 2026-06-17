@@ -29,38 +29,37 @@
     AC.settings.save({ enabled: true });
     document.documentElement.classList.add('bga-agri-v10-open');
     document.getElementById(AC.IDS.panel)?.remove();
+    // v0.11.1: remove any stale cloned board/hand containers left by earlier prototypes.
+    document.getElementById(AC.IDS.hand)?.remove();
+    document.getElementById(AC.IDS.boards)?.remove();
+    document.querySelectorAll('.bga-agri-v10-player, .bga-agri-v10-hand-card').forEach(el => el.remove());
 
     const panel = document.createElement('section');
     panel.id = AC.IDS.panel;
     panel.innerHTML = `
       <div id="${AC.IDS.toolbar}">
         <strong>Agricola Compact</strong>
-        <span>v0.10 modular</span>
+        <span>v0.12.31 first-row normal</span>
         <button data-action="refresh">更新</button>
         <button data-action="debug">複製偵測</button>
         <button data-action="boardDown">板區高-</button>
         <button data-action="boardUp">板區高+</button>
-        <button data-action="handDown">手牌-</button>
-        <button data-action="handUp">手牌+</button>
-        <button data-action="handCardDown">手牌卡-</button>
-        <button data-action="handCardUp">手牌卡+</button>
-        <button data-action="cardDown">出牌卡-</button>
-        <button data-action="cardUp">出牌卡+</button>
         <button data-action="reset">重置</button>
         <button data-action="close">收合</button>
       </div>
-      <div id="${AC.IDS.hand}"></div>
-      <div id="${AC.IDS.boards}"></div>
     `;
     panel.addEventListener('click', AC.interactions.handlePanelClick, true);
     document.documentElement.appendChild(panel);
 
     AC.refresh();
     AC.positionToggle();
-    requestAnimationFrame(AC.positionToggle);
+    requestAnimationFrame(() => {
+      AC.positionToggle();
+      AC.layoutOriginalPlayerBoards?.();
+    });
     AC.onResize = () => {
       AC.positionToggle();
-      AC.layoutFarms();
+      AC.layoutOriginalPlayerBoards?.();
     };
     window.addEventListener('resize', AC.onResize);
     AC.observer.start();
@@ -68,6 +67,7 @@
 
   AC.closePanel = function closePanel() {
     AC.settings.save({ enabled: false });
+    AC.restoreOriginalPlayerBoards?.();
     document.documentElement.classList.remove('bga-agri-v10-open');
     document.getElementById(AC.IDS.panel)?.remove();
     document.getElementById(AC.IDS.zoom)?.remove();
@@ -100,7 +100,7 @@
     if (action === 'cardDown') AC.settings.save({ cardPreviewScale: U.round(U.clamp(s.cardPreviewScale - 0.02, 0.20, 0.60)) });
     if (action === 'cardUp') AC.settings.save({ cardPreviewScale: U.round(U.clamp(s.cardPreviewScale + 0.02, 0.20, 0.60)) });
 
-    AC.layoutFarms();
+    AC.layoutOriginalPlayerBoards?.();
     AC.positionToggle();
   };
 

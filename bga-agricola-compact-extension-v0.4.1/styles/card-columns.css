@@ -103,3 +103,17 @@
 .bga-agri-v10-cards {
   padding: 0 !important;
 }
+
+
+/* v0.10.50: remove the gap between the two played-card columns.
+   Also make the card border visual-only so it does not reduce the inner
+   content width; at the default 0.30 scale, the 211.5px card is about
+   63.45px wide, so a real 1px border caused slight right-edge clipping. */
+.bga-agri-v10-cards {
+  gap: 0 !important;
+}
+
+.bga-agri-v10-played-card {
+  border: 0 !important;
+  box-shadow: inset 0 0 0 1px #80653b !important;
+}

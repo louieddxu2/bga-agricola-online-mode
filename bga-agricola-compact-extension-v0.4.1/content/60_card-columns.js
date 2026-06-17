@@ -75,52 +75,11 @@
   AC.refresh = function refresh() {
     if (!AC.state.settings?.enabled) return;
 
-    const boards = document.getElementById(AC.IDS.boards);
-    if (!boards) return;
+    // v0.11.1: original-DOM prototype only. No cloned farm/card/hand panel.
+    document.getElementById(AC.IDS.hand)?.remove();
+    document.getElementById(AC.IDS.boards)?.remove();
+    document.querySelectorAll('.bga-agri-v10-player, .bga-agri-v10-hand-card').forEach(el => el.remove());
 
-    AC.cards.renderHand();
-
-    // 記錄當前每位玩家卡片欄的滾動位置 (scrollTop)
-    const scrollPositions = [];
-    boards.querySelectorAll('.bga-agri-v10-player').forEach((playerEl) => {
-      const occCol = playerEl.querySelector('.bga-agri-v10-occ-col');
-      const impCol = playerEl.querySelector('.bga-agri-v10-imp-col');
-      scrollPositions.push({
-        occ: occCol ? occCol.scrollTop : 0,
-        imp: impCol ? impCol.scrollTop : 0
-      });
-    });
-
-    boards.textContent = '';
-    const players = AC.dom.collectPlayers();
-
-    players.forEach(player => {
-      const panel = document.createElement('div');
-      panel.className = 'bga-agri-v10-player';
-
-      const left = document.createElement('div');
-      left.className = 'bga-agri-v10-left';
-
-      left.appendChild(AC.resourceRow.renderTopRow(player));
-      left.appendChild(AC.resourceRow.renderResourceRow(player));
-      left.appendChild(AC.farmView.render(player));
-
-      panel.appendChild(left);
-      panel.appendChild(AC.cards.renderCardColumns(player));
-      boards.appendChild(panel);
-    });
-
-    // 還原每位玩家卡片欄的滾動位置
-    boards.querySelectorAll('.bga-agri-v10-player').forEach((playerEl, idx) => {
-      const pos = scrollPositions[idx];
-      if (pos) {
-        const occCol = playerEl.querySelector('.bga-agri-v10-occ-col');
-        const impCol = playerEl.querySelector('.bga-agri-v10-imp-col');
-        if (occCol && pos.occ) occCol.scrollTop = pos.occ;
-        if (impCol && pos.imp) impCol.scrollTop = pos.imp;
-      }
-    });
-
-    requestAnimationFrame(AC.layoutFarms);
+    requestAnimationFrame(() => AC.layoutOriginalPlayerBoards?.());
   };
 })();

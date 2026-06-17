@@ -91,3 +91,67 @@
   background: #efe0b8 !important;
   overflow: hidden !important;
 }
+
+
+/* v0.11.0 original-player-boards prototype: keep only the compact toolbar;
+   BGA's real #player-boards is fixed below it. */
+#bga-agri-v10-panel {
+  height: 32px !important;
+  bottom: var(--bga-agri-v10-board-height) !important;
+  grid-template-rows: 32px !important;
+  overflow: visible !important;
+  background: transparent !important;
+  border-top: 0 !important;
+  box-shadow: none !important;
+}
+
+#bga-agri-v10-hand,
+#bga-agri-v10-boards {
+  display: none !important;
+}
+
+#bga-agri-v10-toolbar {
+  height: 32px !important;
+  min-height: 32px !important;
+  overflow-x: auto !important;
+}
+
+
+/* v0.11.1: no cloned player-board shell at all. The panel is toolbar-only and
+   should not create an invisible overlay over the game area. */
+#bga-agri-v10-panel {
+  height: 32px !important;
+  min-height: 32px !important;
+  max-height: 32px !important;
+  pointer-events: none !important;
+}
+
+#bga-agri-v10-toolbar {
+  pointer-events: auto !important;
+}
+
+#bga-agri-v10-panel .bga-agri-v10-player,
+#bga-agri-v10-panel .bga-agri-v10-left,
+#bga-agri-v10-panel .bga-agri-v10-farm-area,
+#bga-agri-v10-panel .bga-agri-v10-cards,
+#bga-agri-v10-panel .bga-agri-v10-hand-card,
+#bga-agri-v10-hand,
+#bga-agri-v10-boards {
+  display: none !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+
+
+/* v0.11.5: lift the toolbar just above the moved original player boards, so the
+   adjustment controls do not sit on top of the player-board resource/farm area. */
+#bga-agri-v10-panel {
+  bottom: calc(var(--bga-agri-v10-board-height) + 6px) !important;
+}
+
+
+/* v0.11.6: JS recalculates this from the actual #player-boards top after layout.
+   This CSS value is only the fallback before the first layout pass. */
+#bga-agri-v10-panel {
+  bottom: calc(var(--bga-agri-v10-board-height) + 12px) !important;
+}
