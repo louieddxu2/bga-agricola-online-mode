@@ -287,16 +287,15 @@
 
       if (cards) {
         // v0.12.11: stack cards precisely inside the vertical band that matches
-        // the farm board: from the farm board's top edge to its bottom edge.
-        // We cannot use one grid-auto-row value because occupation and
-        // improvement counts can differ, so each column gets its own computed
-        // step. DOM nodes remain in the original cards-wrapper.
+        // the farm board: from the farm board's top edge to its bottom edge,
+        // including the fenceOverhang buffer so cards align with the actual
+        // visible bottom of the farm (fences included).
         cards.style.setProperty('display', 'block', 'important');
         cards.style.setProperty('position', 'absolute', 'important');
         cards.style.setProperty('left', `${farmW}px`, 'important');
         cards.style.setProperty('top', `${cardBandTop}px`, 'important');
         cards.style.setProperty('width', `${sideW}px`, 'important');
-        cards.style.setProperty('height', `${cardBandH}px`, 'important');
+        cards.style.setProperty('height', `${holderH}px`, 'important');
         cards.style.setProperty('margin', '0', 'important');
         cards.style.setProperty('padding', '0', 'important');
         cards.style.setProperty('overflow', 'visible', 'important');
@@ -307,7 +306,7 @@
         const improvementCards = allCards.filter(card => !card.classList.contains('occupation'));
         const colW = Math.max(1, cardColumnW);
         const cardH = Math.max(1, cardColumnW);
-        const availableH = Math.max(1, cardBandH);
+        const availableH = Math.max(1, holderH);
 
         const stackColumn = (list, columnIndex) => {
           const n = list.length;
