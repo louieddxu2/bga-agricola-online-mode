@@ -163,23 +163,48 @@ html.bga-agri-v10-open.bga-agri-v10-original-compact #topbar {
    BGA puts rounds left-to-right; physical board continues downward within each stage
    and moves to a new column at harvest. Do not move DOM; only override absolute coordinates. */
 html.bga-agri-v10-open.bga-agri-v10-original-compact #main-boards {
-  height: 650px !important;
+  --agricolaCentralBoardScale: 1 !important;
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: flex-start !important;
+  height: 620px !important;
   width: max-content !important;
 }
 
+/* Moor 擴充/加人擴充版圖排版，使其水平並排於左側 */
+html.bga-agri-v10-open.bga-agri-v10-original-compact #add-board-holder,
+html.bga-agri-v10-open.bga-agri-v10-original-compact #left-board-holder {
+  position: relative !important;
+  top: 0 !important;
+  left: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  height: 620px !important;
+  width: 156px !important;
+  overflow: visible !important;
+}
+
+/* 確保縮放比例與 main-boards 繼承一致，防止變形 */
+html.bga-agri-v10-open.bga-agri-v10-original-compact #add-board,
+html.bga-agri-v10-open.bga-agri-v10-original-compact #left-board {
+  transform: scale(1) !important;
+  top: 0 !important;
+  left: 0 !important;
+}
+
 html.bga-agri-v10-open.bga-agri-v10-original-compact #position-wrapper {
-  min-height: 650px !important;
+  min-height: 620px !important;
 }
 
 html.bga-agri-v10-open.bga-agri-v10-original-compact #central-board-holder {
   width: 1320px !important;
-  height: 650px !important;
+  height: 620px !important;
   overflow: visible !important;
 }
 
 html.bga-agri-v10-open.bga-agri-v10-original-compact #central-board {
   width: 1320px !important;
-  height: 650px !important;
+  height: 620px !important;
   overflow: visible !important;
   /* Keep original background at its native size for now; do not stretch it to the new wide layout. */
   background-size: 830px auto !important;
@@ -242,7 +267,7 @@ html.bga-agri-v10-open.bga-agri-v10-original-compact #central-board #bga-agri-v1
   left: 0 !important;
   top: 0 !important;
   width: 1320px !important;
-  height: 650px !important;
+  height: 620px !important;
   pointer-events: none !important;
   z-index: 1 !important;
 }
@@ -731,13 +756,8 @@ html.bga-agri-v10-open.bga-agri-v10-original-compact #player-boards .player-pane
   flex: 0 0 auto !important;
 }
 
-/* v0.12.37: cards get a little more width, so farms shrink slightly. Keep
-   pasture/animal capacity labels readable inside the original farm boards. */
 html.bga-agri-v10-open.bga-agri-v10-original-compact #player-boards .animals-control-wrapper .animals-control .zone-capacity {
-  box-sizing: border-box !important;
-  min-width: 2.05em !important;
-  font-size: 105% !important;
-  white-space: nowrap !important;
+  font-size: 17px !important;
 }
 
 /* v0.12.32: keep the right-side log/action-history panels scrollable, but hide

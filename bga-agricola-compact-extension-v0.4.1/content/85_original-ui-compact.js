@@ -208,7 +208,7 @@
     leftBg.style.setProperty('left', '0px');
     leftBg.style.setProperty('top', '0px');
     leftBg.style.setProperty('width', `${cutX}px`);
-    leftBg.style.setProperty('height', '795px');
+    leftBg.style.setProperty('height', '620px');
     leftBg.style.setProperty('background-image', bgInfo.backgroundImage);
     leftBg.style.setProperty('background-size', '830px 795px');
     leftBg.style.setProperty('background-position', '0 0');
@@ -272,7 +272,7 @@
       layer.appendChild(tile);
     });
 
-    setRoundBackgroundStatus(`BG ${bgInfo.source || 'found'} | left 0-${cutX}px | source turn2 | tiles ${targets.length}`, 'ok');
+    clearRoundBackgroundStatus();
   }
 
   function clearRoundBackgroundLayer() {
@@ -363,6 +363,12 @@
     placeHarvest(14, x[6], topBgY + topTileHeight - harvestSlotOverlap);
 
     ensureRoundBackgroundLayer({ x, topY, topBgY, midY, bottomY, turnW, turnH });
+
+    // 消除釣魚行動格下緣與下方玩家圖板頂端之間的縫隙
+    const mainBoards = document.getElementById('main-boards');
+    if (mainBoards) {
+      mainBoards.style.removeProperty('margin-top');
+    }
   }
 
 
