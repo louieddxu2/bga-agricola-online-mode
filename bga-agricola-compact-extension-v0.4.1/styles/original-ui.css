@@ -783,10 +783,17 @@ html.bga-agri-v10-open.bga-agri-v10-original-compact .log_history::-webkit-scrol
 html.bga-agri-v10-open.bga-agri-v10-original-compact #player-boards .cards-wrapper > .player-card .card-title {
   box-sizing: border-box !important;
   display: block !important;
+  left: 0 !important;
+  right: 0 !important;
   width: var(--bga-agri-v10-card-title-width, 100%) !important;
   max-width: 100% !important;
-  font-size: var(--bga-agri-v10-card-title-font-size, 120%) !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  padding-left: 1px !important;
+  padding-right: 1px !important;
+  font-size: var(--bga-agri-v10-card-title-font-size, 135%) !important;
   line-height: 1 !important;
+  text-align: center !important;
   overflow: visible !important;
   white-space: nowrap !important;
   overflow-wrap: normal !important;

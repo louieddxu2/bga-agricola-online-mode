@@ -52,7 +52,7 @@
     const title = card.querySelector('.card-title')?.textContent || '';
     const visibleCardW = Math.max(1, unscaledCardW * boardScale);
     const weight = Math.max(4, titleWeight(title));
-    const visibleFontSize = AC.utils.clamp((visibleCardW * 0.96) / weight, 7, 18);
+    const visibleFontSize = AC.utils.clamp((visibleCardW * 0.96) / weight, 13.5, 18);
     return AC.utils.round(visibleFontSize / Math.max(boardScale, 0.05));
   }
 
