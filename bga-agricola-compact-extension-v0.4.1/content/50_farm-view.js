@@ -40,19 +40,9 @@
     });
   };
 
-  function titleWeight(text) {
-    return [...String(text || '').trim()].reduce((sum, ch) => {
-      if (/\s/.test(ch)) return sum + 0.3;
-      if (/[\u0000-\u007f]/.test(ch)) return sum + 0.58;
-      return sum + 1;
-    }, 0);
-  }
-
-  function cardTitleFontSize(card, unscaledCardW, boardScale) {
-    const title = card.querySelector('.card-title')?.textContent || '';
+  function cardTitleFontSize(unscaledCardW, boardScale) {
     const visibleCardW = Math.max(1, unscaledCardW * boardScale);
-    const weight = Math.max(4, titleWeight(title));
-    const visibleFontSize = AC.utils.clamp((visibleCardW * 0.96) / weight, 13.5, 18);
+    const visibleFontSize = AC.utils.clamp(visibleCardW / 6, 15, 22);
     return AC.utils.round(visibleFontSize / Math.max(boardScale, 0.05));
   }
 
@@ -333,7 +323,9 @@
             card.style.setProperty('overflow', 'visible', 'important');
             card.style.setProperty('box-sizing', 'border-box', 'important');
             card.style.setProperty('z-index', `${10 + index}`, 'important');
-            card.style.setProperty('--bga-agri-v10-card-title-font-size', `${cardTitleFontSize(card, colW, scale)}px`);
+            const titleFontSize = cardTitleFontSize(colW, scale);
+            card.style.setProperty('--bga-agri-v10-card-title-font-size', `${titleFontSize}px`);
+            card.style.setProperty('--bga-agri-v10-card-title-height', `${AC.utils.round(titleFontSize * 1.35)}px`);
             card.style.setProperty('--bga-agri-v10-card-title-width', `${colW}px`);
           });
         };
