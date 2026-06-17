@@ -21,7 +21,7 @@ bga-agricola-compact-extension-v0.4.1\
 Current extension version:
 
 ```text
-0.12.38
+0.12.39
 ```
 
 Current branch:
@@ -32,6 +32,12 @@ master
 
 Recent important commits:
 
+- current implementation: animal-capacity labels enlarge both text and box.
+- current research: the visible player-name row is BGA's original
+  `.player-board-name/.player-board-name-text` first resource row, not the old
+  clone-era `.bga-agri-v10-player-name`. It sits outside the rearranged
+  two-row resource panel, so enlarging it is high-risk without live DOM
+  inspection.
 - current implementation: horizontal compact toolbar is removed; the floating
   toggle becomes `收合 v<version>` when compact mode is open.
 - `572ca7e fix: let right sidebar render naturally`
@@ -265,11 +271,18 @@ panel and produced misleading failures.
    - title text is centered for both occupation and improvement cards
    - title text does not spill above the card
 
-3. Continue reducing historical overrides that fight BGA's natural layout.
+3. Research player-name row enlargement live before changing it:
+   - inspect `.player-board-name`
+   - inspect `.player-board-name-text`
+   - inspect `.farmer-cluster`
+   - verify whether increasing text size changes first-row height or overlaps
+     personal resource counters
 
-4. Avoid new clone-based UI work unless the user explicitly changes direction.
+4. Continue reducing historical overrides that fight BGA's natural layout.
 
-5. When making changes:
+5. Avoid new clone-based UI work unless the user explicitly changes direction.
+
+6. When making changes:
    - run relevant `node --check` syntax checks
    - summarize what will be committed
    - stage only relevant files

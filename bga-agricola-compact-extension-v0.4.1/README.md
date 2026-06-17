@@ -1,3 +1,12 @@
+# BGA Agricola Compact Panel v0.12.39-capacity-boxes
+
+Changes in this build:
+
+- Enlarges the full animal-capacity label box, not only the number text.
+- Notes that the player-name row is part of BGA's original first resource row and should not be enlarged casually without live DOM inspection.
+
+---
+
 # BGA Agricola Compact Panel v0.12.38-no-toolbar
 
 Changes in this build:

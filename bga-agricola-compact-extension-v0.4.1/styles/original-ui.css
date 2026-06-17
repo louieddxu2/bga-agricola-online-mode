@@ -734,9 +734,18 @@ html.bga-agri-v10-open.bga-agri-v10-original-compact #player-boards .player-pane
 /* v0.12.37: cards get a little more width, so farms shrink slightly. Keep
    pasture/animal capacity labels readable inside the original farm boards. */
 html.bga-agri-v10-open.bga-agri-v10-original-compact #player-boards .animals-control-wrapper .animals-control .zone-capacity {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  box-sizing: border-box !important;
+  min-width: 2.05em !important;
+  min-height: 1.85em !important;
+  padding: .08em .18em !important;
   font-size: 115% !important;
   line-height: 1.05 !important;
   font-weight: 800 !important;
+  border-radius: .22em !important;
+  white-space: normal !important;
 }
 
 /* v0.12.32: keep the right-side log/action-history panels scrollable, but hide

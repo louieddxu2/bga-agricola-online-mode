@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
   "name": "BGA Agricola Compact Panel",
-  "version": "0.12.38",
-  "description": "Removes the horizontal compact toolbar and labels the collapse button with the version.",
+  "version": "0.12.39",
+  "description": "Expands animal-capacity boxes and documents player-name row constraints.",
   "permissions": [
     "storage"
   ],
