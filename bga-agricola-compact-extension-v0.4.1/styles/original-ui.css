@@ -862,6 +862,6 @@ html.bga-agri-v10-open.bga-agri-v10-original-compact #central-board > #hand-cont
 }
 
 html.bga-agri-v10-open.bga-agri-v10-original-compact #central-board > #hand-container .player-card:not(.occupation) {
-  top: calc(var(--agricolaCardHeight, 374px) * 0.28) !important;
+  /* top 由 JS 動態計算注入，此處不硬寫死以避免與動態縮放比衝突 */
 }
 

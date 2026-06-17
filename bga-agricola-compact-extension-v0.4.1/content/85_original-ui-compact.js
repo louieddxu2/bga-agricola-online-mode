@@ -483,13 +483,6 @@
     handContainer.style.setProperty('--agricolaCardHeight', `${cardH}px`);
     handContainer.style.setProperty('--agricolaCardScale', `${cardScaleVal}`);
 
-    // 固定卡片縮放比為 0.28
-    const cardScale = 0.28;
-    const scaledCardW = cardW * cardScale; 
-    const scaledCardH = cardH * cardScale; 
-    const rowHeight = scaledCardH; // 兩列垂直間距動態對齊縮放後卡片高度
-    const handHeight = rowHeight * 2; // 手牌容器總高度為兩列高度之和，消除上下 padding
-
     // 取得第 9 回合收穫標記 (harvest-slot-9) 的下緣作為手牌頂部位置
     const harvest9 = document.getElementById('harvest-slot-9');
     const turn9 = document.getElementById('turn_9');
@@ -499,6 +492,16 @@
     } else if (turn9) {
       handTop = turn9.offsetTop + turn9.offsetHeight + 38; // 38px 估算為收穫圖示高度及間距
     }
+
+    // 動態計算卡片縮放比，填滿手牌區域可用高度，消除上下 Padding
+    const centralBoardH = 620; // central-board 固定高度
+    const availableH = Math.max(80, centralBoardH - handTop);
+    const cardScale = Math.min(0.6, availableH / (2 * cardH)); // 上限 0.6 防止過大
+    const scaledCardW = cardW * cardScale;
+    const scaledCardH = cardH * cardScale;
+    const rowHeight = scaledCardH; // 兩列垂直間距動態對齊縮放後卡片高度
+    const handHeight = rowHeight * 2; // 手牌容器總高度精確為兩列高度之和，無額外 padding
+
 
 
     // 設定嵌入容器樣式，強制將 padding/margin/gap 歸零
