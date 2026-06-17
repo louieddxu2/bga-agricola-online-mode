@@ -381,9 +381,10 @@
 
     rightLogPanel.style.setProperty('height', `${targetHeight}px`, 'important');
     rightLogPanel.style.setProperty('max-height', `${targetHeight}px`, 'important');
-    rightLogPanel.style.setProperty('overflow', 'hidden', 'important');
+    rightLogPanel.style.removeProperty('overflow');
 
-    const logsHeight = Math.max(40, targetHeight);
+    const logsRect = logsWrap.getBoundingClientRect();
+    const logsHeight = Math.max(40, Math.floor(fishingRect.bottom - logsRect.top));
     logsWrap.style.setProperty('height', `${logsHeight}px`, 'important');
     logsWrap.style.setProperty('max-height', `${logsHeight}px`, 'important');
     logsWrap.style.setProperty('overflow-y', 'auto', 'important');

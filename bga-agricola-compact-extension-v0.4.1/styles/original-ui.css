@@ -6,8 +6,6 @@ html.bga-agri-v10-open.bga-agri-v10-original-compact #game-flow-panel {
 }
 
 html.bga-agri-v10-open.bga-agri-v10-original-compact #player-boards,
-html.bga-agri-v10-open.bga-agri-v10-original-compact #player_boards,
-html.bga-agri-v10-open.bga-agri-v10-original-compact #player_boards_wrap,
 html.bga-agri-v10-open.bga-agri-v10-original-compact #alternative-hand-wrapper {
   display: none !important;
 }
@@ -413,13 +411,6 @@ html.bga-agri-v10-open.bga-agri-v10-original-compact #bga-agri-v10-original-topl
 }
 
 
-/* v0.12.35: restore BGA's right-side player list. Still hide the old duplicated
-   player-board containers that conflict with the moved original boards. */
-html.bga-agri-v10-open.bga-agri-v10-original-compact #player_boards,
-html.bga-agri-v10-open.bga-agri-v10-original-compact #player_boards_wrap {
-  display: none !important;
-}
-
 html.bga-agri-v10-open.bga-agri-v10-original-compact #right-side-second-part #bga-agri-v10-original-topline {
   position: relative !important;
   left: auto !important;
@@ -464,12 +455,6 @@ html.bga-agri-v10-open.bga-agri-v10-original-compact #overall-footer-spacer {
   display: none !important;
   visibility: hidden !important;
   pointer-events: none !important;
-}
-
-/* v0.11.4: JS sets an exact height based on #ActionFishing, but keep the log
-   column clipped by default so it cannot cover the moved player boards. */
-html.bga-agri-v10-open.bga-agri-v10-original-compact #right-side-second-part {
-  overflow: hidden !important;
 }
 
 html.bga-agri-v10-open.bga-agri-v10-original-compact #logs_wrap {
@@ -820,11 +805,3 @@ html.bga-agri-v10-open.bga-agri-v10-original-compact #bga-agri-v10-original-topl
   pointer-events: none !important;
 }
 
-
-/* v0.12.35: keep the native right-side player list visible. It naturally pushes
-   the action/history log down; JS then limits the log column bottom to the
-   fishing action-space bottom edge. */
-html.bga-agri-v10-open.bga-agri-v10-original-compact #right-side-first-part {
-  display: block !important;
-  visibility: visible !important;
-}
