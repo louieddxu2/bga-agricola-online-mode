@@ -5,31 +5,10 @@ html.bga-agri-v10-open.bga-agri-v10-original-compact #game-flow-panel {
   display: none !important;
 }
 
-html.bga-agri-v10-open.bga-agri-v10-original-compact #player-boards {
+html.bga-agri-v10-open.bga-agri-v10-original-compact #player-boards,
+html.bga-agri-v10-open.bga-agri-v10-original-compact #alternative-hand-wrapper {
   display: none !important;
 }
-
-/* v0.12.39: #hand-container 留在原 DOM 位置，以 fixed 定位顯示。
-   父層 #alternative-hand-wrapper 保持 display:block 但高度壓 0，
-   overflow:visible 讓 fixed 子元素可以正常渲染，pointer-events:none
-   避免空白父層攔截點擊事件。 */
-html.bga-agri-v10-open.bga-agri-v10-original-compact #alternative-hand-wrapper {
-  display: block !important;
-  height: 0 !important;
-  min-height: 0 !important;
-  max-height: 0 !important;
-  overflow: visible !important;
-  background: transparent !important;
-  border: 0 !important;
-  padding: 0 !important;
-  margin: 0 !important;
-  pointer-events: none !important;
-}
-
-html.bga-agri-v10-open.bga-agri-v10-original-compact #alternative-hand-wrapper #hand-container {
-  pointer-events: auto !important;
-}
-
 
 html.bga-agri-v10-open.bga-agri-v10-original-compact #game_play_area {
   margin-top: 0 !important;
