@@ -770,17 +770,14 @@ html.bga-agri-v10-open.bga-agri-v10-original-compact #player-boards .cards-wrapp
   display: block !important;
   left: 0 !important;
   right: 0 !important;
-  top: 0 !important;
   width: var(--bga-agri-v10-card-title-width, 100%) !important;
   max-width: 100% !important;
-  height: var(--bga-agri-v10-card-title-height, 1.35em) !important;
-  min-height: var(--bga-agri-v10-card-title-height, 1.35em) !important;
   margin-left: auto !important;
   margin-right: auto !important;
   padding-left: 1px !important;
   padding-right: 1px !important;
   font-size: var(--bga-agri-v10-card-title-font-size, 135%) !important;
-  line-height: var(--bga-agri-v10-card-title-height, 1.35em) !important;
+  line-height: 1 !important;
   text-align: center !important;
   overflow: visible !important;
   white-space: nowrap !important;
@@ -804,4 +801,3 @@ html.bga-agri-v10-open.bga-agri-v10-original-compact #bga-agri-v10-original-topl
   visibility: hidden !important;
   pointer-events: none !important;
 }
-

@@ -33,7 +33,7 @@ master
 Recent important commits:
 
 - `572ca7e fix: let right sidebar render naturally`
-- `13a8669 fix: size card title rows by six full-width chars`
+- `13a8669 fix: size card title rows by six full-width chars` (later corrected)
 - `33565a2 fix: enlarge and center compact card titles`
 - `46fbf01 fix: adapt card titles and hide compact scrollbars`
 - `04fe322 chore: remove obsolete visual test scripts`
@@ -106,9 +106,11 @@ Current intended behavior:
 - Titles are single-line only.
 - Titles should be enlarged.
 - Titles should not shrink below the enlarged baseline.
-- The target size is based on this visual rule:
-  six full-width Chinese characters should approximately span the card width.
-- The title row height is expanded from JS/CSS so the larger text has room.
+- The current sizing path is based on the earlier version that successfully
+  enlarged titles: estimate text width from title character weight, then choose
+  an enlarged single-line font size.
+- Do not force title row height/top positioning; that caused title text to spill
+  upward outside the card.
 - It is acceptable for the title to extend beyond BGA's original title strip,
   as long as it stays within the card width.
 
@@ -125,9 +127,15 @@ Implementation:
     `#player-boards .cards-wrapper > .player-card .card-title`
   - keeps titles centered, nowrap, and constrained to card width.
 
-If title size still feels wrong, tune the `visibleCardW / 6` formula and the
-`1.35` title-height multiplier. Do not reintroduce per-title shrinking unless
-explicitly requested.
+If title size still feels wrong, tune the multiplier and clamp in
+`cardTitleFontSize()`:
+
+```js
+AC.utils.clamp((visibleCardW * 1.08) / weight, 15, 20)
+```
+
+Do not reintroduce forced title-row height/top positioning unless live testing
+shows BGA's own title band is genuinely too short.
 
 ### Right Sidebar
 
@@ -246,7 +254,7 @@ panel and produced misleading failures.
    - titles are large enough to read
    - titles stay single-line
    - title text is centered for both occupation and improvement cards
-   - six full-width characters approximately span card width
+   - title text does not spill above the card
 
 3. Continue reducing historical overrides that fight BGA's natural layout.
 
