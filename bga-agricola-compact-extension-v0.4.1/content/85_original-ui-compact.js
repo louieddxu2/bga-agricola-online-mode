@@ -445,7 +445,7 @@
     if (!handContainer.dataset.bgaAgriV10OriginalParentId) {
       handContainer.dataset.bgaAgriV10OriginalParentId = handContainer.parentElement.id || 'alternative-hand-wrapper';
     }
-    if (!handContainer.dataset.bgaAgriV10OriginalStyle) {
+    if (handContainer.dataset.bgaAgriV10OriginalStyle === undefined) {
       handContainer.dataset.bgaAgriV10OriginalStyle = handContainer.getAttribute('style') || '';
     }
 
@@ -564,9 +564,11 @@
       });
 
       const oldStyle = handContainer.dataset.bgaAgriV10OriginalStyle;
-      if (oldStyle) handContainer.setAttribute('style', oldStyle);
-      else handContainer.removeAttribute('style');
-      delete handContainer.dataset.bgaAgriV10OriginalStyle;
+      if (oldStyle !== undefined) {
+        if (oldStyle) handContainer.setAttribute('style', oldStyle);
+        else handContainer.removeAttribute('style');
+        delete handContainer.dataset.bgaAgriV10OriginalStyle;
+      }
 
       const parentId = handContainer.dataset.bgaAgriV10OriginalParentId;
       if (parentId) {
