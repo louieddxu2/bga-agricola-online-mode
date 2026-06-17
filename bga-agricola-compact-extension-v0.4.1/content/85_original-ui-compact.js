@@ -594,9 +594,8 @@
     const improvementCards = allCards.filter(card => !card.classList.contains('occupation'));
 
     const playerBoards = document.querySelector('#player-boards');
-    if (playerBoards) {
-      const boardEls = AC.dom.findPlayerBoards ? AC.dom.findPlayerBoards(playerBoards) : [...playerBoards.querySelectorAll('.player-board-resizable')];
-      const gapTargets = handContainer.closest('#player-boards') ? boardEls : [playerBoards];
+    if (playerBoards && !handContainer.closest('#player-boards')) {
+      const gapTargets = [playerBoards];
       const firstGapTarget = gapTargets[0];
       const currentMarginTop = parseFloat(firstGapTarget?.style.marginTop) || 0;
       const naturalBoardsTop = (firstGapTarget?.getBoundingClientRect().top ?? playerBoards.getBoundingClientRect().top) - currentMarginTop;
