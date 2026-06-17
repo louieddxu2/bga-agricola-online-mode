@@ -411,9 +411,19 @@
   }
 
   function layoutHandCards() {
-    const handContainer = document.querySelector('#alternative-hand-wrapper #hand-container') || document.querySelector('#player-boards #hand-container');
     const central = document.querySelector('#central-board');
-    if (!handContainer || !central) return;
+    if (!central) return;
+
+    // 先在中央圖板下找是否已嵌入手牌
+    let handContainer = central.querySelector(':scope > #hand-container');
+    
+    // 若尚未嵌入，僅從非模態的原生父節點尋找。若找不到，則判定為模態視窗模式，不予處理。
+    if (!handContainer) {
+      handContainer = document.querySelector('#alternative-hand-wrapper #hand-container') || 
+                      document.querySelector('#player-boards #player-boards-left-column #hand-container') ||
+                      document.querySelector('#player-boards #hand-container');
+    }
+    if (!handContainer) return;
 
     // 備份原生父節點與容器樣式
     if (!handContainer.dataset.bgaAgriV10OriginalParentId) {
@@ -438,7 +448,7 @@
       availableW = Math.max(630, computedW);
     }
 
-    // 設定嵌入容器樣式
+    // 設定嵌入容器樣式，強制將 padding/margin/gap 歸零
     handContainer.style.setProperty('position', 'absolute', 'important');
     handContainer.style.setProperty('left', '657px', 'important');
     handContainer.style.setProperty('top', '340px', 'important');
@@ -448,6 +458,7 @@
     handContainer.style.setProperty('background', 'transparent', 'important');
     handContainer.style.setProperty('margin', '0', 'important');
     handContainer.style.setProperty('padding', '0', 'important');
+    handContainer.style.setProperty('gap', '0', 'important');
     handContainer.style.setProperty('overflow', 'visible', 'important');
 
     const allCards = [...handContainer.querySelectorAll(':scope > .player-card')];

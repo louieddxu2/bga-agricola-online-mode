@@ -836,6 +836,9 @@ html.bga-agri-v10-open.bga-agri-v10-original-compact #bga-agri-v10-original-topl
 html.bga-agri-v10-open.bga-agri-v10-original-compact #central-board > #hand-container {
   display: block !important;
   overflow: visible !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  gap: 0 !important;
 }
 
 html.bga-agri-v10-open.bga-agri-v10-original-compact #central-board > #hand-container > .player-card {
