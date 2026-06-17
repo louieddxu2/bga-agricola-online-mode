@@ -3,9 +3,20 @@
   if (!AC) return;
 
   AC.dom = {
+    findPlayerBoards(root = document) {
+      const scope = root.querySelector ? root : document;
+      const candidates = [...scope.querySelectorAll('.player-board-resizable')];
+      const seen = new Set();
+      return candidates.filter(el => {
+        if (seen.has(el)) return false;
+        seen.add(el);
+        if (el.closest(`#${AC.IDS.panel}, #${AC.IDS.zoom}, .agricola_popin, #popin_showHand_contents`)) return false;
+        return !!el.querySelector('.agricola-player-board') && !!el.querySelector('.resources-bar-holder');
+      });
+    },
+
     collectPlayers() {
-      return [...document.querySelectorAll('#player-boards > .player-board-resizable')]
-        .filter(el => !el.closest(`#${AC.IDS.panel}`))
+      return AC.dom.findPlayerBoards()
         .map((source, index) => {
           const resources = source.querySelector('.resources-bar-holder');
           return {

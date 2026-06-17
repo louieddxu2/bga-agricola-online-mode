@@ -75,7 +75,7 @@
     const root = document.querySelector('#player-boards');
     if (!root || !document.documentElement.classList.contains('bga-agri-v10-open')) return;
 
-    const boards = [...root.querySelectorAll(':scope > .player-board-resizable')];
+    const boards = AC.dom.findPlayerBoards ? AC.dom.findPlayerBoards(root) : [...root.querySelectorAll('.player-board-resizable')];
     const columnCount = 4;
     const playerTargetW = Math.max(1, window.innerWidth / columnCount);
     const farmRatio = 0.67;
@@ -362,7 +362,32 @@
   AC.restoreOriginalPlayerBoards = function restoreOriginalPlayerBoards() {
     const root = document.querySelector('#player-boards');
     if (!root) return;
-    root.querySelectorAll(':scope > .player-board-resizable').forEach(board => {
+
+    const restoreStyle = (el, key) => {
+      if (!el || el.dataset[key] === undefined) return;
+      const old = el.dataset[key];
+      if (old) el.setAttribute('style', old);
+      else el.removeAttribute('style');
+      delete el.dataset[key];
+    };
+
+    [
+      'bgaAgriV11OriginalStyle',
+      'bgaAgriV127OriginalStyle',
+      'bgaAgriV1210OriginalStyle',
+      'bgaAgriV1211OriginalStyle',
+      'bgaAgriV1224OriginalStyle'
+    ].forEach(key => {
+      root.querySelectorAll('*').forEach(el => restoreStyle(el, key));
+      restoreStyle(root, key);
+    });
+
+    root.querySelectorAll('[data-bga-agri-v1211-stack]').forEach(card => {
+      delete card.dataset.bgaAgriV1211Stack;
+    });
+
+    const boards = AC.dom.findPlayerBoards ? AC.dom.findPlayerBoards(root) : [...root.querySelectorAll('.player-board-resizable')];
+    boards.forEach(board => {
       if (board.dataset.bgaAgriV11OriginalStyle !== undefined) {
         const old = board.dataset.bgaAgriV11OriginalStyle;
         if (old) board.setAttribute('style', old);

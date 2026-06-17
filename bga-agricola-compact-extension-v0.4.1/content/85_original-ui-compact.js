@@ -422,6 +422,16 @@
     });
   }
 
+  function restoreHandBoardGap() {
+    const playerBoards = document.querySelector('#player-boards');
+    if (playerBoards?.dataset.bgaAgriV10HandGapOriginalStyle !== undefined) {
+      const old = playerBoards.dataset.bgaAgriV10HandGapOriginalStyle;
+      if (old) playerBoards.setAttribute('style', old);
+      else playerBoards.removeAttribute('style');
+      delete playerBoards.dataset.bgaAgriV10HandGapOriginalStyle;
+    }
+  }
+
   function handTitleWeight(text) {
     return [...String(text || '').trim()].reduce((sum, ch) => {
       if (/\s/.test(ch)) return sum + 0.3;
@@ -598,6 +608,7 @@
   function restoreHandCards() {
     const handContainer = document.querySelector('#hand-container[data-bga-agri-v10-hand-fixed="1"]') || document.querySelector('#hand-container');
     if (!handContainer) {
+      restoreHandBoardGap();
       restoreHandAncestors();
       return;
     }
@@ -617,13 +628,7 @@
       else handContainer.removeAttribute('style');
       delete handContainer.dataset.bgaAgriV10OriginalStyle;
     }
-    const playerBoards = document.querySelector('#player-boards');
-    if (playerBoards?.dataset.bgaAgriV10HandGapOriginalStyle !== undefined) {
-      const old = playerBoards.dataset.bgaAgriV10HandGapOriginalStyle;
-      if (old) playerBoards.setAttribute('style', old);
-      else playerBoards.removeAttribute('style');
-      delete playerBoards.dataset.bgaAgriV10HandGapOriginalStyle;
-    }
+    restoreHandBoardGap();
     delete handContainer.dataset.bgaAgriV10HandFixed;
     delete handContainer.dataset.bgaAgriV10OriginalParentId;
     restoreHandAncestors();

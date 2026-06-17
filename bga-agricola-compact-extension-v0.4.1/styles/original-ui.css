@@ -527,7 +527,7 @@ html.bga-agri-v10-open.bga-agri-v10-original-compact #action-cards-holder {
   display: none !important;
 }
 
-html.bga-agri-v10-open.bga-agri-v10-original-compact #player-boards > .player-board-resizable {
+html.bga-agri-v10-open.bga-agri-v10-original-compact #player-boards .player-board-resizable {
   min-width: 0 !important;
   min-height: 0 !important;
   align-self: stretch !important;
@@ -536,7 +536,7 @@ html.bga-agri-v10-open.bga-agri-v10-original-compact #player-boards > .player-bo
   border-right: 1px solid rgba(128, 101, 59, .35) !important;
 }
 
-html.bga-agri-v10-open.bga-agri-v10-original-compact #player-boards > .player-board-resizable:last-child {
+html.bga-agri-v10-open.bga-agri-v10-original-compact #player-boards .player-board-resizable:last-child {
   border-right: 0 !important;
 }
 
@@ -551,7 +551,7 @@ html.bga-agri-v10-open.bga-agri-v10-original-compact #player-boards .cards-wrapp
    sheet over BGA's flying meeple/resource animations. Let the original green
    page background show through wherever the real farm/cards do not paint. */
 html.bga-agri-v10-open.bga-agri-v10-original-compact #player-boards,
-html.bga-agri-v10-open.bga-agri-v10-original-compact #player-boards > .player-board-resizable {
+html.bga-agri-v10-open.bga-agri-v10-original-compact #player-boards .player-board-resizable {
   background-color: transparent !important;
   background-image: none !important;
 }
@@ -561,7 +561,7 @@ html.bga-agri-v10-open.bga-agri-v10-original-compact #player-boards > .player-bo
    toward the central board. If the moved containers clip overflow, the flying
    item disappears during the trip. Keep these containers overflow-visible. */
 html.bga-agri-v10-open.bga-agri-v10-original-compact #player-boards,
-html.bga-agri-v10-open.bga-agri-v10-original-compact #player-boards > .player-board-resizable {
+html.bga-agri-v10-open.bga-agri-v10-original-compact #player-boards .player-board-resizable {
   overflow: visible !important;
 }
 
@@ -609,7 +609,7 @@ html.bga-agri-v10-open.bga-agri-v10-original-compact #player-boards {
    `.player-board-resizable` or `.player-board-wrapper`; v0.12.0 did that and
    stretched player resource rows across the screen. Only remove the cosmetic
    divider/background introduced by the fixed-bottom prototype. */
-html.bga-agri-v10-open.bga-agri-v10-original-compact #player-boards > .player-board-resizable {
+html.bga-agri-v10-open.bga-agri-v10-original-compact #player-boards .player-board-resizable {
   background: transparent !important;
   border-right: 0 !important;
 }
@@ -631,7 +631,7 @@ html.bga-agri-v10-open.bga-agri-v10-original-compact #player-boards {
   background: transparent !important;
 }
 
-html.bga-agri-v10-open.bga-agri-v10-original-compact #player-boards > .player-board-resizable {
+html.bga-agri-v10-open.bga-agri-v10-original-compact #player-boards .player-board-resizable {
   align-self: start !important;
   justify-self: stretch !important;
   overflow: visible !important;
