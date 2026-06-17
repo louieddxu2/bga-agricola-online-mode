@@ -417,13 +417,29 @@
     // 先在中央圖板下找是否已嵌入手牌
     let handContainer = central.querySelector(':scope > #hand-container');
     
-    // 若尚未嵌入，僅從非模態的原生父節點尋找。若找不到，則判定為模態視窗模式，不予處理。
+    // 若尚未嵌入，從原生地點尋找手牌容器
     if (!handContainer) {
       handContainer = document.querySelector('#alternative-hand-wrapper #hand-container') || 
                       document.querySelector('#player-boards #player-boards-left-column #hand-container') ||
-                      document.querySelector('#player-boards #hand-container');
+                      document.querySelector('#player-boards #hand-container') ||
+                      document.querySelector('#hand-container');
     }
     if (!handContainer) return;
+
+    // 檢查玩家是否設定了模態視窗手牌 (ID 108, '0' 為模態視窗)
+    // 或是當前手牌/備份的原生父節點屬於彈出視窗 (popin)
+    const pref108 = document.querySelector('#preference_control_108')?.value;
+    const isModal = pref108 === '0' ||
+                    handContainer.closest('#popin_showHand_contents') !== null ||
+                    handContainer.closest('.agricola_popin') !== null ||
+                    (handContainer.dataset.bgaAgriV10OriginalParentId && 
+                     (handContainer.dataset.bgaAgriV10OriginalParentId.includes('popin') || 
+                      handContainer.dataset.bgaAgriV10OriginalParentId === 'popin_showHand_contents'));
+
+    if (isModal) {
+      restoreHandCards();
+      return;
+    }
 
     // 備份原生父節點與容器樣式
     if (!handContainer.dataset.bgaAgriV10OriginalParentId) {
@@ -444,16 +460,54 @@
     if (rightLogPanel) {
       const centralRect = central.getBoundingClientRect();
       const logRect = rightLogPanel.getBoundingClientRect();
-      const computedW = (logRect.left - centralRect.left) - 657 - 12;
+      let computedW = (logRect.left - centralRect.left) - 657 - 12;
+      if (Number.isNaN(computedW) || !Number.isFinite(computedW)) {
+        computedW = 630;
+      }
       availableW = Math.max(630, computedW);
     }
 
+    // 讀取原生面板的變數（局部變數繼承補償）
+    const wrapper = document.querySelector('.player-board-wrapper');
+    const sourceStyle = wrapper ? getComputedStyle(wrapper) : getComputedStyle(document.documentElement);
+    const varW = parseFloat(sourceStyle.getPropertyValue('--agricolaCardWidth'));
+    const varH = parseFloat(sourceStyle.getPropertyValue('--agricolaCardHeight'));
+    const varScale = parseFloat(sourceStyle.getPropertyValue('--agricolaCardScale'));
+
+    const cardW = (Number.isFinite(varW) && varW > 50) ? varW : 211.5;
+    const cardH = (Number.isFinite(varH) && varH > 50) ? varH : 336.6;
+    const cardScaleVal = (Number.isFinite(varScale) && varScale > 0.1) ? varScale : 0.72;
+
+    // 將變數寫入手牌容器的 style，使其子元素卡片能正確繼承尺寸與縮放
+    handContainer.style.setProperty('--agricolaCardWidth', `${cardW}px`);
+    handContainer.style.setProperty('--agricolaCardHeight', `${cardH}px`);
+    handContainer.style.setProperty('--agricolaCardScale', `${cardScaleVal}`);
+
+    // 固定卡片縮放比為 0.28
+    const cardScale = 0.28;
+    const scaledCardW = cardW * cardScale; 
+    const scaledCardH = cardH * cardScale; 
+    const rowHeight = scaledCardH; // 兩列垂直間距動態對齊縮放後卡片高度
+    const handHeight = rowHeight * 2; // 手牌容器總高度為兩列高度之和，消除上下 padding
+
+    // 取得第 9 回合收穫標記 (harvest-slot-9) 的下緣作為手牌頂部位置
+    const harvest9 = document.getElementById('harvest-slot-9');
+    const turn9 = document.getElementById('turn_9');
+    let handTop = 334; // 預設精準貼齊下緣
+    if (harvest9) {
+      handTop = harvest9.offsetTop + harvest9.offsetHeight;
+    } else if (turn9) {
+      handTop = turn9.offsetTop + turn9.offsetHeight + 38; // 38px 估算為收穫圖示高度及間距
+    }
+
+
     // 設定嵌入容器樣式，強制將 padding/margin/gap 歸零
     handContainer.style.setProperty('position', 'absolute', 'important');
+    handContainer.style.setProperty('display', 'block', 'important');
     handContainer.style.setProperty('left', '657px', 'important');
-    handContainer.style.setProperty('top', '340px', 'important');
+    handContainer.style.setProperty('top', `${handTop}px`, 'important');
     handContainer.style.setProperty('width', `${availableW}px`, 'important');
-    handContainer.style.setProperty('height', '260px', 'important');
+    handContainer.style.setProperty('height', `${handHeight}px`, 'important');
     handContainer.style.setProperty('z-index', '100', 'important');
     handContainer.style.setProperty('background', 'transparent', 'important');
     handContainer.style.setProperty('margin', '0', 'important');
@@ -461,17 +515,9 @@
     handContainer.style.setProperty('gap', '0', 'important');
     handContainer.style.setProperty('overflow', 'visible', 'important');
 
-    const allCards = [...handContainer.querySelectorAll(':scope > .player-card')];
+    const allCards = [...handContainer.querySelectorAll('.player-card')];
     const occupationCards = allCards.filter(card => card.classList.contains('occupation'));
     const improvementCards = allCards.filter(card => !card.classList.contains('occupation'));
-
-    // 固定卡片縮放比為 0.28
-    const cardScale = 0.28;
-    const cardW = 235;
-    const cardH = 374;
-    const scaledCardW = cardW * cardScale; // 約 65.8px
-    const scaledCardH = cardH * cardScale; // 約 104.72px
-    const rowHeight = 130; // 兩列垂直間距
 
     const stackRow = (list, rowIndex) => {
       const n = list.length;
@@ -487,8 +533,7 @@
         card.style.setProperty('position', 'absolute', 'important');
         card.style.setProperty('left', `${index * stepX}px`, 'important');
         card.style.setProperty('top', `${rowIndex * rowHeight}px`, 'important');
-        card.style.setProperty('width', `${cardW}px`, 'important');
-        card.style.setProperty('height', `${cardH}px`, 'important');
+        // 不強制設定 width 與 height，讓其繼承原生卡片大小，防止尺寸拉伸產生 padding
         card.style.setProperty('margin', '0', 'important');
         card.style.setProperty('padding', '0', 'important');
         card.style.setProperty('overflow', 'visible', 'important');
@@ -500,13 +545,13 @@
     };
 
     stackRow(occupationCards, 0); // 第一列：職業卡 (top = 0px)
-    stackRow(improvementCards, 1); // 第二列：發展卡 (top = 130px)
+    stackRow(improvementCards, 1); // 第二列：發展卡 (top = rowHeight)
   }
 
   function restoreHandCards() {
     const handContainer = document.querySelector('#central-board > #hand-container');
     if (handContainer) {
-      handContainer.querySelectorAll(':scope > .player-card').forEach(card => {
+      handContainer.querySelectorAll('.player-card').forEach(card => {
         if (card.dataset.bgaAgriV10HandOriginalStyle !== undefined) {
           const old = card.dataset.bgaAgriV10HandOriginalStyle;
           if (old) card.setAttribute('style', old);
