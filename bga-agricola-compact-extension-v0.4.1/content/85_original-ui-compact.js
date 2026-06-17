@@ -647,14 +647,7 @@
   }
 
   function restoreHandCards() {
-    const handContainer = document.querySelector('#hand-container[data-bga-agri-v10-hand-fixed="1"]') || document.querySelector('#hand-container');
-    if (!handContainer) {
-      restoreHandBoardGap();
-      restoreHandAncestors();
-      return;
-    }
-
-    handContainer.querySelectorAll('.player-card').forEach(card => {
+    document.querySelectorAll('[data-bga-agri-v10-hand-original-style]').forEach(card => {
       if (card.dataset.bgaAgriV10HandOriginalStyle !== undefined) {
         const old = card.dataset.bgaAgriV10HandOriginalStyle;
         if (old) card.setAttribute('style', old);
@@ -663,15 +656,24 @@
       }
     });
 
-    const oldStyle = handContainer.dataset.bgaAgriV10OriginalStyle;
-    if (oldStyle !== undefined) {
-      if (oldStyle) handContainer.setAttribute('style', oldStyle);
-      else handContainer.removeAttribute('style');
-      delete handContainer.dataset.bgaAgriV10OriginalStyle;
-    }
+    const handContainers = new Set([
+      ...document.querySelectorAll('#hand-container'),
+      ...document.querySelectorAll('[data-bga-agri-v10-hand-fixed="1"]'),
+      ...document.querySelectorAll('[data-bga-agri-v10-original-style]')
+    ]);
+
+    handContainers.forEach(handContainer => {
+      const oldStyle = handContainer.dataset.bgaAgriV10OriginalStyle;
+      if (oldStyle !== undefined) {
+        if (oldStyle) handContainer.setAttribute('style', oldStyle);
+        else handContainer.removeAttribute('style');
+        delete handContainer.dataset.bgaAgriV10OriginalStyle;
+      }
+      delete handContainer.dataset.bgaAgriV10HandFixed;
+      delete handContainer.dataset.bgaAgriV10OriginalParentId;
+    });
+
     restoreHandBoardGap();
-    delete handContainer.dataset.bgaAgriV10HandFixed;
-    delete handContainer.dataset.bgaAgriV10OriginalParentId;
     restoreHandAncestors();
   }
 
