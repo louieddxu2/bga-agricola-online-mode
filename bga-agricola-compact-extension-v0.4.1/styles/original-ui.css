@@ -736,8 +736,6 @@ html.bga-agri-v10-open.bga-agri-v10-original-compact #player-boards .player-pane
 html.bga-agri-v10-open.bga-agri-v10-original-compact #player-boards .animals-control-wrapper .animals-control .zone-capacity {
   box-sizing: border-box !important;
   min-width: 2.05em !important;
-  font-size: 105% !important;
-  line-height: 1.05 !important;
   white-space: nowrap !important;
 }
 
