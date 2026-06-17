@@ -442,8 +442,9 @@
     const central = document.querySelector('#central-board');
     if (!central) return;
 
-    // Keep the native hand DOM in its original BGA parent.  Do not append it to
-    // #central-board; only position it visually with fixed coordinates.
+    // Keep the native hand DOM in its original BGA parent. Do not append it to
+    // #central-board; position it visually with page coordinates so it scrolls
+    // with the central board instead of floating in the viewport.
     const handContainer = document.querySelector('#alternative-hand-wrapper #hand-container') ||
                           document.querySelector('#player-boards #player-boards-left-column #hand-container') ||
                           document.querySelector('#player-boards #hand-container') ||
@@ -470,7 +471,8 @@
     const rightLogPanel = document.querySelector('#right-side-second-part') || document.querySelector('#right-side');
     const logRect = rightLogPanel?.getBoundingClientRect();
 
-    // Anchor the fixed hand area directly in viewport coordinates.
+    // Anchor the hand area to central-board features, then translate that
+    // viewport target into the hand container's absolute-positioning context.
     // Required visual anchors:
     //   left edge = right edge of the round-7 background tile, not the action-card DOM
     //   top edge  = bottom edge of round 9 / harvest-slot-9
@@ -479,14 +481,14 @@
     const harvest9 = document.getElementById('harvest-slot-9');
     const turn9 = document.getElementById('turn_9');
 
-    const targetLeft = round7Bg?.getBoundingClientRect().right ??
-                       turn7?.getBoundingClientRect().right ??
-                       (centralRect.left + 657 * (centralRect.width / (central.offsetWidth || 1320) || 1));
-    const targetTop = harvest9?.getBoundingClientRect().bottom ??
-                      turn9?.getBoundingClientRect().bottom ??
-                      (centralRect.top + 334 * (centralRect.height / (central.offsetHeight || 620) || 1));
+    const targetViewportLeft = round7Bg?.getBoundingClientRect().right ??
+                               turn7?.getBoundingClientRect().right ??
+                               (centralRect.left + 657 * (centralRect.width / (central.offsetWidth || 1320) || 1));
+    const targetViewportTop = harvest9?.getBoundingClientRect().bottom ??
+                              turn9?.getBoundingClientRect().bottom ??
+                              (centralRect.top + 334 * (centralRect.height / (central.offsetHeight || 620) || 1));
 
-    let availableW = logRect ? (logRect.left - targetLeft - 12) : 630;
+    let availableW = logRect ? (logRect.left - targetViewportLeft - 12) : 630;
     if (Number.isNaN(availableW) || !Number.isFinite(availableW)) availableW = 630;
     availableW = Math.max(120, availableW);
 
@@ -504,15 +506,23 @@
     handContainer.style.setProperty('--agricolaCardHeight', `${cardH}px`);
     handContainer.style.setProperty('--agricolaCardScale', `${cardScaleVal}`);
 
-    const availableH = Math.max(80, centralRect.bottom - targetTop);
+    const availableH = Math.max(80, centralRect.bottom - targetViewportTop);
     const cardScale = Math.min(0.6, availableH / (2 * cardH));
     const scaledCardW = cardW * cardScale;
     const scaledCardH = cardH * cardScale;
     const rowHeight = scaledCardH;
     const handHeight = rowHeight * 2;
 
-    handContainer.style.setProperty('position', 'fixed', 'important');
+    handContainer.style.setProperty('position', 'absolute', 'important');
     handContainer.style.setProperty('display', 'block', 'important');
+
+    const offsetParent = handContainer.offsetParent;
+    const parentRect = offsetParent
+      ? offsetParent.getBoundingClientRect()
+      : { left: -window.scrollX, top: -window.scrollY };
+    const targetLeft = targetViewportLeft + window.scrollX - (parentRect.left + window.scrollX);
+    const targetTop = targetViewportTop + window.scrollY - (parentRect.top + window.scrollY);
+
     handContainer.style.setProperty('left', `${targetLeft}px`, 'important');
     handContainer.style.setProperty('top', `${targetTop}px`, 'important');
     handContainer.style.setProperty('width', `${availableW}px`, 'important');

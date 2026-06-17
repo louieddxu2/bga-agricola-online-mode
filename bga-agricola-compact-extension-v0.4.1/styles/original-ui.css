@@ -876,7 +876,7 @@ html.bga-agri-v10-open.bga-agri-v10-original-compact #hand-container[data-bga-ag
 
 
 
-/* v0.12.47: title sizing for fixed native hand cards. It uses the same
+/* v0.12.47: title sizing for anchored native hand cards. It uses the same
    full-card-width variables as played cards, and raises the title above small
    condition/requirement badges on improvement cards. */
 html.bga-agri-v10-open.bga-agri-v10-original-compact #hand-container[data-bga-agri-v10-hand-fixed="1"] .player-card .card-title {
