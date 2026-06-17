@@ -586,11 +586,15 @@
     handContainer.style.setProperty('--agricolaCardHeight', `${cardH}px`);
     handContainer.style.setProperty('--agricolaCardScale', `${cardScaleVal}`);
 
+    const allCards = [...handContainer.querySelectorAll('.player-card')];
+    const occupationCards = allCards.filter(card => card.classList.contains('occupation'));
+    const improvementCards = allCards.filter(card => !card.classList.contains('occupation'));
+
     const slotW = availableW / 7;
-    const cardScale = AC.utils.clamp(slotW / cardW, 0.16, 0.9);
-    const scaledCardW = cardW * cardScale;
-    const scaledCardH = cardH * cardScale;
-    const rowHeight = scaledCardH;
+    let cardScale = AC.utils.clamp(slotW / cardW, 0.16, 0.9);
+    let scaledCardW = cardW * cardScale;
+    let scaledCardH = cardH * cardScale;
+    let rowHeight = scaledCardH;
     let handHeight = rowHeight * 2;
     let handViewportLeft = targetViewportLeft;
     let handViewportTop = targetViewportTop;
@@ -614,6 +618,14 @@
         handViewportLeft = Math.max(0, boardsRect.left);
         handViewportTop = naturalBoardsBottom + 4;
         handAvailableW = Math.max(120, rightEdge - handViewportLeft - 12);
+        const lowerSpace = Math.max(1, centralToBoardsGap + boardsToViewportGap - 8);
+        const cardCount = Math.max(1, allCards.length);
+        const heightScale = lowerSpace / cardH;
+        const noOverlapWidthScale = handAvailableW / (cardCount * cardW);
+        cardScale = AC.utils.clamp(Math.min(heightScale, noOverlapWidthScale, 0.9), 0.16, 0.9);
+        scaledCardW = cardW * cardScale;
+        scaledCardH = cardH * cardScale;
+        rowHeight = scaledCardH;
         handHeight = scaledCardH;
         restoreHandBoardGap();
       }
@@ -640,10 +652,6 @@
     handContainer.style.setProperty('gap', '0', 'important');
     handContainer.style.setProperty('overflow', 'visible', 'important');
     handContainer.style.setProperty('pointer-events', 'auto', 'important');
-
-    const allCards = [...handContainer.querySelectorAll('.player-card')];
-    const occupationCards = allCards.filter(card => card.classList.contains('occupation'));
-    const improvementCards = allCards.filter(card => !card.classList.contains('occupation'));
 
     if (playerBoards && handLayoutMode === 'right-two-row' && !handContainer.closest('#player-boards')) {
       const gapTargets = [playerBoards];
