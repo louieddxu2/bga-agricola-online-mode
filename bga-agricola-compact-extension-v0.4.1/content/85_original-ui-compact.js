@@ -468,27 +468,30 @@
     handContainer.dataset.bgaAgriV10HandFixed = '1';
 
     const centralRect = central.getBoundingClientRect();
-    const rightLogPanel = document.querySelector('#right-side-second-part') || document.querySelector('#right-side');
-    const logRect = rightLogPanel?.getBoundingClientRect();
-
     // Anchor the hand area to central-board features, then translate that
     // viewport target into the hand container's absolute-positioning context.
     // Required visual anchors:
-    //   left edge = right edge of the round-7 background tile, not the action-card DOM
+    //   left edge = left edge of round 8
+    //   right edge = right edge of round 14
     //   top edge  = bottom edge of round 9 / harvest-slot-9
-    const round7Bg = document.querySelector('#bga-agri-v10-round-bg-layer .bga-agri-v10-round-bg-tile[data-round="7"]');
-    const turn7 = document.getElementById('turn_7');
+    const round8Bg = document.querySelector('#bga-agri-v10-round-bg-layer .bga-agri-v10-round-bg-tile[data-round="8"]');
+    const round14Bg = document.querySelector('#bga-agri-v10-round-bg-layer .bga-agri-v10-round-bg-tile[data-round="14"]');
+    const turn8 = document.getElementById('turn_8');
+    const turn14 = document.getElementById('turn_14');
     const harvest9 = document.getElementById('harvest-slot-9');
     const turn9 = document.getElementById('turn_9');
 
-    const targetViewportLeft = round7Bg?.getBoundingClientRect().right ??
-                               turn7?.getBoundingClientRect().right ??
+    const targetViewportLeft = round8Bg?.getBoundingClientRect().left ??
+                               turn8?.getBoundingClientRect().left ??
                                (centralRect.left + 657 * (centralRect.width / (central.offsetWidth || 1320) || 1));
+    const targetViewportRight = round14Bg?.getBoundingClientRect().right ??
+                                turn14?.getBoundingClientRect().right ??
+                                centralRect.right;
     const targetViewportTop = harvest9?.getBoundingClientRect().bottom ??
                               turn9?.getBoundingClientRect().bottom ??
                               (centralRect.top + 334 * (centralRect.height / (central.offsetHeight || 620) || 1));
 
-    let availableW = logRect ? (logRect.left - targetViewportLeft - 12) : 630;
+    let availableW = targetViewportRight - targetViewportLeft;
     if (Number.isNaN(availableW) || !Number.isFinite(availableW)) availableW = 630;
     availableW = Math.max(120, availableW);
 
@@ -506,8 +509,8 @@
     handContainer.style.setProperty('--agricolaCardHeight', `${cardH}px`);
     handContainer.style.setProperty('--agricolaCardScale', `${cardScaleVal}`);
 
-    const availableH = Math.max(80, centralRect.bottom - targetViewportTop);
-    const cardScale = Math.min(0.6, availableH / (2 * cardH));
+    const slotW = availableW / 7;
+    const cardScale = AC.utils.clamp(slotW / cardW, 0.16, 0.9);
     const scaledCardW = cardW * cardScale;
     const scaledCardH = cardH * cardScale;
     const rowHeight = scaledCardH;
@@ -539,11 +542,19 @@
     const occupationCards = allCards.filter(card => card.classList.contains('occupation'));
     const improvementCards = allCards.filter(card => !card.classList.contains('occupation'));
 
+    const playerBoards = document.querySelector('#player-boards');
+    if (playerBoards) {
+      if (playerBoards.dataset.bgaAgriV10HandGapOriginalStyle === undefined) {
+        playerBoards.dataset.bgaAgriV10HandGapOriginalStyle = playerBoards.getAttribute('style') || '';
+      }
+      playerBoards.style.setProperty('margin-top', `${Math.ceil(handHeight + 8)}px`, 'important');
+    }
+
     const stackRow = (list, rowIndex) => {
       const n = list.length;
       const stepX = n <= 1
         ? 0
-        : Math.max(0, Math.min(scaledCardW + 8, (availableW - scaledCardW) / (n - 1)));
+        : Math.max(0, Math.min(slotW, (availableW - scaledCardW) / (n - 1)));
 
       list.forEach((card, index) => {
         if (!card.dataset.bgaAgriV10HandOriginalStyle) {
@@ -593,6 +604,13 @@
       if (oldStyle) handContainer.setAttribute('style', oldStyle);
       else handContainer.removeAttribute('style');
       delete handContainer.dataset.bgaAgriV10OriginalStyle;
+    }
+    const playerBoards = document.querySelector('#player-boards');
+    if (playerBoards?.dataset.bgaAgriV10HandGapOriginalStyle !== undefined) {
+      const old = playerBoards.dataset.bgaAgriV10HandGapOriginalStyle;
+      if (old) playerBoards.setAttribute('style', old);
+      else playerBoards.removeAttribute('style');
+      delete playerBoards.dataset.bgaAgriV10HandGapOriginalStyle;
     }
     delete handContainer.dataset.bgaAgriV10HandFixed;
     delete handContainer.dataset.bgaAgriV10OriginalParentId;
