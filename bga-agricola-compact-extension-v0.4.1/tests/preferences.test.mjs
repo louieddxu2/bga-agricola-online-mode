@@ -5,11 +5,11 @@ import { readFileSync } from 'node:fs';
 const preferencesSource = readFileSync(new URL('../content/original-ui/preferences.js', import.meta.url), 'utf8');
 const actionCardsSource = readFileSync(new URL('../content/original-ui/action-cards-layout.js', import.meta.url), 'utf8');
 
-test('compact mode forces stable native sources for hand and player action cards', () => {
+test('compact mode forces only the hand native source', () => {
   assert.match(preferencesSource, /#preference_control_108/);
   assert.match(preferencesSource, /setSelectValue\(handPref,\s*'2'\)/);
-  assert.match(preferencesSource, /#preference_control_150/);
-  assert.match(preferencesSource, /setSelectValue\(actionCardsPref,\s*'0'\)/);
+  assert.doesNotMatch(preferencesSource, /#preference_control_150/);
+  assert.doesNotMatch(preferencesSource, /actionCardsPref/);
 });
 
 test('action card layout is driven by active card DOM, not preference 150 location', () => {

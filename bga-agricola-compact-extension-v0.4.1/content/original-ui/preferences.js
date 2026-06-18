@@ -18,20 +18,10 @@
       // placement modes and can leave stale non-native hand layout behind.
       setSelectValue(handPref, '2');
     }
-
-    const actionCardsPref = document.querySelector('#preference_control_150');
-    if (actionCardsPref && actionCardsPref.dataset.bgaAgriV10ForcedByCompact !== '1') {
-      actionCardsPref.dataset.bgaAgriV10OriginalValue = actionCardsPref.value;
-      actionCardsPref.dataset.bgaAgriV10ForcedByCompact = '1';
-      // BGA action-card preference 0 = player-panel area. This keeps the native
-      // source away from the central board while compact mode renders it beside
-      // round 14 using its own positioning.
-      setSelectValue(actionCardsPref, '0');
-    }
   }
 
   function restoreStableBgaPreferences() {
-    ['#preference_control_108', '#preference_control_150'].forEach(selector => {
+    ['#preference_control_108'].forEach(selector => {
       const pref = document.querySelector(`${selector}[data-bga-agri-v10-forced-by-compact="1"]`);
       if (!pref) return;
       const oldValue = pref.dataset.bgaAgriV10OriginalValue;
