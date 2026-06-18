@@ -1,13 +1,8 @@
 (() => {
-  console.log('30_panel-shell.js loaded');
   const AC = window.AgriCompact;
-  if (!AC) {
-    console.log('30_panel-shell.js window.AgriCompact is undefined!');
-    return;
-  }
+  if (!AC) return;
 
   AC.init = async function init() {
-    console.log('AC.init() starting...');
     await AC.settings.load();
     AC.injectToggle();
     AC.applyVars();

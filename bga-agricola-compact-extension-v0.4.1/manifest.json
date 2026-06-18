@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "BGA Agricola Compact Panel",
   "version": "0.12.49",
-  "description": "Anchors fixed hand area to round-7 background tile right edge.",
+  "description": "Compacts BGA Agricola with original-DOM board, hand, action-card, and log layouts.",
   "permissions": [
     "storage"
   ],

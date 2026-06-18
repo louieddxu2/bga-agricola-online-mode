@@ -1,3 +1,17 @@
+# BGA Agricola Compact Panel
+
+A Chrome/Chromium extension that compacts Board Game Arena's Agricola table
+while preserving BGA's original DOM for boards, hand cards, played cards,
+animations, and interactions.
+
+## Release Basics
+
+- Runtime version lives in both `manifest.json` and `content/00_bootstrap.js`.
+- Release packaging is documented in `RELEASE.md`.
+- Build a clean extension zip with `.\scripts\build-release.ps1`.
+- Do not include local BGA HTML snapshots, screenshots, tests, Codex
+  attachments, or handoff notes in release packages.
+
 # v0.12.49-hand-anchor-round-bg7
 
 Changes the fixed hand area anchor from the round-7 action-card right edge to the right edge of the round-7 background tile (`.bga-agri-v10-round-bg-tile[data-round="7"]`). The top edge is computed from `harvest-slot-9`/round-9 bottom with `getBoundingClientRect()`.

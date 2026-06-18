@@ -1,15 +1,12 @@
 (() => {
   'use strict';
 
-  console.log('00_bootstrap.js loaded, pathname:', location.pathname);
   const isAgricolaPage =
     /(^|\/)agricola($|[/?#])/.test(location.pathname) ||
     document.querySelector('link[href*="agricola.css"]') ||
     document.querySelector('#player-boards, #alternative-hand-wrapper #hand-container, #player-boards #hand-container');
-  console.log('isAgricolaPage:', !!isAgricolaPage);
 
   if (!isAgricolaPage) return;
-  console.log('00_bootstrap.js past page check');
   if (window.__BGA_AGRICOLA_COMPACT_V011_ORIGINAL_BOARDS__) return;
   window.__BGA_AGRICOLA_COMPACT_V011_ORIGINAL_BOARDS__ = true;
 
