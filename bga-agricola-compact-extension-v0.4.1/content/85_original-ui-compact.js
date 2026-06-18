@@ -413,6 +413,18 @@
     });
   }
 
+  function restoreOriginalUiFragments() {
+    actionCards.restorePlayerActionCards();
+    hand.restoreHandCards();
+  }
+
+  function scheduleDeferredRestore() {
+    const restore = () => restoreOriginalUiFragments();
+    requestAnimationFrame(restore);
+    setTimeout(restore, 80);
+    setTimeout(restore, 250);
+  }
+
   AC.originalUiCompact = {
     layoutHandCards: hand.layoutHandCards,
     enable() {
@@ -437,8 +449,7 @@
     },
 
     disable() {
-      actionCards.restorePlayerActionCards();
-      hand.restoreHandCards();
+      restoreOriginalUiFragments();
       preferences.restoreStableBgaPreferences();
       document.documentElement.classList.remove('bga-agri-v10-original-compact');
       if (AC.originalUiCompact._onResize) window.removeEventListener('resize', AC.originalUiCompact._onResize);
@@ -446,6 +457,7 @@
       clearRoundBackgroundLayer();
       clearRightLogLimit();
       document.getElementById('bga-agri-v10-original-topline')?.remove();
+      scheduleDeferredRestore();
     }
   };
 
