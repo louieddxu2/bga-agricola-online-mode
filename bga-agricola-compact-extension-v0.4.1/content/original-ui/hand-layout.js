@@ -32,6 +32,56 @@
     });
   }
 
+  function scrubCompactHandInlineStyle(handContainer) {
+    if (!handContainer) return;
+    const wasManaged = handContainer.dataset.bgaAgriV10HandFixed === '1' ||
+      handContainer.dataset.bgaAgriV10OriginalStyle !== undefined ||
+      handContainer.querySelector('[data-bga-agri-v10-hand-original-style]') ||
+      handContainer.querySelector(':scope > .player-card[style*="transform"]');
+
+    if (!wasManaged) return;
+
+    [
+      'position',
+      'display',
+      'left',
+      'top',
+      'width',
+      'height',
+      'z-index',
+      'background',
+      'margin',
+      'padding',
+      'gap',
+      'overflow',
+      'pointer-events',
+      '--agricolaCardWidth',
+      '--agricolaCardHeight',
+      '--agricolaCardScale'
+    ].forEach(prop => handContainer.style.removeProperty(prop));
+
+    handContainer.querySelectorAll(':scope > .player-card').forEach(card => {
+      [
+        'position',
+        'left',
+        'top',
+        'margin',
+        'padding',
+        'overflow',
+        'box-sizing',
+        'z-index',
+        'transform',
+        'transform-origin',
+        '--bga-agri-v10-card-title-font-size',
+        '--bga-agri-v10-card-title-width'
+      ].forEach(prop => card.style.removeProperty(prop));
+      delete card.dataset.bgaAgriV10HandOriginalStyle;
+    });
+
+    delete handContainer.dataset.bgaAgriV10HandFixed;
+    delete handContainer.dataset.bgaAgriV10OriginalParentId;
+  }
+
   function handDisplayMode(handContainer) {
     const pref108 = document.querySelector('#preference_control_108')?.value;
     const isModal = pref108 === '0' ||
@@ -305,6 +355,8 @@
         if (oldStyle) handContainer.setAttribute('style', oldStyle);
         else handContainer.removeAttribute('style');
         delete handContainer.dataset.bgaAgriV10OriginalStyle;
+      } else {
+        scrubCompactHandInlineStyle(handContainer);
       }
       delete handContainer.dataset.bgaAgriV10HandFixed;
       delete handContainer.dataset.bgaAgriV10OriginalParentId;

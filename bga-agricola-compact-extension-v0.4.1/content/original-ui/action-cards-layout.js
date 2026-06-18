@@ -14,30 +14,28 @@
     return { width, height };
   }
 
-  function playerActionCardsEnabled() {
-    return document.querySelector('#preference_control_150')?.value === '1';
-  }
-
   function actionCardLayoutRects() {
     const central = document.querySelector('#central-board');
     if (!central) return null;
 
     const round14Bg = document.querySelector('#bga-agri-v10-round-bg-layer .bga-agri-v10-round-bg-tile[data-round="14"]');
     const turn14 = document.getElementById('turn_14');
-    const rightSource = round14Bg || turn14;
-    if (!rightSource) return null;
+    const topSource = round14Bg || turn14;
+    const rightSource = turn14 || round14Bg;
+    if (!topSource || !rightSource) return null;
 
     const centralRect = central.getBoundingClientRect();
-    const roundRect = rightSource.getBoundingClientRect();
+    const topRect = topSource.getBoundingClientRect();
+    const rightRect = rightSource.getBoundingClientRect();
     const rightSideRect = (document.querySelector('#right-side') || document.querySelector('#right-side-second-part'))?.getBoundingClientRect();
     const rightLimit = rightSideRect?.left || window.innerWidth;
     const turnSize = getTurnSize();
     return models.computeActionCardRegion?.({
       centralBottom: centralRect.bottom,
-      roundTop: roundRect.top,
-      roundRight: roundRect.right,
-      roundWidth: roundRect.width,
-      roundHeight: roundRect.height,
+      roundTop: topRect.top,
+      roundRight: rightRect.right,
+      roundWidth: rightRect.width || topRect.width,
+      roundHeight: rightRect.height || topRect.height,
       turnW: turnSize.width,
       turnH: turnSize.height,
       rightLimit
@@ -50,7 +48,7 @@
 
     const groups = [...holder.querySelectorAll('.action-cards-player-group')];
     const activeGroups = groups.filter(group => group.querySelector('.player-card'));
-    if (!playerActionCardsEnabled() || !activeGroups.length) {
+    if (!activeGroups.length) {
       restorePlayerActionCards();
       return;
     }

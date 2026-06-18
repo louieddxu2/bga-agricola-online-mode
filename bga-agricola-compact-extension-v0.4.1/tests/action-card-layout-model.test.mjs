@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { createRequire } from 'node:module';
+import { readFileSync } from 'node:fs';
 
 const require = createRequire(import.meta.url);
 const {
@@ -8,6 +9,8 @@ const {
   computePlayerActionCardGroupLayout,
   computePlayerActionCardPlan
 } = require('../content/original-ui/layout-models.js');
+
+const actionCardsSource = readFileSync(new URL('../content/original-ui/action-cards-layout.js', import.meta.url), 'utf8');
 
 const twoColumnRegion = {
   columns: 2,
@@ -93,4 +96,11 @@ test('more than four action cards use compressed overlap mode', () => {
   assert.equal(group.cardColumns, 1);
   assert.equal(group.cardRows, 1);
   assert.ok(group.overlapStep >= 0);
+});
+
+test('action card DOM layout uses turn 14 as the right-edge source', () => {
+  assert.match(actionCardsSource, /const\s+topSource\s*=\s*round14Bg\s*\|\|\s*turn14/);
+  assert.match(actionCardsSource, /const\s+rightSource\s*=\s*turn14\s*\|\|\s*round14Bg/);
+  assert.match(actionCardsSource, /roundRight:\s*rightRect\.right/);
+  assert.doesNotMatch(actionCardsSource, /roundRight:\s*topRect\.right/);
 });
