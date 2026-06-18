@@ -801,6 +801,24 @@ html.bga-agri-v10-open.bga-agri-v10-original-compact #player-boards .animals-con
   font-size: 17px !important;
 }
 
+/* v0.12.50: enlarge the native player-board name tab through normal text sizing.
+   Avoid transform scaling here; the tab is absolutely positioned by BGA and
+   visual-only scaling desynchronizes it from the surrounding resource header. */
+html.bga-agri-v10-open.bga-agri-v10-original-compact #player-boards .resources-bar-holder.active .player-board-name {
+  box-sizing: border-box !important;
+  font-size: 30px !important;
+  line-height: 1.05 !important;
+  padding: 3px 12px 3px 8px !important;
+  right: 30px !important;
+  top: -44px !important;
+  white-space: nowrap !important;
+}
+
+html.bga-agri-v10-open.bga-agri-v10-original-compact #player-boards .resources-bar-holder.active .player-board-name .farmer-cluster {
+  margin-right: 8px !important;
+  top: -2px !important;
+}
+
 /* v0.12.32: keep the right-side log/action-history panels scrollable, but hide
    their visual scrollbars so the moved player boards are not covered on the
    right edge. */

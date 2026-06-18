@@ -24,3 +24,14 @@ test('hand title rule is scoped to the managed native hand container', () => {
     /#hand-container\[data-bga-agri-v10-hand-fixed="1"\]\s+\.player-card\s+\.card-title/
   );
 });
+
+test('player board name enlargement is scoped and avoids transform scaling', () => {
+  const rule = css.match(
+    /html\.bga-agri-v10-open\.bga-agri-v10-original-compact\s+#player-boards\s+\.resources-bar-holder\.active\s+\.player-board-name\s*\{[^}]+\}/m
+  )?.[0] || '';
+
+  assert.match(rule, /font-size:\s*30px\s*!important;/);
+  assert.match(rule, /line-height:\s*1\.05\s*!important;/);
+  assert.doesNotMatch(rule, /transform\s*:/);
+  assert.doesNotMatch(rule, /scale\(/);
+});
