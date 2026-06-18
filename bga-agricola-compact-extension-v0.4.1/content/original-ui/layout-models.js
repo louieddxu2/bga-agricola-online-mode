@@ -15,15 +15,15 @@
       targetViewportRight,
       targetViewportTop,
       centralBottom,
+      topStatusHeight,
+      centralHeight,
       boardsLeft = 0,
-      boardsTop,
-      boardsBottom,
+      boardsHeight,
       viewportHeight,
       rightEdge,
       cardCount,
       cardW,
       cardH,
-      prevMode = 'right-two-row',
       minScale = 0.16,
       maxScale = 0.9
     } = input;
@@ -38,22 +38,15 @@
     let handAvailableW = availableW;
     let handHeight = scaledCardH * 2;
 
-    if (Number.isFinite(boardsTop) && Number.isFinite(boardsBottom)) {
-      const centralToBoardsGap = Math.max(0, boardsTop - centralBottom);
-      const boardsToViewportGap = Math.max(0, viewportHeight - boardsBottom);
-      const totalLowerSpace = centralToBoardsGap + boardsToViewportGap;
-      const enterBelowBoards = totalLowerSpace > scaledCardH + 16;
-      const stayBelowBoards = totalLowerSpace > scaledCardH - 24;
-      const canUseBelowBoards = prevMode === 'below-boards-row'
-        ? stayBelowBoards
-        : enterBelowBoards;
+    if (Number.isFinite(topStatusHeight) && Number.isFinite(centralHeight) && Number.isFinite(boardsHeight)) {
+      const lowerSpace = Math.max(0, viewportHeight - topStatusHeight - centralHeight - boardsHeight - 8);
+      const canUseBelowBoards = lowerSpace >= cardH * minScale;
 
       if (canUseBelowBoards) {
         handLayoutMode = 'below-boards-row';
         handViewportLeft = Math.max(0, boardsLeft);
-        handViewportTop = boardsBottom + 4;
+        handViewportTop = viewportHeight - lowerSpace - 4;
         handAvailableW = Math.max(120, rightEdge - handViewportLeft - 12);
-        const lowerSpace = Math.max(1, centralToBoardsGap + boardsToViewportGap - 8);
         const safeCardCount = Math.max(1, cardCount);
         const heightScale = lowerSpace / cardH;
         const noOverlapWidthScale = handAvailableW / (safeCardCount * cardW);

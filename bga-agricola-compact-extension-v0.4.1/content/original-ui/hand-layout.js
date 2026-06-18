@@ -32,6 +32,24 @@
     });
   }
 
+  function prepareHandAncestors(handContainer) {
+    const leftColumn = handContainer?.closest('#player-boards-left-column');
+    if (!leftColumn) return;
+    if (leftColumn.dataset.bgaAgriV10HandAncestorOriginalStyle === undefined) {
+      leftColumn.dataset.bgaAgriV10HandAncestorOriginalStyle = leftColumn.getAttribute('style') || '';
+    }
+    leftColumn.dataset.bgaAgriV10HandAncestor = '1';
+    leftColumn.style.setProperty('display', 'block', 'important');
+    leftColumn.style.setProperty('position', 'absolute', 'important');
+    leftColumn.style.setProperty('left', '0px', 'important');
+    leftColumn.style.setProperty('top', '0px', 'important');
+    leftColumn.style.setProperty('width', '0px', 'important');
+    leftColumn.style.setProperty('height', '0px', 'important');
+    leftColumn.style.setProperty('overflow', 'visible', 'important');
+    leftColumn.style.setProperty('pointer-events', 'none', 'important');
+    leftColumn.style.setProperty('z-index', '120', 'important');
+  }
+
   function scrubCompactHandInlineStyle(handContainer) {
     if (!handContainer) return;
     const wasManaged = handContainer.dataset.bgaAgriV10HandFixed === '1' ||
@@ -145,15 +163,24 @@
   function getPlayerBoardsVisualRect(playerBoards) {
     if (!playerBoards) return null;
     const fallback = playerBoards.getBoundingClientRect();
-    const nodes = [
-      ...playerBoards.querySelectorAll(':scope > .player-board-resizable'),
-      ...playerBoards.querySelectorAll('.player-board-wrapper'),
-      ...playerBoards.querySelectorAll('.player-board-holder'),
-      ...playerBoards.querySelectorAll('.agricola-player-board'),
-      ...playerBoards.querySelectorAll('.cards-wrapper')
-    ];
+    const boardRoots = [...playerBoards.querySelectorAll(':scope > .player-board-resizable')];
+    const nodes = boardRoots.flatMap(board => [
+      board,
+      ...board.querySelectorAll('.player-board-wrapper'),
+      ...board.querySelectorAll('.player-board-holder'),
+      ...board.querySelectorAll('.agricola-player-board'),
+      ...board.querySelectorAll('.cards-wrapper')
+    ]);
 
     return mergeRects(nodes.map(el => el.getBoundingClientRect()), fallback);
+  }
+
+  function getTopStatusHeight() {
+    const status = document.querySelector('#page-title') ||
+      document.querySelector('#pagemaintitle_wrap') ||
+      document.querySelector('#gameaction_status');
+    const rect = status?.getBoundingClientRect();
+    return rect && rect.height > 0 ? rect.height : 0;
   }
 
   function layoutHandCards() {
@@ -172,6 +199,7 @@
       restoreHandCards();
       return;
     }
+    prepareHandAncestors(handContainer);
 
     if (!handContainer.dataset.bgaAgriV10OriginalStyle) {
       handContainer.dataset.bgaAgriV10OriginalStyle = handContainer.getAttribute('style') || '';
@@ -224,31 +252,27 @@
     const occupationCards = allCards.filter(card => card.classList.contains('occupation'));
     const improvementCards = allCards.filter(card => !card.classList.contains('occupation'));
 
-    const previousHandLayoutMode = handContainer.dataset.bgaAgriV10HandLayoutMode || 'right-two-row';
     let handModelInput = {
       targetViewportLeft,
       targetViewportRight,
       targetViewportTop,
       centralBottom: centralRect.bottom,
+      topStatusHeight: getTopStatusHeight(),
+      centralHeight: centralRect.height,
       viewportHeight: window.innerHeight,
       rightEdge: window.innerWidth,
       cardCount: allCards.length,
       cardW,
-      cardH,
-      prevMode: previousHandLayoutMode
+      cardH
     };
 
     const playerBoards = document.querySelector('#player-boards');
     if (playerBoards) {
-      const currentMarginTop = parseFloat(playerBoards.style.marginTop) || 0;
       const boardsRect = getPlayerBoardsVisualRect(playerBoards);
-      const naturalBoardsTop = boardsRect.top - currentMarginTop;
-      const naturalBoardsBottom = boardsRect.bottom - currentMarginTop;
       const rightSideRect = (document.querySelector('#right-side') || document.querySelector('#right-side-second-part'))?.getBoundingClientRect();
       handModelInput = Object.assign(handModelInput, {
         boardsLeft: boardsRect.left,
-        boardsTop: naturalBoardsTop,
-        boardsBottom: naturalBoardsBottom,
+        boardsHeight: boardsRect.height,
         rightEdge: rightSideRect?.left || window.innerWidth
       });
     }
@@ -267,22 +291,17 @@
     const rowHeight = scaledCardH;
     if (handLayoutMode === 'below-boards-row') {
       restoreHandBoardGap();
-      if (playerBoards) {
-        const shiftedBoardsRect = getPlayerBoardsVisualRect(playerBoards);
-        if (shiftedBoardsRect) handViewportTop = shiftedBoardsRect.bottom + 4;
-      }
     }
     handContainer.dataset.bgaAgriV10HandLayoutMode = handLayoutMode;
 
     handContainer.style.setProperty('position', 'absolute', 'important');
     handContainer.style.setProperty('display', 'block', 'important');
+    handContainer.style.setProperty('left', '0px', 'important');
+    handContainer.style.setProperty('top', '0px', 'important');
 
-    const offsetParent = handContainer.offsetParent;
-    const parentRect = offsetParent
-      ? offsetParent.getBoundingClientRect()
-      : { left: -window.scrollX, top: -window.scrollY };
-    const targetLeft = handViewportLeft + window.scrollX - (parentRect.left + window.scrollX);
-    const targetTop = handViewportTop + window.scrollY - (parentRect.top + window.scrollY);
+    const zeroRect = handContainer.getBoundingClientRect();
+    const targetLeft = handViewportLeft - zeroRect.left;
+    const targetTop = handViewportTop - zeroRect.top;
 
     handContainer.style.setProperty('left', `${targetLeft}px`, 'important');
     handContainer.style.setProperty('top', `${targetTop}px`, 'important');
