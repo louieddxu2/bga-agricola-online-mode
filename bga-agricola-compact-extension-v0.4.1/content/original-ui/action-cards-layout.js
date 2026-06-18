@@ -20,22 +20,21 @@
 
     const round14Bg = document.querySelector('#bga-agri-v10-round-bg-layer .bga-agri-v10-round-bg-tile[data-round="14"]');
     const turn14 = document.getElementById('turn_14');
-    const topSource = round14Bg || turn14;
-    const rightSource = turn14 || round14Bg;
-    if (!topSource || !rightSource) return null;
+    const anchorSource = round14Bg || turn14;
+    if (!anchorSource) return null;
 
     const centralRect = central.getBoundingClientRect();
-    const topRect = topSource.getBoundingClientRect();
-    const rightRect = rightSource.getBoundingClientRect();
+    const anchorRect = anchorSource.getBoundingClientRect();
+    const turnRect = turn14?.getBoundingClientRect?.();
     const rightSideRect = (document.querySelector('#right-side') || document.querySelector('#right-side-second-part'))?.getBoundingClientRect();
     const rightLimit = rightSideRect?.left || window.innerWidth;
     const turnSize = getTurnSize();
     return models.computeActionCardRegion?.({
       centralBottom: centralRect.bottom,
-      roundTop: rightRect.top || topRect.top,
-      roundRight: rightRect.right,
-      roundWidth: rightRect.width || topRect.width,
-      roundHeight: rightRect.height || topRect.height,
+      roundTop: anchorRect.top,
+      roundRight: anchorRect.right,
+      roundWidth: anchorRect.width || turnRect?.width,
+      roundHeight: anchorRect.height || turnRect?.height,
       turnW: turnSize.width,
       turnH: turnSize.height,
       rightLimit
@@ -64,7 +63,7 @@
       styleState.backupStyle(leftColumn, 'bgaAgriV10ActionCardsAncestorOriginalStyle');
       leftColumn.dataset.bgaAgriV10ActionCardsAncestor = '1';
       leftColumn.style.setProperty('display', 'block', 'important');
-      leftColumn.style.setProperty('position', 'fixed', 'important');
+      leftColumn.style.setProperty('position', 'absolute', 'important');
       leftColumn.style.setProperty('left', '0px', 'important');
       leftColumn.style.setProperty('top', '0px', 'important');
       leftColumn.style.setProperty('width', '0px', 'important');
@@ -78,9 +77,17 @@
     holder.dataset.bgaAgriV10ActionCardsManaged = '1';
 
     holder.style.setProperty('display', 'block', 'important');
-    holder.style.setProperty('position', 'fixed', 'important');
-    holder.style.setProperty('left', `${Math.round(layout.left)}px`, 'important');
-    holder.style.setProperty('top', `${Math.round(layout.top)}px`, 'important');
+    holder.style.setProperty('position', 'absolute', 'important');
+
+    const offsetParent = holder.offsetParent;
+    const parentRect = offsetParent
+      ? offsetParent.getBoundingClientRect()
+      : { left: -window.scrollX, top: -window.scrollY };
+    const targetLeft = layout.left + window.scrollX - (parentRect.left + window.scrollX);
+    const targetTop = layout.top + window.scrollY - (parentRect.top + window.scrollY);
+
+    holder.style.setProperty('left', `${Math.round(targetLeft)}px`, 'important');
+    holder.style.setProperty('top', `${Math.round(targetTop)}px`, 'important');
     holder.style.setProperty('width', `${Math.round(layout.width)}px`, 'important');
     holder.style.setProperty('height', `${Math.round(layout.height)}px`, 'important');
     holder.style.setProperty('margin', '0', 'important');

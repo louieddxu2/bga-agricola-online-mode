@@ -98,19 +98,24 @@ test('more than four action cards use compressed overlap mode', () => {
   assert.ok(group.overlapStep >= 0);
 });
 
-test('action card DOM layout uses turn 14 as the right-edge source', () => {
-  assert.match(actionCardsSource, /const\s+topSource\s*=\s*round14Bg\s*\|\|\s*turn14/);
-  assert.match(actionCardsSource, /const\s+rightSource\s*=\s*turn14\s*\|\|\s*round14Bg/);
-  assert.match(actionCardsSource, /roundTop:\s*rightRect\.top\s*\|\|\s*topRect\.top/);
-  assert.match(actionCardsSource, /roundRight:\s*rightRect\.right/);
-  assert.doesNotMatch(actionCardsSource, /roundRight:\s*topRect\.right/);
+test('action card DOM layout uses the round-14 background as the right-edge source', () => {
+  assert.match(actionCardsSource, /const\s+anchorSource\s*=\s*round14Bg\s*\|\|\s*turn14/);
+  assert.match(actionCardsSource, /roundTop:\s*anchorRect\.top/);
+  assert.match(actionCardsSource, /roundRight:\s*anchorRect\.right/);
+  assert.doesNotMatch(actionCardsSource, /const\s+rightSource\s*=\s*turn14\s*\|\|\s*round14Bg/);
+  assert.doesNotMatch(actionCardsSource, /roundRight:\s*turnRect\.right/);
 });
 
-test('action card holder is fixed outside the player-board grid flow', () => {
-  assert.match(actionCardsSource, /leftColumn\.style\.setProperty\('position',\s*'fixed'/);
+test('action card holder converts viewport coordinates into offset-parent coordinates', () => {
+  assert.match(actionCardsSource, /leftColumn\.style\.setProperty\('position',\s*'absolute'/);
   assert.match(actionCardsSource, /leftColumn\.style\.setProperty\('width',\s*'0px'/);
-  assert.match(actionCardsSource, /holder\.style\.setProperty\('position',\s*'fixed'/);
+  assert.match(actionCardsSource, /holder\.style\.setProperty\('position',\s*'absolute'/);
+  assert.match(actionCardsSource, /const\s+offsetParent\s*=\s*holder\.offsetParent/);
+  assert.match(actionCardsSource, /const\s+parentRect\s*=\s*offsetParent/);
+  assert.match(actionCardsSource, /layout\.left\s*\+\s*window\.scrollX\s*-\s*\(parentRect\.left\s*\+\s*window\.scrollX\)/);
+  assert.match(actionCardsSource, /layout\.top\s*\+\s*window\.scrollY\s*-\s*\(parentRect\.top\s*\+\s*window\.scrollY\)/);
   assert.doesNotMatch(actionCardsSource, /leftColumn\.style\.setProperty\('position',\s*'static'/);
+  assert.doesNotMatch(actionCardsSource, /holder\.style\.setProperty\('position',\s*'fixed'/);
 });
 
 test('action card layout sizes cards from the action-card DOM itself', () => {
