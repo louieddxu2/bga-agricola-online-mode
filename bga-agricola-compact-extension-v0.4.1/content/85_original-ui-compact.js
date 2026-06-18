@@ -427,6 +427,7 @@
 
   AC.originalUiCompact = {
     layoutHandCards: hand.layoutHandCards,
+    layoutPlayerActionCards: actionCards.layoutPlayerActionCards,
     enable() {
       preferences.applyStableBgaPreferences();
       document.documentElement.classList.add('bga-agri-v10-original-compact');

@@ -64,27 +64,23 @@
       styleState.backupStyle(leftColumn, 'bgaAgriV10ActionCardsAncestorOriginalStyle');
       leftColumn.dataset.bgaAgriV10ActionCardsAncestor = '1';
       leftColumn.style.setProperty('display', 'block', 'important');
-      leftColumn.style.setProperty('position', 'static', 'important');
+      leftColumn.style.setProperty('position', 'fixed', 'important');
+      leftColumn.style.setProperty('left', '0px', 'important');
+      leftColumn.style.setProperty('top', '0px', 'important');
       leftColumn.style.setProperty('width', '0px', 'important');
       leftColumn.style.setProperty('height', '0px', 'important');
       leftColumn.style.setProperty('overflow', 'visible', 'important');
       leftColumn.style.setProperty('pointer-events', 'none', 'important');
+      leftColumn.style.setProperty('z-index', '120', 'important');
     }
 
     styleState.backupStyle(holder, 'bgaAgriV10ActionCardsOriginalStyle');
     holder.dataset.bgaAgriV10ActionCardsManaged = '1';
 
-    const offsetParent = holder.offsetParent;
-    const parentRect = offsetParent
-      ? offsetParent.getBoundingClientRect()
-      : { left: -window.scrollX, top: -window.scrollY };
-    const targetLeft = layout.left + window.scrollX - (parentRect.left + window.scrollX);
-    const targetTop = layout.top + window.scrollY - (parentRect.top + window.scrollY);
-
     holder.style.setProperty('display', 'block', 'important');
-    holder.style.setProperty('position', 'absolute', 'important');
-    holder.style.setProperty('left', `${Math.round(targetLeft)}px`, 'important');
-    holder.style.setProperty('top', `${Math.round(targetTop)}px`, 'important');
+    holder.style.setProperty('position', 'fixed', 'important');
+    holder.style.setProperty('left', `${Math.round(layout.left)}px`, 'important');
+    holder.style.setProperty('top', `${Math.round(layout.top)}px`, 'important');
     holder.style.setProperty('width', `${Math.round(layout.width)}px`, 'important');
     holder.style.setProperty('height', `${Math.round(layout.height)}px`, 'important');
     holder.style.setProperty('margin', '0', 'important');
