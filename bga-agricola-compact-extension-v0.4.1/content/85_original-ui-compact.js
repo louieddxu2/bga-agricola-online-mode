@@ -1,6 +1,7 @@
 (() => {
   const AC = window.AgriCompact;
   if (!AC) return;
+  const models = AC.originalUiModels || {};
 
   let cachedBoardBackgroundInfo = null;
 
@@ -459,58 +460,26 @@
     const central = document.querySelector('#central-board');
     if (!central) return null;
 
-    const centralRect = central.getBoundingClientRect();
     const round14Bg = document.querySelector('#bga-agri-v10-round-bg-layer .bga-agri-v10-round-bg-tile[data-round="14"]');
     const turn14 = document.getElementById('turn_14');
     const rightSource = round14Bg || turn14;
     if (!rightSource) return null;
 
+    const centralRect = central.getBoundingClientRect();
     const roundRect = rightSource.getBoundingClientRect();
     const rightSideRect = (document.querySelector('#right-side') || document.querySelector('#right-side-second-part'))?.getBoundingClientRect();
     const rightLimit = rightSideRect?.left || window.innerWidth;
-    const left = roundRect.right + 8;
-    const availableW = Math.max(0, rightLimit - left - 8);
-    if (availableW < 40) return null;
-
     const turnSize = getTurnSize();
-    const slotMaxW = Math.max(40, Math.min(roundRect.width || turnSize.width, availableW));
-    const slotMaxH = Math.max(40, roundRect.height || turnSize.height);
-    const gap = 8;
-    const columns = availableW >= (slotMaxW * 2 + gap) ? 2 : 1;
-    const slotW = Math.max(40, Math.min(slotMaxW, (availableW - gap * (columns - 1)) / columns));
-    const slotH = slotMaxH;
-    const availableH = Math.max(slotH, centralRect.bottom - roundRect.top);
-
-    return {
-      left,
-      top: roundRect.top,
-      width: Math.max(slotW, columns * slotW + (columns - 1) * gap),
-      height: availableH,
-      columns,
-      slotW,
-      slotH,
-      gap
-    };
-  }
-
-  function playerActionCardPlan(activeGroups, layout) {
-    const totalCards = activeGroups.reduce((sum, group) => sum + group.querySelectorAll('.player-card').length, 0);
-    const useClearLayout = totalCards <= 4;
-    const groupCount = activeGroups.length;
-    const twoColumnGroups = layout.columns >= 2 && groupCount === 4 && activeGroups.every(group => group.querySelectorAll('.player-card').length === 1);
-    const rows = twoColumnGroups ? 2 : groupCount;
-    const rowH = rows > 0
-      ? Math.min(layout.slotH, (layout.height - layout.gap * Math.max(0, rows - 1)) / rows)
-      : layout.slotH;
-
-    return {
-      totalCards,
-      useClearLayout,
-      groupColumns: twoColumnGroups ? 2 : 1,
-      groupRows: rows,
-      groupW: twoColumnGroups ? layout.slotW : Math.max(layout.slotW, layout.columns * layout.slotW + layout.gap * Math.max(0, layout.columns - 1)),
-      groupH: useClearLayout ? rowH : layout.slotH
-    };
+    return models.computeActionCardRegion?.({
+      centralBottom: centralRect.bottom,
+      roundTop: roundRect.top,
+      roundRight: roundRect.right,
+      roundWidth: roundRect.width,
+      roundHeight: roundRect.height,
+      turnW: turnSize.width,
+      turnH: turnSize.height,
+      rightLimit
+    }) || null;
   }
 
   function layoutPlayerActionCards() {
@@ -571,7 +540,8 @@
     const varH = parseFloat(sourceStyle.getPropertyValue('--agricolaCardHeight'));
     const cardW = (Number.isFinite(varW) && varW > 50) ? varW : 211.5;
     const cardH = (Number.isFinite(varH) && varH > 50) ? varH : 336.6;
-    const plan = playerActionCardPlan(activeGroups, layout);
+    const groupCardCounts = activeGroups.map(group => group.querySelectorAll('.player-card').length);
+    const plan = models.computePlayerActionCardPlan(groupCardCounts, layout);
 
     groups.forEach(group => {
       backupStyle(group, 'bgaAgriV10ActionCardsOriginalStyle');
@@ -595,23 +565,15 @@
       const headerH = Math.max(18, Math.min(28, header?.getBoundingClientRect().height || 22));
       const groupW = plan.groupW;
       const groupH = plan.groupH;
-      const cardColumns = plan.useClearLayout && cards.length > 1 && groupW >= (layout.slotW * 2 + layout.gap) ? 2 : 1;
-      const cardRows = plan.useClearLayout ? Math.ceil(cards.length / cardColumns) : 1;
-      const cardAreaH = Math.max(1, groupH - headerH - 4);
-      const cardCellW = (groupW - layout.gap * Math.max(0, cardColumns - 1)) / cardColumns;
-      const cardCellH = plan.useClearLayout
-        ? (cardAreaH - layout.gap * Math.max(0, cardRows - 1)) / Math.max(1, cardRows)
-        : cardAreaH;
-      const scale = AC.utils.clamp(
-        Math.min((cardCellW - 6) / cardW, (cardCellH - 4) / cardH),
-        0.16,
-        0.9
-      );
-      const scaledCardW = cardW * scale;
-      const scaledCardH = cardH * scale;
-      const overlapStep = cards.length <= 1
-        ? 0
-        : Math.max(0, Math.min(scaledCardH + 4, (cardAreaH - scaledCardH) / (cards.length - 1)));
+      const groupLayout = models.computePlayerActionCardGroupLayout({
+        cardCount: cards.length,
+        plan,
+        layout,
+        cardW,
+        cardH,
+        headerH
+      });
+      const { cardColumns, cardCellW, cardCellH, scale, scaledCardW, scaledCardH, overlapStep } = groupLayout;
 
       group.dataset.bgaAgriV10ActionCardsManaged = '1';
       group.style.setProperty('display', 'block', 'important');
@@ -838,16 +800,17 @@
     const occupationCards = allCards.filter(card => card.classList.contains('occupation'));
     const improvementCards = allCards.filter(card => !card.classList.contains('occupation'));
 
-    const slotW = availableW / 7;
-    let cardScale = AC.utils.clamp(slotW / cardW, 0.16, 0.9);
-    let scaledCardW = cardW * cardScale;
-    let scaledCardH = cardH * cardScale;
-    let rowHeight = scaledCardH;
-    let handHeight = rowHeight * 2;
-    let handViewportLeft = targetViewportLeft;
-    let handViewportTop = targetViewportTop;
-    let handAvailableW = availableW;
-    let handLayoutMode = 'right-two-row';
+    let handModelInput = {
+      targetViewportLeft,
+      targetViewportRight,
+      targetViewportTop,
+      centralBottom: centralRect.bottom,
+      viewportHeight: window.innerHeight,
+      rightEdge: window.innerWidth,
+      cardCount: allCards.length,
+      cardW,
+      cardH
+    };
 
     const playerBoards = document.querySelector('#player-boards');
     if (playerBoards) {
@@ -855,29 +818,28 @@
       const boardsRect = playerBoards.getBoundingClientRect();
       const naturalBoardsTop = boardsRect.top - currentMarginTop;
       const naturalBoardsBottom = boardsRect.bottom - currentMarginTop;
-      const centralToBoardsGap = Math.max(0, naturalBoardsTop - centralRect.bottom);
-      const boardsToViewportGap = Math.max(0, window.innerHeight - naturalBoardsBottom);
-      const canUseBelowBoards = centralToBoardsGap + boardsToViewportGap > scaledCardH;
-
-      if (canUseBelowBoards) {
-        const rightSideRect = (document.querySelector('#right-side') || document.querySelector('#right-side-second-part'))?.getBoundingClientRect();
-        const rightEdge = rightSideRect?.left || window.innerWidth;
-        handLayoutMode = 'below-boards-row';
-        handViewportLeft = Math.max(0, boardsRect.left);
-        handViewportTop = naturalBoardsBottom + 4;
-        handAvailableW = Math.max(120, rightEdge - handViewportLeft - 12);
-        const lowerSpace = Math.max(1, centralToBoardsGap + boardsToViewportGap - 8);
-        const cardCount = Math.max(1, allCards.length);
-        const heightScale = lowerSpace / cardH;
-        const noOverlapWidthScale = handAvailableW / (cardCount * cardW);
-        cardScale = AC.utils.clamp(Math.min(heightScale, noOverlapWidthScale, 0.9), 0.16, 0.9);
-        scaledCardW = cardW * cardScale;
-        scaledCardH = cardH * cardScale;
-        rowHeight = scaledCardH;
-        handHeight = scaledCardH;
-        restoreHandBoardGap();
-      }
+      const rightSideRect = (document.querySelector('#right-side') || document.querySelector('#right-side-second-part'))?.getBoundingClientRect();
+      handModelInput = Object.assign(handModelInput, {
+        boardsLeft: boardsRect.left,
+        boardsTop: naturalBoardsTop,
+        boardsBottom: naturalBoardsBottom,
+        rightEdge: rightSideRect?.left || window.innerWidth
+      });
     }
+    const handModel = models.computeHandLayout(handModelInput);
+    const {
+      mode: handLayoutMode,
+      cardScale,
+      scaledCardW,
+      scaledCardH,
+      handViewportLeft,
+      handViewportTop,
+      handAvailableW,
+      handHeight,
+      slotW
+    } = handModel;
+    const rowHeight = scaledCardH;
+    if (handLayoutMode === 'below-boards-row') restoreHandBoardGap();
 
     handContainer.style.setProperty('position', 'absolute', 'important');
     handContainer.style.setProperty('display', 'block', 'important');

@@ -2,6 +2,17 @@
 
 Changes the fixed hand area anchor from the round-7 action-card right edge to the right edge of the round-7 background tile (`.bga-agri-v10-round-bg-tile[data-round="7"]`). The top edge is computed from `harvest-slot-9`/round-9 bottom with `getBoundingClientRect()`.
 
+# Testing
+
+This repository intentionally avoids screenshot tests because local fixtures do
+not include the full renderable BGA image set. Use Node's built-in test runner
+for layout-model and CSS-scope coverage:
+
+```powershell
+Get-ChildItem content -Recurse -Filter *.js | ForEach-Object { node --check $_.FullName }
+node --test tests\*.test.mjs
+```
+
 # v0.12.49-played-title-zfix
 
 Applies the same `.card-title` layer fix to played cards beside player boards, so improvement-card titles are raised above condition/requirement badges there as well as in the fixed hand area.
