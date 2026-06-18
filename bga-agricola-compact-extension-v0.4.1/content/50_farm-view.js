@@ -317,6 +317,7 @@
           const overlapRatio = n <= 1 ? 0 : Math.max(0, Math.min(1, overlap / cardH));
 
           list.forEach((card, index) => {
+            AC.originalUiHand?.clearHandLayoutFromCard?.(card);
             if (!card.dataset.bgaAgriV1211OriginalStyle) {
               card.dataset.bgaAgriV1211OriginalStyle = card.getAttribute('style') || '';
             }

@@ -50,6 +50,31 @@
     leftColumn.style.setProperty('z-index', '120', 'important');
   }
 
+  function clearHandLayoutFromCard(card) {
+    if (!card) return;
+    [
+      'position',
+      'left',
+      'top',
+      'margin',
+      'padding',
+      'overflow',
+      'box-sizing',
+      'z-index',
+      'transform',
+      'transform-origin',
+      '--bga-agri-v10-card-title-font-size',
+      '--bga-agri-v10-card-title-width'
+    ].forEach(prop => card.style.removeProperty(prop));
+    delete card.dataset.bgaAgriV10HandOriginalStyle;
+  }
+
+  function cleanupFormerHandCards() {
+    document.querySelectorAll('.player-card[data-bga-agri-v10-hand-original-style]').forEach(card => {
+      if (!card.closest('#hand-container')) clearHandLayoutFromCard(card);
+    });
+  }
+
   function scrubCompactHandInlineStyle(handContainer) {
     if (!handContainer) return;
     const wasManaged = handContainer.dataset.bgaAgriV10HandFixed === '1' ||
@@ -78,23 +103,7 @@
       '--agricolaCardScale'
     ].forEach(prop => handContainer.style.removeProperty(prop));
 
-    handContainer.querySelectorAll(':scope > .player-card').forEach(card => {
-      [
-        'position',
-        'left',
-        'top',
-        'margin',
-        'padding',
-        'overflow',
-        'box-sizing',
-        'z-index',
-        'transform',
-        'transform-origin',
-        '--bga-agri-v10-card-title-font-size',
-        '--bga-agri-v10-card-title-width'
-      ].forEach(prop => card.style.removeProperty(prop));
-      delete card.dataset.bgaAgriV10HandOriginalStyle;
-    });
+    handContainer.querySelectorAll(':scope > .player-card').forEach(clearHandLayoutFromCard);
 
     delete handContainer.dataset.bgaAgriV10HandFixed;
     delete handContainer.dataset.bgaAgriV10OriginalParentId;
@@ -186,6 +195,7 @@
   function layoutHandCards() {
     const central = document.querySelector('#central-board');
     if (!central) return;
+    cleanupFormerHandCards();
 
     // Keep the native hand DOM in its original BGA parent. Do not append it to
     // #central-board; position it visually with page coordinates so it scrolls
@@ -429,6 +439,8 @@
 
   AC.originalUiHand = {
     layoutHandCards,
-    restoreHandCards
+    restoreHandCards,
+    clearHandLayoutFromCard,
+    cleanupFormerHandCards
   };
 })();
