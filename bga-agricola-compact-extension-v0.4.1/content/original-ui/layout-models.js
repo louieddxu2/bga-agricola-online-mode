@@ -132,7 +132,7 @@
       turnH,
       rightLimit
     } = input;
-    const left = roundRight + 8;
+    const left = roundRight;
     const availableW = Math.max(0, rightLimit - left - 8);
     if (availableW < 40) return null;
 
@@ -147,7 +147,7 @@
     return {
       left,
       top: roundTop,
-      width: Math.max(slotW, columns * slotW + (columns - 1) * gap),
+      width: availableW,
       height,
       columns,
       slotW,

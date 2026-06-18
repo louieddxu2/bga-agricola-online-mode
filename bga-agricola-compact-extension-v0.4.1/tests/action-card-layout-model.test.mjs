@@ -46,6 +46,22 @@ test('action card region opens two columns only when the round-14 right side can
   assert.equal(twoColumns.columns, 2);
 });
 
+test('action card region starts at round 14 right edge and includes the right-side blank area', () => {
+  const region = computeActionCardRegion({
+    centralBottom: 620,
+    roundTop: 100,
+    roundRight: 1200,
+    roundWidth: 140,
+    roundHeight: 140,
+    turnW: 140,
+    turnH: 140,
+    rightLimit: 1700
+  });
+
+  assert.equal(region.left, 1200);
+  assert.equal(region.width, 492);
+});
+
 test('three players with action cards stay as three player rows', () => {
   const plan = computePlayerActionCardPlan([1, 1, 1], twoColumnRegion);
 
@@ -106,14 +122,14 @@ test('action card DOM layout uses the round-14 background as the right-edge sour
   assert.doesNotMatch(actionCardsSource, /roundRight:\s*turnRect\.right/);
 });
 
-test('action card holder converts viewport coordinates into offset-parent coordinates', () => {
+test('action card holder converts viewport coordinates through its rendered zero point', () => {
   assert.match(actionCardsSource, /leftColumn\.style\.setProperty\('position',\s*'absolute'/);
   assert.match(actionCardsSource, /leftColumn\.style\.setProperty\('width',\s*'0px'/);
   assert.match(actionCardsSource, /holder\.style\.setProperty\('position',\s*'absolute'/);
-  assert.match(actionCardsSource, /const\s+offsetParent\s*=\s*holder\.offsetParent/);
-  assert.match(actionCardsSource, /const\s+parentRect\s*=\s*offsetParent/);
-  assert.match(actionCardsSource, /layout\.left\s*\+\s*window\.scrollX\s*-\s*\(parentRect\.left\s*\+\s*window\.scrollX\)/);
-  assert.match(actionCardsSource, /layout\.top\s*\+\s*window\.scrollY\s*-\s*\(parentRect\.top\s*\+\s*window\.scrollY\)/);
+  assert.match(actionCardsSource, /holder\.style\.setProperty\('left',\s*'0px'/);
+  assert.match(actionCardsSource, /const\s+zeroRect\s*=\s*holder\.getBoundingClientRect\(\)/);
+  assert.match(actionCardsSource, /const\s+targetLeft\s*=\s*layout\.left\s*-\s*zeroRect\.left/);
+  assert.match(actionCardsSource, /const\s+targetTop\s*=\s*layout\.top\s*-\s*zeroRect\.top/);
   assert.doesNotMatch(actionCardsSource, /leftColumn\.style\.setProperty\('position',\s*'static'/);
   assert.doesNotMatch(actionCardsSource, /holder\.style\.setProperty\('position',\s*'fixed'/);
 });

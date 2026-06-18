@@ -78,13 +78,12 @@
 
     holder.style.setProperty('display', 'block', 'important');
     holder.style.setProperty('position', 'absolute', 'important');
+    holder.style.setProperty('left', '0px', 'important');
+    holder.style.setProperty('top', '0px', 'important');
 
-    const offsetParent = holder.offsetParent;
-    const parentRect = offsetParent
-      ? offsetParent.getBoundingClientRect()
-      : { left: -window.scrollX, top: -window.scrollY };
-    const targetLeft = layout.left + window.scrollX - (parentRect.left + window.scrollX);
-    const targetTop = layout.top + window.scrollY - (parentRect.top + window.scrollY);
+    const zeroRect = holder.getBoundingClientRect();
+    const targetLeft = layout.left - zeroRect.left;
+    const targetTop = layout.top - zeroRect.top;
 
     holder.style.setProperty('left', `${Math.round(targetLeft)}px`, 'important');
     holder.style.setProperty('top', `${Math.round(targetTop)}px`, 'important');
