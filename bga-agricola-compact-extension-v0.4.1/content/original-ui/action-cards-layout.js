@@ -32,7 +32,7 @@
     const turnSize = getTurnSize();
     return models.computeActionCardRegion?.({
       centralBottom: centralRect.bottom,
-      roundTop: topRect.top,
+      roundTop: rightRect.top || topRect.top,
       roundRight: rightRect.right,
       roundWidth: rightRect.width || topRect.width,
       roundHeight: rightRect.height || topRect.height,
@@ -90,12 +90,21 @@
     holder.style.setProperty('z-index', '110', 'important');
     holder.style.setProperty('pointer-events', 'auto', 'important');
 
-    const wrapper = document.querySelector('.player-board-wrapper');
-    const sourceStyle = wrapper ? getComputedStyle(wrapper) : getComputedStyle(document.documentElement);
-    const varW = parseFloat(sourceStyle.getPropertyValue('--agricolaCardWidth'));
-    const varH = parseFloat(sourceStyle.getPropertyValue('--agricolaCardHeight'));
-    const cardW = (Number.isFinite(varW) && varW > 50) ? varW : 211.5;
-    const cardH = (Number.isFinite(varH) && varH > 50) ? varH : 336.6;
+    const firstActionCard = activeGroups[0]?.querySelector('.player-card');
+    const actionCardStyle = firstActionCard ? getComputedStyle(firstActionCard) : null;
+    const actionCardRect = firstActionCard?.getBoundingClientRect?.();
+    const actionCardW = Math.max(
+      parseFloat(actionCardStyle?.width) || 0,
+      firstActionCard?.offsetWidth || 0,
+      actionCardRect?.width || 0,
+      115
+    );
+    const actionCardH = Math.max(
+      parseFloat(actionCardStyle?.height) || 0,
+      firstActionCard?.offsetHeight || 0,
+      actionCardRect?.height || 0,
+      115
+    );
     const groupCardCounts = activeGroups.map(group => group.querySelectorAll('.player-card').length);
     const plan = models.computePlayerActionCardPlan(groupCardCounts, layout);
 
@@ -125,8 +134,8 @@
         cardCount: cards.length,
         plan,
         layout,
-        cardW,
-        cardH,
+        cardW: actionCardW,
+        cardH: actionCardH,
         headerH
       });
       const { cardColumns, cardCellW, cardCellH, scale, scaledCardW, overlapStep } = groupLayout;
@@ -186,8 +195,8 @@
         card.style.setProperty('transform', `scale(${scale})`, 'important');
         card.style.setProperty('transform-origin', 'top left', 'important');
         card.style.setProperty('z-index', `${20 + cardIndex}`, 'important');
-        card.style.setProperty('--bga-agri-v10-card-title-font-size', `${cardText.cardTitleFontSize(card, cardW, scale)}px`);
-        card.style.setProperty('--bga-agri-v10-card-title-width', `${cardW}px`);
+        card.style.setProperty('--bga-agri-v10-card-title-font-size', `${cardText.cardTitleFontSize(card, actionCardW, scale)}px`);
+        card.style.setProperty('--bga-agri-v10-card-title-width', `${actionCardW}px`);
       });
     });
   }

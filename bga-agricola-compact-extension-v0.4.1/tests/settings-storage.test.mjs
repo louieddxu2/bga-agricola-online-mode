@@ -9,4 +9,5 @@ test('settings storage access does not reference undeclared chrome global', () =
   assert.match(settingsSource, /globalThis\.chrome\?\.storage\?\.local/);
   assert.doesNotMatch(settingsSource, /(?<!globalThis\.)chrome\?\.storage/);
   assert.doesNotMatch(settingsSource, /(?<!globalThis\.)chrome\.storage/);
+  assert.doesNotMatch(settingsSource, /localStorageArea\(\)\?\./);
 });

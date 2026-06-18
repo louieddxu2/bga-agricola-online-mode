@@ -39,13 +39,15 @@
 
     save(patch = {}) {
       AC.state.settings = { ...AC.state.settings, ...patch, version: AC.VERSION };
-      localStorageArea()?.set(AC.state.settings);
+      const storage = localStorageArea();
+      if (storage) storage.set(AC.state.settings);
       AC.applyVars?.();
     },
 
     reset(keepEnabled = true) {
       AC.state.settings = { ...AC.DEFAULTS, enabled: keepEnabled };
-      localStorageArea()?.set(AC.state.settings);
+      const storage = localStorageArea();
+      if (storage) storage.set(AC.state.settings);
       AC.applyVars?.();
     }
   };

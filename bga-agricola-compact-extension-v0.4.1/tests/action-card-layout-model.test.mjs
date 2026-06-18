@@ -101,6 +101,7 @@ test('more than four action cards use compressed overlap mode', () => {
 test('action card DOM layout uses turn 14 as the right-edge source', () => {
   assert.match(actionCardsSource, /const\s+topSource\s*=\s*round14Bg\s*\|\|\s*turn14/);
   assert.match(actionCardsSource, /const\s+rightSource\s*=\s*turn14\s*\|\|\s*round14Bg/);
+  assert.match(actionCardsSource, /roundTop:\s*rightRect\.top\s*\|\|\s*topRect\.top/);
   assert.match(actionCardsSource, /roundRight:\s*rightRect\.right/);
   assert.doesNotMatch(actionCardsSource, /roundRight:\s*topRect\.right/);
 });
@@ -110,4 +111,12 @@ test('action card holder is fixed outside the player-board grid flow', () => {
   assert.match(actionCardsSource, /leftColumn\.style\.setProperty\('width',\s*'0px'/);
   assert.match(actionCardsSource, /holder\.style\.setProperty\('position',\s*'fixed'/);
   assert.doesNotMatch(actionCardsSource, /leftColumn\.style\.setProperty\('position',\s*'static'/);
+});
+
+test('action card layout sizes cards from the action-card DOM itself', () => {
+  assert.match(actionCardsSource, /const\s+firstActionCard\s*=\s*activeGroups\[0\]\?\.querySelector\('\.player-card'\)/);
+  assert.match(actionCardsSource, /const\s+actionCardW\s*=\s*Math\.max\(/);
+  assert.match(actionCardsSource, /cardW:\s*actionCardW/);
+  assert.match(actionCardsSource, /cardH:\s*actionCardH/);
+  assert.doesNotMatch(actionCardsSource, /--agricolaCardWidth/);
 });
