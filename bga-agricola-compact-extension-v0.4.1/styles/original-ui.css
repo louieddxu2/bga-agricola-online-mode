@@ -558,6 +558,10 @@ html.bga-agri-v10-open.bga-agri-v10-original-compact #action-cards-holder[data-b
   word-break: normal !important;
 }
 
+html.bga-agri-v10-open.bga-agri-v10-original-compact #logs .log.notif_playerstatus {
+  display: none !important;
+}
+
 html.bga-agri-v10-open.bga-agri-v10-original-compact #player-boards .player-board-resizable {
   min-width: 0 !important;
   min-height: 0 !important;
