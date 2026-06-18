@@ -27,6 +27,11 @@
         "content/70_interactions.js",
         "content/80_observer.js",
         "content/original-ui/layout-models.js",
+        "content/original-ui/style-state.js",
+        "content/original-ui/preferences.js",
+        "content/original-ui/card-text.js",
+        "content/original-ui/action-cards-layout.js",
+        "content/original-ui/hand-layout.js",
         "content/85_original-ui-compact.js",
         "content/90_debug.js"
       ],

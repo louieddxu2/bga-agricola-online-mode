@@ -13,6 +13,14 @@ Get-ChildItem content -Recurse -Filter *.js | ForEach-Object { node --check $_.F
 node --test tests\*.test.mjs
 ```
 
+# Original UI Module Boundaries
+
+`content/85_original-ui-compact.js` owns the compact-mode lifecycle and the
+central round/log layout. Hand-card layout, player action-card layout,
+preference forcing/restoration, card-title sizing, and reusable style
+backup/restore helpers live under `content/original-ui/` so they can be tested
+and maintained independently without changing the compact-mode entrypoint.
+
 # v0.12.49-played-title-zfix
 
 Applies the same `.card-title` layer fix to played cards beside player boards, so improvement-card titles are raised above condition/requirement badges there as well as in the fixed hand area.

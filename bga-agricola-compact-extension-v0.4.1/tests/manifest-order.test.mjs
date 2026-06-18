@@ -13,3 +13,25 @@ test('layout models load before original compact UI script', () => {
   assert.notEqual(compactIndex, -1);
   assert.ok(modelIndex < compactIndex);
 });
+
+test('original UI helper modules load before feature layout modules and lifecycle script', () => {
+  const indexOf = script => {
+    const index = scripts.indexOf(script);
+    assert.notEqual(index, -1, `${script} should be listed in manifest`);
+    return index;
+  };
+
+  const styleIndex = indexOf('content/original-ui/style-state.js');
+  const preferencesIndex = indexOf('content/original-ui/preferences.js');
+  const cardTextIndex = indexOf('content/original-ui/card-text.js');
+  const actionCardsIndex = indexOf('content/original-ui/action-cards-layout.js');
+  const handIndex = indexOf('content/original-ui/hand-layout.js');
+  const compactIndex = indexOf('content/85_original-ui-compact.js');
+
+  assert.ok(styleIndex < actionCardsIndex);
+  assert.ok(cardTextIndex < actionCardsIndex);
+  assert.ok(cardTextIndex < handIndex);
+  assert.ok(preferencesIndex < compactIndex);
+  assert.ok(actionCardsIndex < compactIndex);
+  assert.ok(handIndex < compactIndex);
+});
