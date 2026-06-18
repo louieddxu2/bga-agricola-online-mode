@@ -50,9 +50,9 @@
     leftColumn.style.setProperty('z-index', '120', 'important');
   }
 
-  function clearHandLayoutFromCard(card) {
+  function clearHandLayoutFromCard(card, options = {}) {
     if (!card) return;
-    [
+    const props = [
       'position',
       'left',
       'top',
@@ -62,16 +62,21 @@
       'box-sizing',
       'z-index',
       'transform',
-      'transform-origin',
-      '--bga-agri-v10-card-title-font-size',
-      '--bga-agri-v10-card-title-width'
-    ].forEach(prop => card.style.removeProperty(prop));
+      'transform-origin'
+    ];
+    if (!options.preserveTitleVars) {
+      props.push(
+        '--bga-agri-v10-card-title-font-size',
+        '--bga-agri-v10-card-title-width'
+      );
+    }
+    props.forEach(prop => card.style.removeProperty(prop));
     delete card.dataset.bgaAgriV10HandOriginalStyle;
   }
 
   function cleanupFormerHandCards() {
     document.querySelectorAll('.player-card[data-bga-agri-v10-hand-original-style]').forEach(card => {
-      if (!card.closest('#hand-container')) clearHandLayoutFromCard(card);
+      if (!card.closest('#hand-container')) clearHandLayoutFromCard(card, { preserveTitleVars: true });
     });
   }
 

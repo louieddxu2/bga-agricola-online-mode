@@ -20,9 +20,9 @@ test('hand restore scrubs compact-only positioning from unmanaged residue', () =
   assert.match(handSource, /function\s+clearHandLayoutFromCard\s*\(/);
   assert.match(handSource, /function\s+cleanupFormerHandCards\s*\(/);
   assert.match(handSource, /\.player-card\[data-bga-agri-v10-hand-original-style\]/);
-  assert.match(handSource, /!\s*card\.closest\('#hand-container'\)/);
+  assert.match(handSource, /!\s*card\.closest\('#hand-container'\)[\s\S]*preserveTitleVars:\s*true/);
   assert.match(handSource, /function\s+scrubCompactHandInlineStyle\s*\(/);
   assert.match(handSource, /'position'[\s\S]*'left'[\s\S]*'--agricolaCardWidth'[\s\S]*\.forEach\(prop\s*=>\s*handContainer\.style\.removeProperty\(prop\)\)/);
-  assert.match(handSource, /'transform'[\s\S]*'--bga-agri-v10-card-title-font-size'[\s\S]*\.forEach\(prop\s*=>\s*card\.style\.removeProperty\(prop\)\)/);
+  assert.match(handSource, /if\s*\(!options\.preserveTitleVars\)\s*\{[\s\S]*--bga-agri-v10-card-title-font-size[\s\S]*--bga-agri-v10-card-title-width/);
   assert.match(handSource, /clearHandLayoutFromCard,\s*cleanupFormerHandCards/);
 });
