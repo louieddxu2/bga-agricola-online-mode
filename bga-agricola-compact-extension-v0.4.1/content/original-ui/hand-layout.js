@@ -124,6 +124,38 @@
     return candidates.find(el => el.querySelector(':scope > .player-card')) || candidates[0] || null;
   }
 
+  function mergeRects(rects, fallback) {
+    const visibleRects = rects.filter(r => r && r.width > 0 && r.height > 0);
+    if (!visibleRects.length) return fallback;
+
+    const left = Math.min(...visibleRects.map(r => r.left));
+    const top = Math.min(...visibleRects.map(r => r.top));
+    const right = Math.max(...visibleRects.map(r => r.right));
+    const bottom = Math.max(...visibleRects.map(r => r.bottom));
+    return {
+      left,
+      top,
+      right,
+      bottom,
+      width: right - left,
+      height: bottom - top
+    };
+  }
+
+  function getPlayerBoardsVisualRect(playerBoards) {
+    if (!playerBoards) return null;
+    const fallback = playerBoards.getBoundingClientRect();
+    const nodes = [
+      ...playerBoards.querySelectorAll(':scope > .player-board-resizable'),
+      ...playerBoards.querySelectorAll('.player-board-wrapper'),
+      ...playerBoards.querySelectorAll('.player-board-holder'),
+      ...playerBoards.querySelectorAll('.agricola-player-board'),
+      ...playerBoards.querySelectorAll('.cards-wrapper')
+    ];
+
+    return mergeRects(nodes.map(el => el.getBoundingClientRect()), fallback);
+  }
+
   function layoutHandCards() {
     const central = document.querySelector('#central-board');
     if (!central) return;
@@ -192,6 +224,7 @@
     const occupationCards = allCards.filter(card => card.classList.contains('occupation'));
     const improvementCards = allCards.filter(card => !card.classList.contains('occupation'));
 
+    const previousHandLayoutMode = handContainer.dataset.bgaAgriV10HandLayoutMode || 'right-two-row';
     let handModelInput = {
       targetViewportLeft,
       targetViewportRight,
@@ -201,13 +234,14 @@
       rightEdge: window.innerWidth,
       cardCount: allCards.length,
       cardW,
-      cardH
+      cardH,
+      prevMode: previousHandLayoutMode
     };
 
     const playerBoards = document.querySelector('#player-boards');
     if (playerBoards) {
       const currentMarginTop = parseFloat(playerBoards.style.marginTop) || 0;
-      const boardsRect = playerBoards.getBoundingClientRect();
+      const boardsRect = getPlayerBoardsVisualRect(playerBoards);
       const naturalBoardsTop = boardsRect.top - currentMarginTop;
       const naturalBoardsBottom = boardsRect.bottom - currentMarginTop;
       const rightSideRect = (document.querySelector('#right-side') || document.querySelector('#right-side-second-part'))?.getBoundingClientRect();
@@ -225,13 +259,20 @@
       scaledCardW,
       scaledCardH,
       handViewportLeft,
-      handViewportTop,
       handAvailableW,
       handHeight,
       slotW
     } = handModel;
+    let handViewportTop = handModel.handViewportTop;
     const rowHeight = scaledCardH;
-    if (handLayoutMode === 'below-boards-row') restoreHandBoardGap();
+    if (handLayoutMode === 'below-boards-row') {
+      restoreHandBoardGap();
+      if (playerBoards) {
+        const shiftedBoardsRect = getPlayerBoardsVisualRect(playerBoards);
+        if (shiftedBoardsRect) handViewportTop = shiftedBoardsRect.bottom + 4;
+      }
+    }
+    handContainer.dataset.bgaAgriV10HandLayoutMode = handLayoutMode;
 
     handContainer.style.setProperty('position', 'absolute', 'important');
     handContainer.style.setProperty('display', 'block', 'important');
@@ -360,6 +401,7 @@
       }
       delete handContainer.dataset.bgaAgriV10HandFixed;
       delete handContainer.dataset.bgaAgriV10OriginalParentId;
+      delete handContainer.dataset.bgaAgriV10HandLayoutMode;
     });
 
     restoreHandBoardGap();

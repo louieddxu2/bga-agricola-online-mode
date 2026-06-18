@@ -23,6 +23,7 @@
       cardCount,
       cardW,
       cardH,
+      prevMode = 'right-two-row',
       minScale = 0.16,
       maxScale = 0.9
     } = input;
@@ -40,7 +41,12 @@
     if (Number.isFinite(boardsTop) && Number.isFinite(boardsBottom)) {
       const centralToBoardsGap = Math.max(0, boardsTop - centralBottom);
       const boardsToViewportGap = Math.max(0, viewportHeight - boardsBottom);
-      const canUseBelowBoards = centralToBoardsGap + boardsToViewportGap > scaledCardH;
+      const totalLowerSpace = centralToBoardsGap + boardsToViewportGap;
+      const enterBelowBoards = totalLowerSpace > scaledCardH + 16;
+      const stayBelowBoards = totalLowerSpace > scaledCardH - 24;
+      const canUseBelowBoards = prevMode === 'below-boards-row'
+        ? stayBelowBoards
+        : enterBelowBoards;
 
       if (canUseBelowBoards) {
         handLayoutMode = 'below-boards-row';

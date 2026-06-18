@@ -1,9 +1,11 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { createRequire } from 'node:module';
+import { readFileSync } from 'node:fs';
 
 const require = createRequire(import.meta.url);
 const { computeHandLayout } = require('../content/original-ui/layout-models.js');
+const handLayoutSource = readFileSync(new URL('../content/original-ui/hand-layout.js', import.meta.url), 'utf8');
 
 const baseInput = {
   targetViewportLeft: 600,
@@ -47,6 +49,26 @@ test('moves hand below player boards when combined lower space can fit a card', 
   assert.equal(result.handHeight, result.scaledCardH);
 });
 
+test('keeps below-board hand mode stable within the hysteresis band', () => {
+  const previousRight = computeHandLayout({
+    ...baseInput,
+    boardsLeft: 0,
+    boardsTop: 700,
+    boardsBottom: 930,
+    prevMode: 'right-two-row'
+  });
+  const previousBelow = computeHandLayout({
+    ...baseInput,
+    boardsLeft: 0,
+    boardsTop: 700,
+    boardsBottom: 930,
+    prevMode: 'below-boards-row'
+  });
+
+  assert.equal(previousRight.mode, 'right-two-row');
+  assert.equal(previousBelow.mode, 'below-boards-row');
+});
+
 test('below-board hand size is limited by width when many cards are present', () => {
   const fewCards = computeHandLayout({
     ...baseInput,
@@ -77,4 +99,15 @@ test('below-board hand size is capped at the configured maximum', () => {
 
   assert.equal(result.mode, 'below-boards-row');
   assert.equal(result.cardScale, 0.9);
+});
+
+test('hand layout measures player boards by their visual child rects', () => {
+  assert.match(handLayoutSource, /function\s+getPlayerBoardsVisualRect\s*\(/);
+  assert.match(handLayoutSource, /querySelectorAll\('\.player-board-wrapper'\)/);
+  assert.match(handLayoutSource, /querySelectorAll\('\.agricola-player-board'\)/);
+  assert.match(handLayoutSource, /querySelectorAll\('\.cards-wrapper'\)/);
+  assert.match(handLayoutSource, /const\s+previousHandLayoutMode\s*=\s*handContainer\.dataset\.bgaAgriV10HandLayoutMode/);
+  assert.match(handLayoutSource, /prevMode:\s*previousHandLayoutMode/);
+  assert.match(handLayoutSource, /const\s+shiftedBoardsRect\s*=\s*getPlayerBoardsVisualRect\(playerBoards\)/);
+  assert.match(handLayoutSource, /delete\s+handContainer\.dataset\.bgaAgriV10HandLayoutMode/);
 });
