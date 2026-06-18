@@ -97,6 +97,21 @@ test('one player with multiple cards keeps the cards under one player name', () 
   assert.ok(group.scale <= 0.9);
 });
 
+test('action card layout can use full-size action-card slots when requested', () => {
+  const plan = computePlayerActionCardPlan([1], twoColumnRegion);
+  const group = computePlayerActionCardGroupLayout({
+    cardCount: 1,
+    plan,
+    layout: twoColumnRegion,
+    cardW: 108,
+    cardH: 108,
+    headerH: 22,
+    maxScale: 1
+  });
+
+  assert.equal(group.scale, 1);
+});
+
 test('more than four action cards use compressed overlap mode', () => {
   const plan = computePlayerActionCardPlan([2, 2, 1], twoColumnRegion);
   const group = computePlayerActionCardGroupLayout({
@@ -134,10 +149,14 @@ test('action card holder converts viewport coordinates through its rendered zero
   assert.doesNotMatch(actionCardsSource, /holder\.style\.setProperty\('position',\s*'fixed'/);
 });
 
-test('action card layout sizes cards from the action-card DOM itself', () => {
+test('action card layout gives the native holder its own mini-card size variables', () => {
   assert.match(actionCardsSource, /const\s+firstActionCard\s*=\s*activeGroups\[0\]\?\.querySelector\('\.player-card'\)/);
+  assert.match(actionCardsSource, /const\s+actionCardBaseSize\s*=\s*Math\.max\(/);
+  assert.match(actionCardsSource, /holder\.style\.setProperty\('--agricolaCardWidth'/);
+  assert.match(actionCardsSource, /holder\.style\.setProperty\('--agricolaCardHeight'/);
+  assert.match(actionCardsSource, /holder\.style\.setProperty\('--agricolaCardScale'/);
   assert.match(actionCardsSource, /const\s+actionCardW\s*=\s*Math\.max\(/);
   assert.match(actionCardsSource, /cardW:\s*actionCardW/);
   assert.match(actionCardsSource, /cardH:\s*actionCardH/);
-  assert.doesNotMatch(actionCardsSource, /--agricolaCardWidth/);
+  assert.match(actionCardsSource, /maxScale:\s*1/);
 });

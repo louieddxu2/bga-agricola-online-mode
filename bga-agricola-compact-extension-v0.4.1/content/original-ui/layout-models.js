@@ -91,7 +91,7 @@
   }
 
   function computePlayerActionCardGroupLayout(input) {
-    const { cardCount, plan, layout, cardW, cardH, headerH } = input;
+    const { cardCount, plan, layout, cardW, cardH, headerH, maxScale = 0.9 } = input;
     const groupW = plan.groupW;
     const groupH = plan.groupH;
     const cardColumns = plan.useClearLayout && cardCount > 1 && groupW >= (layout.slotW * 2 + layout.gap) ? 2 : 1;
@@ -101,7 +101,7 @@
     const cardCellH = plan.useClearLayout
       ? (cardAreaH - layout.gap * Math.max(0, cardRows - 1)) / Math.max(1, cardRows)
       : cardAreaH;
-    const scale = clamp(Math.min((cardCellW - 6) / cardW, (cardCellH - 4) / cardH), 0.16, 0.9);
+    const scale = clamp(Math.min((cardCellW - 6) / cardW, (cardCellH - 4) / cardH), 0.16, maxScale);
     const scaledCardW = cardW * scale;
     const scaledCardH = cardH * scale;
     const overlapStep = cardCount <= 1

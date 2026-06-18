@@ -95,6 +95,10 @@
     holder.style.setProperty('overflow', 'visible', 'important');
     holder.style.setProperty('z-index', '110', 'important');
     holder.style.setProperty('pointer-events', 'auto', 'important');
+    const actionCardBaseSize = Math.max(40, Math.min(layout.slotW, layout.slotH - 32));
+    holder.style.setProperty('--agricolaCardWidth', `${actionCardBaseSize}px`, 'important');
+    holder.style.setProperty('--agricolaCardHeight', `${actionCardBaseSize}px`, 'important');
+    holder.style.setProperty('--agricolaCardScale', `${actionCardBaseSize / 235}`, 'important');
 
     const firstActionCard = activeGroups[0]?.querySelector('.player-card');
     const actionCardStyle = firstActionCard ? getComputedStyle(firstActionCard) : null;
@@ -142,7 +146,8 @@
         layout,
         cardW: actionCardW,
         cardH: actionCardH,
-        headerH
+        headerH,
+        maxScale: 1
       });
       const { cardColumns, cardCellW, cardCellH, scale, scaledCardW, overlapStep } = groupLayout;
 
