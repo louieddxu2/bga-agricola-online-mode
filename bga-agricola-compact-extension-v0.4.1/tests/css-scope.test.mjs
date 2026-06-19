@@ -32,6 +32,7 @@ test('player board name enlargement is scoped and avoids transform scaling', () 
 
   assert.match(rule, /font-size:\s*30px\s*!important;/);
   assert.match(rule, /line-height:\s*1\.05\s*!important;/);
+  assert.match(rule, /right:\s*45px\s*!important;/);
   assert.doesNotMatch(rule, /transform\s*:/);
   assert.doesNotMatch(rule, /scale\(/);
 });
@@ -41,6 +42,8 @@ test('first-player marker enlargement uses the name tab reserved slot without tr
     /html\.bga-agri-v10-open\.bga-agri-v10-original-compact\s+#player-boards\s+\.resources-bar-holder\.active\s+\.agricola-first-player-holder\s*\{[^}]+\}/m
   )?.[0] || '';
 
+  assert.match(rule, /position:\s*relative\s*!important;/);
+  assert.match(rule, /top:\s*-15px\s*!important;/);
   assert.match(rule, /width:\s*30px\s*!important;/);
   assert.match(rule, /height:\s*30px\s*!important;/);
   assert.match(rule, /font-size:\s*30px\s*!important;/);
