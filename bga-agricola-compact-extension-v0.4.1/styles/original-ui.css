@@ -821,11 +821,12 @@ html.bga-agri-v10-open.bga-agri-v10-original-compact #player-boards .resources-b
 
 /* v0.12.52: match the native first-player marker to the enlarged name tab.
    The name tab reserves a 45px right-side slot; the marker grows through
-   normal box sizing and is lifted visually without changing header flow. */
+   normal box sizing and stays anchored in that slot. */
 html.bga-agri-v10-open.bga-agri-v10-original-compact #player-boards .resources-bar-holder.active .agricola-first-player-holder {
   box-sizing: border-box !important;
-  position: relative !important;
-  top: -15px !important;
+  position: absolute !important;
+  right: 8px !important;
+  top: -36px !important;
   width: 30px !important;
   min-width: 30px !important;
   height: 30px !important;

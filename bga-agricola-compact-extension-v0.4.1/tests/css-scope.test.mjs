@@ -42,8 +42,9 @@ test('first-player marker enlargement uses the name tab reserved slot without tr
     /html\.bga-agri-v10-open\.bga-agri-v10-original-compact\s+#player-boards\s+\.resources-bar-holder\.active\s+\.agricola-first-player-holder\s*\{[^}]+\}/m
   )?.[0] || '';
 
-  assert.match(rule, /position:\s*relative\s*!important;/);
-  assert.match(rule, /top:\s*-15px\s*!important;/);
+  assert.match(rule, /position:\s*absolute\s*!important;/);
+  assert.match(rule, /right:\s*8px\s*!important;/);
+  assert.match(rule, /top:\s*-36px\s*!important;/);
   assert.match(rule, /width:\s*30px\s*!important;/);
   assert.match(rule, /height:\s*30px\s*!important;/);
   assert.match(rule, /font-size:\s*30px\s*!important;/);
