@@ -850,6 +850,8 @@ html.bga-agri-v10-open.bga-agri-v10-original-compact #player-boards .resources-b
   padding: 0 !important;
   font-size: 30px !important;
   line-height: 1 !important;
+  transform: scale(2) !important;
+  transform-origin: center center !important;
 }
 
 /* v0.12.32: keep the right-side log/action-history panels scrollable, but hide

@@ -37,7 +37,7 @@ test('player board name enlargement is scoped and avoids transform scaling', () 
   assert.doesNotMatch(rule, /scale\(/);
 });
 
-test('first-player marker enlargement uses the name tab reserved slot without transform scaling', () => {
+test('first-player marker holder uses the name tab reserved slot without transform scaling', () => {
   const rule = css.match(
     /html\.bga-agri-v10-open\.bga-agri-v10-original-compact\s+#player-boards\s+\.resources-bar-holder\.active\s+\.agricola-first-player-holder\s*\{[^}]+\}/m
   )?.[0] || '';
@@ -50,4 +50,13 @@ test('first-player marker enlargement uses the name tab reserved slot without tr
   assert.match(rule, /font-size:\s*30px\s*!important;/);
   assert.doesNotMatch(rule, /transform\s*:/);
   assert.doesNotMatch(rule, /scale\(/);
+});
+
+test('first-player meeple sprite is visually enlarged inside the stable holder slot', () => {
+  const rule = css.match(
+    /html\.bga-agri-v10-open\.bga-agri-v10-original-compact\s+#player-boards\s+\.resources-bar-holder\.active\s+\.agricola-first-player-holder\s+\.agricola-meeple,\s*html\.bga-agri-v10-open\.bga-agri-v10-original-compact\s+#player-boards\s+\.resources-bar-holder\.active\s+\.agricola-first-player-holder\s+\.meeple-container\s*\{[^}]+\}/m
+  )?.[0] || '';
+
+  assert.match(rule, /transform:\s*scale\(2\)\s*!important;/);
+  assert.match(rule, /transform-origin:\s*center center\s*!important;/);
 });
