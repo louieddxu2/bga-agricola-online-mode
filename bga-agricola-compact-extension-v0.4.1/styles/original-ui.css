@@ -819,6 +819,36 @@ html.bga-agri-v10-open.bga-agri-v10-original-compact #player-boards .resources-b
   top: -2px !important;
 }
 
+/* v0.12.52: match the native first-player marker to the enlarged name tab.
+   The name tab reserves this same right-side slot with right: 30px, so the
+   marker can grow through normal box sizing without shifting the header. */
+html.bga-agri-v10-open.bga-agri-v10-original-compact #player-boards .resources-bar-holder.active .agricola-first-player-holder {
+  box-sizing: border-box !important;
+  width: 30px !important;
+  min-width: 30px !important;
+  height: 30px !important;
+  min-height: 30px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  overflow: visible !important;
+  font-size: 30px !important;
+  line-height: 1 !important;
+}
+
+html.bga-agri-v10-open.bga-agri-v10-original-compact #player-boards .resources-bar-holder.active .agricola-first-player-holder .agricola-meeple,
+html.bga-agri-v10-open.bga-agri-v10-original-compact #player-boards .resources-bar-holder.active .agricola-first-player-holder .meeple-container {
+  box-sizing: border-box !important;
+  width: 30px !important;
+  min-width: 30px !important;
+  height: 30px !important;
+  min-height: 30px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  font-size: 30px !important;
+  line-height: 1 !important;
+}
+
 /* v0.12.32: keep the right-side log/action-history panels scrollable, but hide
    their visual scrollbars so the moved player boards are not covered on the
    right edge. */
