@@ -35,3 +35,10 @@ test('original UI helper modules load before feature layout modules and lifecycl
   assert.ok(actionCardsIndex < compactIndex);
   assert.ok(handIndex < compactIndex);
 });
+
+test('legacy cloned resource row module is not loaded', () => {
+  const stylesheets = manifest.content_scripts[0].css || [];
+
+  assert.equal(scripts.includes('content/40_resource-row.js'), false);
+  assert.equal(stylesheets.includes('styles/resource-row.css'), false);
+});

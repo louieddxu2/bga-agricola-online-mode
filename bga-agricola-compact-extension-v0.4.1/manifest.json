@@ -21,7 +21,6 @@
         "content/10_settings.js",
         "content/20_dom-query.js",
         "content/30_panel-shell.js",
-        "content/40_resource-row.js",
         "content/50_farm-view.js",
         "content/60_card-columns.js",
         "content/70_interactions.js",
@@ -38,7 +37,6 @@
       "css": [
         "styles/base.css",
         "styles/panel.css",
-        "styles/resource-row.css",
         "styles/farm-view.css",
         "styles/card-columns.css",
         "styles/debug.css",
