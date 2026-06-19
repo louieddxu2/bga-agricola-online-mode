@@ -19,6 +19,7 @@
       centralHeight,
       boardsLeft = 0,
       boardsHeight,
+      boardsViewportBottom,
       viewportHeight,
       rightEdge,
       cardCount,
@@ -45,7 +46,9 @@
       if (canUseBelowBoards) {
         handLayoutMode = 'below-boards-row';
         handViewportLeft = Math.max(0, boardsLeft);
-        handViewportTop = viewportHeight - lowerSpace - 4;
+        handViewportTop = Number.isFinite(boardsViewportBottom)
+          ? boardsViewportBottom + 4
+          : viewportHeight - lowerSpace - 4;
         handAvailableW = Math.max(120, rightEdge - handViewportLeft - 12);
         const safeCardCount = Math.max(1, cardCount);
         const heightScale = lowerSpace / cardH;

@@ -39,12 +39,13 @@ test('moves hand below player boards when viewport minus known stack heights can
   const result = computeHandLayout({
     ...baseInput,
     boardsLeft: 0,
-    boardsHeight: 170
+    boardsHeight: 170,
+    boardsViewportBottom: 907
   });
 
   assert.equal(result.mode, 'below-boards-row');
   assert.equal(result.handViewportLeft, 0);
-  assert.equal(result.handViewportTop, 854);
+  assert.equal(result.handViewportTop, 911);
   assert.equal(result.handAvailableW, 1788);
   assert.equal(result.handHeight, result.scaledCardH);
 });
@@ -53,7 +54,8 @@ test('uses only viewport height minus status, central board, and farm board heig
   const enoughStackRemainder = computeHandLayout({
     ...baseInput,
     boardsLeft: 0,
-    boardsHeight: 170
+    boardsHeight: 170,
+    boardsViewportBottom: 907
   });
   const notEnoughStackRemainder = computeHandLayout({
     ...baseInput,
@@ -70,13 +72,15 @@ test('below-board hand size is limited by width when many cards are present', ()
     ...baseInput,
     viewportHeight: 1300,
     cardCount: 4,
-    boardsHeight: 170
+    boardsHeight: 170,
+    boardsViewportBottom: 907
   });
   const manyCards = computeHandLayout({
     ...baseInput,
     viewportHeight: 1300,
     cardCount: 14,
-    boardsHeight: 170
+    boardsHeight: 170,
+    boardsViewportBottom: 907
   });
 
   assert.equal(fewCards.mode, 'below-boards-row');
@@ -89,6 +93,7 @@ test('below-board hand size is capped at the configured maximum', () => {
     ...baseInput,
     cardCount: 1,
     boardsHeight: 170,
+    boardsViewportBottom: 907,
     viewportHeight: 1400,
     rightEdge: 2200
   });
@@ -113,6 +118,11 @@ test('hand layout measures player boards by their visual child rects', () => {
   assert.match(handLayoutSource, /topStatusHeight:\s*getTopStatusHeight\(\)/);
   assert.match(handLayoutSource, /centralHeight:\s*centralRect\.height/);
   assert.match(handLayoutSource, /boardsHeight:\s*boardsRect\.height/);
+  assert.match(handLayoutSource, /boardsViewportBottom:\s*boardsRect\.bottom/);
+  assert.match(handLayoutSource, /function\s+reserveHandClipSpace\s*\(/);
+  assert.match(handLayoutSource, /#overall-content/);
+  assert.match(handLayoutSource, /bgaAgriV10HandClipOriginalStyle/);
+  assert.match(handLayoutSource, /reserveHandClipSpace\(handViewportTop \+ handHeight\)/);
   assert.doesNotMatch(handLayoutSource, /const\s+shiftedBoardsRect\s*=\s*getPlayerBoardsVisualRect\(playerBoards\)/);
   assert.match(handLayoutSource, /delete\s+handContainer\.dataset\.bgaAgriV10HandLayoutMode/);
 });

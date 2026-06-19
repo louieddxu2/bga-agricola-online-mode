@@ -30,6 +30,12 @@
       else el.removeAttribute('style');
       delete el.dataset.bgaAgriV10HandBoardGapOriginalStyle;
     });
+    document.querySelectorAll('[data-bga-agri-v10-hand-clip-original-style]').forEach(el => {
+      const old = el.dataset.bgaAgriV10HandClipOriginalStyle;
+      if (old) el.setAttribute('style', old);
+      else el.removeAttribute('style');
+      delete el.dataset.bgaAgriV10HandClipOriginalStyle;
+    });
   }
 
   function prepareHandAncestors(handContainer) {
@@ -197,6 +203,19 @@
     return rect && rect.height > 0 ? rect.height : 0;
   }
 
+  function reserveHandClipSpace(handViewportBottom) {
+    const overall = document.querySelector('#overall-content');
+    if (!overall || !Number.isFinite(handViewportBottom)) return;
+    if (overall.dataset.bgaAgriV10HandClipOriginalStyle === undefined) {
+      overall.dataset.bgaAgriV10HandClipOriginalStyle = overall.getAttribute('style') || '';
+    }
+    const overallRect = overall.getBoundingClientRect();
+    const neededH = Math.ceil(handViewportBottom - overallRect.top + 8);
+    if (neededH > 0) {
+      overall.style.setProperty('min-height', `${neededH}px`, 'important');
+    }
+  }
+
   function layoutHandCards() {
     const central = document.querySelector('#central-board');
     if (!central) return;
@@ -288,6 +307,7 @@
       handModelInput = Object.assign(handModelInput, {
         boardsLeft: boardsRect.left,
         boardsHeight: boardsRect.height,
+        boardsViewportBottom: boardsRect.bottom,
         rightEdge: rightSideRect?.left || window.innerWidth
       });
     }
@@ -306,6 +326,7 @@
     const rowHeight = scaledCardH;
     if (handLayoutMode === 'below-boards-row') {
       restoreHandBoardGap();
+      reserveHandClipSpace(handViewportTop + handHeight);
     }
     handContainer.dataset.bgaAgriV10HandLayoutMode = handLayoutMode;
 
