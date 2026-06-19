@@ -743,6 +743,11 @@ html.bga-agri-v10-open.bga-agri-v10-original-compact #player-boards .cards-wrapp
   box-sizing: border-box !important;
 }
 
+html.bga-agri-v10-open.bga-agri-v10-original-compact #player-boards .player-board-holder {
+  border: none !important;
+}
+
+
 html.bga-agri-v10-open.bga-agri-v10-original-compact #player-boards .cards-wrapper {
   gap: 0 !important;
   column-gap: 0 !important;
@@ -827,31 +832,29 @@ html.bga-agri-v10-open.bga-agri-v10-original-compact #player-boards .resources-b
   position: absolute !important;
   right: 8px !important;
   top: -36px !important;
-  width: 30px !important;
-  min-width: 30px !important;
-  height: 30px !important;
-  min-height: 30px !important;
+  width: 25px !important;
+  min-width: 25px !important;
+  height: 50px !important;
+  min-height: 50px !important;
   display: inline-flex !important;
   align-items: center !important;
   justify-content: center !important;
   overflow: visible !important;
-  font-size: 30px !important;
+  font-size: 25px !important;
   line-height: 1 !important;
 }
 
 html.bga-agri-v10-open.bga-agri-v10-original-compact #player-boards .resources-bar-holder.active .agricola-first-player-holder .agricola-meeple,
 html.bga-agri-v10-open.bga-agri-v10-original-compact #player-boards .resources-bar-holder.active .agricola-first-player-holder .meeple-container {
   box-sizing: border-box !important;
-  width: 30px !important;
-  min-width: 30px !important;
-  height: 30px !important;
-  min-height: 30px !important;
+  width: 25px !important;
+  min-width: 25px !important;
+  height: 50px !important;
+  min-height: 50px !important;
   margin: 0 !important;
   padding: 0 !important;
-  font-size: 30px !important;
+  font-size: 25px !important;
   line-height: 1 !important;
-  transform: scale(2) !important;
-  transform-origin: center center !important;
 }
 
 /* v0.12.32: keep the right-side log/action-history panels scrollable, but hide
@@ -989,3 +992,14 @@ html.bga-agri-v10-open.bga-agri-v10-original-compact #hand-container[data-bga-ag
   overflow-wrap: normal !important;
   word-break: normal !important;
 }
+
+/* Hide player inactive messages and other page-level system messages to prevent overlap clutter */
+html.bga-agri-v10-open.bga-agri-v10-original-compact #pagemessageinfo,
+html.bga-agri-v10-open.bga-agri-v10-original-compact .pagemessage,
+html.bga-agri-v10-open.bga-agri-v10-original-compact #table_infomsg,
+html.bga-agri-v10-open.bga-agri-v10-original-compact .table_infomsg,
+html.bga-agri-v10-open.bga-agri-v10-original-compact .table_infomsg_red {
+  display: none !important;
+}
+
+
