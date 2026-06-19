@@ -38,6 +38,7 @@ test('keeps hand beside the central board when lower space is too small', () => 
 test('moves hand below player boards when viewport minus known stack heights can fit a card', () => {
   const result = computeHandLayout({
     ...baseInput,
+    viewportHeight: 1100,
     boardsLeft: 0,
     boardsHeight: 170,
     boardsViewportBottom: 907
@@ -53,6 +54,7 @@ test('moves hand below player boards when viewport minus known stack heights can
 test('uses only viewport height minus status, central board, and farm board heights', () => {
   const enoughStackRemainder = computeHandLayout({
     ...baseInput,
+    viewportHeight: 1100,
     boardsLeft: 0,
     boardsHeight: 170,
     boardsViewportBottom: 907
@@ -65,6 +67,28 @@ test('uses only viewport height minus status, central board, and farm board heig
 
   assert.equal(enoughStackRemainder.mode, 'below-boards-row');
   assert.equal(notEnoughStackRemainder.mode, 'right-two-row');
+});
+
+test('uses the round-8-to-14 slot width converted to card height as the below-board threshold', () => {
+  const slotW = (baseInput.targetViewportRight - baseInput.targetViewportLeft) / 7;
+  const rightSideCardH = baseInput.cardH * (slotW / baseInput.cardW);
+  const almostEnough = computeHandLayout({
+    ...baseInput,
+    viewportHeight: baseInput.topStatusHeight + baseInput.centralHeight + 170 + 8 + rightSideCardH - 1,
+    boardsLeft: 0,
+    boardsHeight: 170,
+    boardsViewportBottom: 907
+  });
+  const enough = computeHandLayout({
+    ...baseInput,
+    viewportHeight: baseInput.topStatusHeight + baseInput.centralHeight + 170 + 8 + rightSideCardH + 1,
+    boardsLeft: 0,
+    boardsHeight: 170,
+    boardsViewportBottom: 907
+  });
+
+  assert.equal(almostEnough.mode, 'right-two-row');
+  assert.equal(enough.mode, 'below-boards-row');
 });
 
 test('below-board hand size is limited by width when many cards are present', () => {

@@ -41,7 +41,8 @@
 
     if (Number.isFinite(topStatusHeight) && Number.isFinite(centralHeight) && Number.isFinite(boardsHeight)) {
       const lowerSpace = Math.max(0, viewportHeight - topStatusHeight - centralHeight - boardsHeight - 8);
-      const canUseBelowBoards = lowerSpace >= cardH * minScale;
+      const rightSideCardH = scaledCardH;
+      const canUseBelowBoards = lowerSpace > rightSideCardH;
 
       if (canUseBelowBoards) {
         handLayoutMode = 'below-boards-row';
