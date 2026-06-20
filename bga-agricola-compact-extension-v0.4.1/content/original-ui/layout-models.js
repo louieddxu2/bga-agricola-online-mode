@@ -30,14 +30,15 @@
     } = input;
 
     const availableW = Math.max(120, targetViewportRight - targetViewportLeft);
-    const slotW = availableW / 7;
+    const rightSideOneRow = cardCount > 0 && cardCount < 5;
+    let slotW = availableW / (rightSideOneRow ? 5 : 7);
     let cardScale = clamp(slotW / cardW, minScale, maxScale);
     let scaledCardH = cardH * cardScale;
-    let handLayoutMode = 'right-two-row';
+    let handLayoutMode = rightSideOneRow ? 'right-one-row' : 'right-two-row';
     let handViewportLeft = targetViewportLeft;
     let handViewportTop = targetViewportTop;
     let handAvailableW = availableW;
-    let handHeight = scaledCardH * 2;
+    let handHeight = rightSideOneRow ? scaledCardH : scaledCardH * 2;
 
     if (Number.isFinite(topStatusHeight) && Number.isFinite(centralHeight) && Number.isFinite(boardsHeight)) {
       const lowerSpace = Math.max(0, viewportHeight - topStatusHeight - centralHeight - boardsHeight - 8);
@@ -57,6 +58,7 @@
         cardScale = clamp(Math.min(heightScale, noOverlapWidthScale, maxScale), minScale, maxScale);
         scaledCardH = cardH * cardScale;
         handHeight = scaledCardH;
+        slotW = handAvailableW / safeCardCount;
       }
     }
 

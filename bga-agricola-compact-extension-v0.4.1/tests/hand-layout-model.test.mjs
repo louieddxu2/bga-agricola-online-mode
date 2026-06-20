@@ -35,6 +35,34 @@ test('keeps hand beside the central board when lower space is too small', () => 
   assert.ok(result.cardScale <= 0.9);
 });
 
+test('uses a single right-side row with five slots when fewer than five cards are visible', () => {
+  const result = computeHandLayout({
+    ...baseInput,
+    cardCount: 4,
+    boardsLeft: 0,
+    boardsHeight: 350
+  });
+  const expectedSlotW = (baseInput.targetViewportRight - baseInput.targetViewportLeft) / 5;
+
+  assert.equal(result.mode, 'right-one-row');
+  assert.equal(result.slotW, expectedSlotW);
+  assert.equal(result.cardScale, expectedSlotW / baseInput.cardW);
+  assert.equal(result.handHeight, result.scaledCardH);
+});
+
+test('keeps five visible cards in the existing right-side two-row layout', () => {
+  const result = computeHandLayout({
+    ...baseInput,
+    cardCount: 5,
+    boardsLeft: 0,
+    boardsHeight: 350
+  });
+
+  assert.equal(result.mode, 'right-two-row');
+  assert.equal(result.slotW, (baseInput.targetViewportRight - baseInput.targetViewportLeft) / 7);
+  assert.equal(result.handHeight, result.scaledCardH * 2);
+});
+
 test('moves hand below player boards when viewport minus known stack heights can fit a card', () => {
   const result = computeHandLayout({
     ...baseInput,
@@ -148,5 +176,7 @@ test('hand layout measures player boards by their visual child rects', () => {
   assert.match(handLayoutSource, /bgaAgriV10HandClipOriginalStyle/);
   assert.match(handLayoutSource, /reserveHandClipSpace\(handViewportTop \+ handHeight\)/);
   assert.doesNotMatch(handLayoutSource, /const\s+shiftedBoardsRect\s*=\s*getPlayerBoardsVisualRect\(playerBoards\)/);
+  assert.match(handLayoutSource, /handLayoutMode === 'right-two-row' \|\| handLayoutMode === 'right-one-row'/);
+  assert.match(handLayoutSource, /handLayoutMode === 'below-boards-row' \|\| handLayoutMode === 'right-one-row'/);
   assert.match(handLayoutSource, /delete\s+handContainer\.dataset\.bgaAgriV10HandLayoutMode/);
 });

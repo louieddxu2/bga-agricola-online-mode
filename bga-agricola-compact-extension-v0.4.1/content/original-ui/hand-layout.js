@@ -351,7 +351,8 @@
     handContainer.style.setProperty('overflow', 'visible', 'important');
     handContainer.style.setProperty('pointer-events', 'auto', 'important');
 
-    if (playerBoards && handLayoutMode === 'right-two-row' && !handContainer.closest('#player-boards')) {
+    const isRightSideHand = handLayoutMode === 'right-two-row' || handLayoutMode === 'right-one-row';
+    if (playerBoards && isRightSideHand && !handContainer.closest('#player-boards')) {
       const gapTargets = [playerBoards];
       const firstGapTarget = gapTargets[0];
       const currentMarginTop = parseFloat(firstGapTarget?.style.marginTop) || 0;
@@ -399,12 +400,12 @@
       });
     };
 
-    if (handLayoutMode === 'below-boards-row') {
+    if (handLayoutMode === 'below-boards-row' || handLayoutMode === 'right-one-row') {
       const allVisibleCards = [...occupationCards, ...improvementCards];
       const n = allVisibleCards.length;
       const stepX = n <= 1
         ? 0
-        : Math.max(0, Math.min(scaledCardW + 8, (handAvailableW - scaledCardW) / (n - 1)));
+        : Math.max(0, Math.min(handLayoutMode === 'right-one-row' ? slotW : scaledCardW + 8, (handAvailableW - scaledCardW) / (n - 1)));
 
       allVisibleCards.forEach((card, index) => {
         if (!card.dataset.bgaAgriV10HandOriginalStyle) {
