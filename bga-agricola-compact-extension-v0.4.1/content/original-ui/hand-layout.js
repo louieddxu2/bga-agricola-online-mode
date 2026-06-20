@@ -233,6 +233,14 @@
       restoreHandCards();
       return;
     }
+
+    const allCards = [...handContainer.querySelectorAll(':scope > .player-card')];
+    if (!allCards.length) {
+      restoreHandBoardGap();
+      scrubCompactHandInlineStyle(handContainer);
+      return;
+    }
+
     prepareHandAncestors(handContainer);
 
     if (!handContainer.dataset.bgaAgriV10OriginalStyle) {
@@ -282,7 +290,6 @@
     handContainer.style.setProperty('--agricolaCardHeight', `${cardH}px`);
     handContainer.style.setProperty('--agricolaCardScale', `${cardScaleVal}`);
 
-    const allCards = [...handContainer.querySelectorAll('.player-card')];
     const occupationCards = allCards.filter(card => card.classList.contains('occupation'));
     const improvementCards = allCards.filter(card => !card.classList.contains('occupation'));
 

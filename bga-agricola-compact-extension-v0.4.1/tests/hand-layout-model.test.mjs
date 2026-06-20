@@ -180,3 +180,16 @@ test('hand layout measures player boards by their visual child rects', () => {
   assert.match(handLayoutSource, /handLayoutMode === 'below-boards-row' \|\| handLayoutMode === 'right-one-row'/);
   assert.match(handLayoutSource, /delete\s+handContainer\.dataset\.bgaAgriV10HandLayoutMode/);
 });
+
+test('empty spectator hand restores board gap before any compact positioning', () => {
+  const layoutHandCardsBody = handLayoutSource.match(/function\s+layoutHandCards\s*\(\)\s*\{([\s\S]*?)\n  \}/)?.[1] || '';
+  const emptyHandGuard = layoutHandCardsBody.match(/const\s+allCards\s*=\s*\[\.\.\.handContainer\.querySelectorAll\(':scope > \.player-card'\)\];[\s\S]*?if\s*\(!allCards\.length\)\s*\{([\s\S]*?)\n    \}/)?.[1] || '';
+
+  assert.match(emptyHandGuard, /restoreHandBoardGap\(\)/);
+  assert.match(emptyHandGuard, /scrubCompactHandInlineStyle\(handContainer\)/);
+  assert.match(emptyHandGuard, /return/);
+
+  const beforeEmptyHandGuard = layoutHandCardsBody.slice(0, layoutHandCardsBody.indexOf("const allCards = [...handContainer.querySelectorAll(':scope > .player-card')]"));
+  assert.doesNotMatch(beforeEmptyHandGuard, /prepareHandAncestors\(handContainer\)/);
+  assert.doesNotMatch(beforeEmptyHandGuard, /models\.computeHandLayout/);
+});
