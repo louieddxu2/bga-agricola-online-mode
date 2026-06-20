@@ -83,6 +83,7 @@
     requestAnimationFrame(() => {
       AC.layoutOriginalPlayerBoards?.();
       if (document.documentElement.classList.contains('bga-agri-v10-original-compact')) {
+        AC.originalUiCompact?.layoutRightPanelHints?.();
         AC.originalUiCompact?.layoutHandCards?.();
         AC.originalUiCompact?.layoutPlayerActionCards?.();
       }

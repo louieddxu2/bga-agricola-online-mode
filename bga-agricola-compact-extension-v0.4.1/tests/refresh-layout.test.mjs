@@ -12,10 +12,21 @@ test('refresh re-applies compact hand and action-card layouts after DOM changes'
 
   assert.match(refreshBody, /AC\.originalUiCompact\?\.layoutHandCards\?\.\(\)/);
   assert.match(refreshBody, /AC\.originalUiCompact\?\.layoutPlayerActionCards\?\.\(\)/);
+  assert.match(refreshBody, /AC\.originalUiCompact\?\.layoutRightPanelHints\?\.\(\)/);
 });
 
 test('original compact API exposes action-card relayout for refresh observers', () => {
   assert.match(compactSource, /layoutPlayerActionCards:\s*actionCards\.layoutPlayerActionCards/);
+});
+
+test('right-side first-game helper text is hidden outside logs and restorable', () => {
+  assert.match(compactSource, /function\s+isFirstGameHintText\s*\(/);
+  assert.match(compactSource, /這名玩家\.\*第一次\.\*\(遊玩\|玩遊戲\)/);
+  assert.match(compactSource, /node\.parentElement\.closest\('#logs_wrap, #logs, #log_history'\)/);
+  assert.match(compactSource, /node\.nodeValue\s*=\s*''/);
+  assert.match(compactSource, /function\s+restoreRightPanelFirstGameHints\s*\(/);
+  assert.match(compactSource, /entry\.node\.nodeValue\s*=\s*entry\.text/);
+  assert.match(compactSource, /layoutRightPanelHints:\s*hideRightPanelFirstGameHints/);
 });
 
 test('played card layout clears stale hand transforms before sizing farm-side cards', () => {

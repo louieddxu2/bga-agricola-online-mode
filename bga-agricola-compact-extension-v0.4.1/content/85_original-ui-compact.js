@@ -413,6 +413,46 @@
     });
   }
 
+  function isFirstGameHintText(text) {
+    const normalized = String(text || '').replace(/\s+/g, '');
+    return (
+      /這名玩家.*第一次.*(遊玩|玩遊戲)/.test(normalized) ||
+      /他每回合的時間將加倍/.test(normalized) ||
+      /感謝您幫助我/.test(normalized)
+    );
+  }
+
+  function hideRightPanelFirstGameHints() {
+    const rightSide = document.querySelector('#right-side');
+    if (!rightSide) return;
+
+    const hidden = AC.state.rightPanelFirstGameHints || [];
+    const hiddenNodes = new Set(hidden.map(entry => entry.node));
+    const walker = document.createTreeWalker(rightSide, NodeFilter.SHOW_TEXT, {
+      acceptNode(node) {
+        if (!node?.parentElement || hiddenNodes.has(node)) return NodeFilter.FILTER_REJECT;
+        if (node.parentElement.closest('#logs_wrap, #logs, #log_history')) return NodeFilter.FILTER_REJECT;
+        return isFirstGameHintText(node.nodeValue) ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_REJECT;
+      }
+    });
+
+    const matches = [];
+    while (walker.nextNode()) matches.push(walker.currentNode);
+
+    matches.forEach(node => {
+      hidden.push({ node, text: node.nodeValue });
+      node.nodeValue = '';
+    });
+    AC.state.rightPanelFirstGameHints = hidden.filter(entry => entry.node?.isConnected);
+  }
+
+  function restoreRightPanelFirstGameHints() {
+    (AC.state.rightPanelFirstGameHints || []).forEach(entry => {
+      if (entry.node?.isConnected) entry.node.nodeValue = entry.text;
+    });
+    AC.state.rightPanelFirstGameHints = [];
+  }
+
   function restoreOriginalUiFragments() {
     actionCards.restorePlayerActionCards();
     hand.restoreHandCards();
@@ -428,11 +468,13 @@
   AC.originalUiCompact = {
     layoutHandCards: hand.layoutHandCards,
     layoutPlayerActionCards: actionCards.layoutPlayerActionCards,
+    layoutRightPanelHints: hideRightPanelFirstGameHints,
     enable() {
       preferences.applyStableBgaPreferences();
       document.documentElement.classList.add('bga-agri-v10-original-compact');
       // Native #page-title is kept visible; no duplicate compact topline is created.
       requestAnimationFrame(() => {
+        hideRightPanelFirstGameHints();
         layoutPhysicalRounds();
         layoutRightLogLimit();
         hand.layoutHandCards();
@@ -440,6 +482,7 @@
       });
       if (!AC.originalUiCompact._onResize) {
         AC.originalUiCompact._onResize = () => requestAnimationFrame(() => {
+          hideRightPanelFirstGameHints();
           layoutPhysicalRounds();
           layoutRightLogLimit();
           hand.layoutHandCards();
@@ -457,6 +500,7 @@
       clearPhysicalRoundLayout();
       clearRoundBackgroundLayer();
       clearRightLogLimit();
+      restoreRightPanelFirstGameHints();
       document.getElementById('bga-agri-v10-original-topline')?.remove();
       scheduleDeferredRestore();
     }
