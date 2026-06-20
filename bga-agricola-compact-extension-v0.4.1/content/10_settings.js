@@ -13,17 +13,17 @@
   AC.state.settings = { ...AC.DEFAULTS };
 
   function localStorageArea() {
-    return globalThis.chrome?.storage?.local || null;
+    try {
+      return globalThis.chrome?.storage?.local || null;
+    } catch (_) {
+      return null;
+    }
   }
 
   function safeStorageSet(storage, values) {
     if (!storage) return;
     try {
-      storage.set(values, () => {
-        try {
-          void globalThis.chrome?.runtime?.lastError;
-        } catch (_) {}
-      });
+      storage.set(values);
     } catch (error) {
       console.warn('[AgriCompact] settings storage set failed', error);
     }
@@ -36,15 +36,6 @@
     }
     try {
       storage.get(defaults, stored => {
-        try {
-          if (globalThis.chrome?.runtime?.lastError) {
-            callback(defaults);
-            return;
-          }
-        } catch (_) {
-          callback(defaults);
-          return;
-        }
         callback(stored || defaults);
       });
     } catch (error) {
