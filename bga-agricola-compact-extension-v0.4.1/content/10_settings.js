@@ -16,18 +16,50 @@
     return globalThis.chrome?.storage?.local || null;
   }
 
+  function safeStorageSet(storage, values) {
+    if (!storage) return;
+    try {
+      storage.set(values, () => {
+        try {
+          void globalThis.chrome?.runtime?.lastError;
+        } catch (_) {}
+      });
+    } catch (error) {
+      console.warn('[AgriCompact] settings storage set failed', error);
+    }
+  }
+
+  function safeStorageGet(storage, defaults, callback) {
+    if (!storage) {
+      callback(defaults);
+      return;
+    }
+    try {
+      storage.get(defaults, stored => {
+        try {
+          if (globalThis.chrome?.runtime?.lastError) {
+            callback(defaults);
+            return;
+          }
+        } catch (_) {
+          callback(defaults);
+          return;
+        }
+        callback(stored || defaults);
+      });
+    } catch (error) {
+      console.warn('[AgriCompact] settings storage get failed', error);
+      callback(defaults);
+    }
+  }
+
   AC.settings = {
     async load() {
       return new Promise(resolve => {
         const storage = localStorageArea();
-        if (!storage) {
-          AC.state.settings = { ...AC.DEFAULTS };
-          resolve(AC.state.settings);
-          return;
-        }
-        storage.get(AC.DEFAULTS, stored => {
+        safeStorageGet(storage, AC.DEFAULTS, stored => {
           if (stored.version !== AC.VERSION) {
-            storage.set(AC.DEFAULTS);
+            safeStorageSet(storage, AC.DEFAULTS);
             AC.state.settings = { ...AC.DEFAULTS };
           } else {
             AC.state.settings = { ...AC.DEFAULTS, ...stored };
@@ -40,14 +72,14 @@
     save(patch = {}) {
       AC.state.settings = { ...AC.state.settings, ...patch, version: AC.VERSION };
       const storage = localStorageArea();
-      if (storage) storage.set(AC.state.settings);
+      safeStorageSet(storage, AC.state.settings);
       AC.applyVars?.();
     },
 
     reset(keepEnabled = true) {
       AC.state.settings = { ...AC.DEFAULTS, enabled: keepEnabled };
       const storage = localStorageArea();
-      if (storage) storage.set(AC.state.settings);
+      safeStorageSet(storage, AC.state.settings);
       AC.applyVars?.();
     }
   };
