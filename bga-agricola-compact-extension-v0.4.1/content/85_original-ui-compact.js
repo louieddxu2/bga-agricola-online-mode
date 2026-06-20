@@ -453,6 +453,33 @@
     AC.state.rightPanelFirstGameHints = [];
   }
 
+  function hideRightPanelHeaderControls() {
+    const row = document.querySelector('#player_board_config #player_config > #player_config_row');
+    if (!row || !row.querySelector('#uwe-help') || !row.querySelector('#help-mode-switch')) return;
+    if (row.dataset.bgaAgriV10RightHeaderHidden === '1') return;
+
+    AC.state.rightPanelHeaderControls = {
+      node: row,
+      display: row.style.display || ''
+    };
+    row.dataset.bgaAgriV10RightHeaderHidden = '1';
+    row.style.setProperty('display', 'none', 'important');
+  }
+
+  function restoreRightPanelHeaderControls() {
+    const entry = AC.state.rightPanelHeaderControls;
+    if (entry?.node?.isConnected) {
+      entry.node.style.display = entry.display || '';
+      delete entry.node.dataset.bgaAgriV10RightHeaderHidden;
+    }
+    AC.state.rightPanelHeaderControls = null;
+  }
+
+  function layoutRightPanelChrome() {
+    hideRightPanelFirstGameHints();
+    hideRightPanelHeaderControls();
+  }
+
   function restoreOriginalUiFragments() {
     actionCards.restorePlayerActionCards();
     hand.restoreHandCards();
@@ -468,13 +495,13 @@
   AC.originalUiCompact = {
     layoutHandCards: hand.layoutHandCards,
     layoutPlayerActionCards: actionCards.layoutPlayerActionCards,
-    layoutRightPanelHints: hideRightPanelFirstGameHints,
+    layoutRightPanelHints: layoutRightPanelChrome,
     enable() {
       preferences.applyStableBgaPreferences();
       document.documentElement.classList.add('bga-agri-v10-original-compact');
       // Native #page-title is kept visible; no duplicate compact topline is created.
       requestAnimationFrame(() => {
-        hideRightPanelFirstGameHints();
+        layoutRightPanelChrome();
         layoutPhysicalRounds();
         layoutRightLogLimit();
         hand.layoutHandCards();
@@ -482,7 +509,7 @@
       });
       if (!AC.originalUiCompact._onResize) {
         AC.originalUiCompact._onResize = () => requestAnimationFrame(() => {
-          hideRightPanelFirstGameHints();
+          layoutRightPanelChrome();
           layoutPhysicalRounds();
           layoutRightLogLimit();
           hand.layoutHandCards();
@@ -501,6 +528,7 @@
       clearRoundBackgroundLayer();
       clearRightLogLimit();
       restoreRightPanelFirstGameHints();
+      restoreRightPanelHeaderControls();
       document.getElementById('bga-agri-v10-original-topline')?.remove();
       scheduleDeferredRestore();
     }

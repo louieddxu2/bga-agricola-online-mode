@@ -26,7 +26,17 @@ test('right-side first-game helper text is hidden outside logs and restorable', 
   assert.match(compactSource, /node\.nodeValue\s*=\s*''/);
   assert.match(compactSource, /function\s+restoreRightPanelFirstGameHints\s*\(/);
   assert.match(compactSource, /entry\.node\.nodeValue\s*=\s*entry\.text/);
-  assert.match(compactSource, /layoutRightPanelHints:\s*hideRightPanelFirstGameHints/);
+  assert.match(compactSource, /layoutRightPanelHints:\s*layoutRightPanelChrome/);
+});
+
+test('right-side header controls hide the explicit player config top row', () => {
+  assert.match(compactSource, /function\s+hideRightPanelHeaderControls\s*\(/);
+  assert.match(compactSource, /#player_board_config #player_config > #player_config_row/);
+  assert.match(compactSource, /row\.querySelector\('#uwe-help'\)/);
+  assert.match(compactSource, /row\.querySelector\('#help-mode-switch'\)/);
+  assert.match(compactSource, /row\.style\.setProperty\('display',\s*'none',\s*'important'\)/);
+  assert.match(compactSource, /function\s+restoreRightPanelHeaderControls\s*\(/);
+  assert.match(compactSource, /restoreRightPanelHeaderControls\(\)/);
 });
 
 test('played card layout clears stale hand transforms before sizing farm-side cards', () => {
