@@ -56,6 +56,18 @@
     return AC.utils.round(visibleFontSize / Math.max(boardScale, 0.05));
   }
 
+  function handIsBelowBoards() {
+    const handContainer = document.querySelector('#hand-container');
+    return handContainer?.dataset.bgaAgriV10HandLayoutMode === 'below-boards-row' &&
+      !!handContainer.querySelector(':scope > .player-card');
+  }
+
+  function playedCardLowerSpaceViewport(boardTop, scaledBoardHeight) {
+    if (handIsBelowBoards()) return 0;
+    if (!Number.isFinite(boardTop) || !Number.isFinite(scaledBoardHeight)) return 0;
+    return Math.max(0, window.innerHeight - (boardTop + scaledBoardHeight) - 20);
+  }
+
   // v0.12.10: original-DOM player boards in a normal-flow four-column row.
   // Important DOM finding from runtime inspection: .cards-wrapper is inside
   // .player-board-holder, not a sibling of .player-board-holder. Therefore the
@@ -154,6 +166,8 @@
       const fenceOverhang = 20;
       const holderH = Math.max(nonCardBottom, cardBandH, 1) + fenceOverhang;
       const scaledH = Math.ceil(holderH * scale);
+      const lowerSpaceViewport = playedCardLowerSpaceViewport(board.getBoundingClientRect().top, scaledH);
+      const lowerSpaceUnscaled = lowerSpaceViewport / Math.max(scale, 0.05);
 
       board.style.setProperty('width', '100%', 'important');
       board.style.setProperty('height', `${scaledH}px`, 'important');
@@ -295,7 +309,8 @@
         cards.style.setProperty('left', `${farmW}px`, 'important');
         cards.style.setProperty('top', `${cardBandTop}px`, 'important');
         cards.style.setProperty('width', `${sideW}px`, 'important');
-        cards.style.setProperty('height', `${holderH}px`, 'important');
+        const cardsH = holderH + lowerSpaceUnscaled;
+        cards.style.setProperty('height', `${cardsH}px`, 'important');
         cards.style.setProperty('margin', '0', 'important');
         cards.style.setProperty('padding', '0', 'important');
         cards.style.setProperty('overflow', 'visible', 'important');
@@ -306,7 +321,7 @@
         const improvementCards = allCards.filter(card => !card.classList.contains('occupation'));
         const colW = Math.max(1, cardColumnW);
         const cardH = Math.max(1, cardColumnW);
-        const availableH = Math.max(1, holderH);
+        const availableH = Math.max(1, cardsH);
 
         const stackColumn = (list, columnIndex) => {
           const n = list.length;
