@@ -96,9 +96,11 @@
     holder.style.setProperty('z-index', '110', 'important');
     holder.style.setProperty('pointer-events', 'auto', 'important');
     const actionCardBaseSize = Math.max(40, Math.min(layout.slotW, layout.slotH - 32));
-    holder.style.setProperty('--agricolaCardWidth', `${actionCardBaseSize}px`, 'important');
-    holder.style.setProperty('--agricolaCardHeight', `${actionCardBaseSize}px`, 'important');
-    holder.style.setProperty('--agricolaCardScale', `${actionCardBaseSize / 235}`, 'important');
+    const cardW = 211.5;
+    const cardH = 336.6;
+    holder.style.setProperty('--agricolaCardWidth', `${cardW}px`, 'important');
+    holder.style.setProperty('--agricolaCardHeight', `${cardH}px`, 'important');
+    holder.style.setProperty('--agricolaCardScale', `${layout.slotW / cardW}`, 'important');
 
     const firstActionCard = activeGroups[0]?.querySelector('.player-card');
     const actionCardStyle = firstActionCard ? getComputedStyle(firstActionCard) : null;
@@ -107,13 +109,13 @@
       parseFloat(actionCardStyle?.width) || 0,
       firstActionCard?.offsetWidth || 0,
       actionCardRect?.width || 0,
-      115
+      cardW
     );
     const actionCardH = Math.max(
       parseFloat(actionCardStyle?.height) || 0,
       firstActionCard?.offsetHeight || 0,
       actionCardRect?.height || 0,
-      115
+      cardH
     );
     const groupCardCounts = activeGroups.map(group => group.querySelectorAll('.player-card').length);
     const plan = models.computePlayerActionCardPlan(groupCardCounts, layout);
@@ -199,6 +201,8 @@
         const innerTop = cellTop + (plan.useClearLayout ? Math.max(0, (cardCellH - groupLayout.scaledCardH) / 2) : 0);
         card.style.setProperty('left', `${Math.round(innerLeft)}px`, 'important');
         card.style.setProperty('top', `${Math.round(innerTop)}px`, 'important');
+        card.style.setProperty('width', `${actionCardW}px`, 'important');
+        card.style.setProperty('height', `${actionCardH}px`, 'important');
         card.style.setProperty('margin', '0', 'important');
         card.style.setProperty('padding', '0', 'important');
         card.style.setProperty('overflow', 'visible', 'important');
