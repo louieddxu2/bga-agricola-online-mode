@@ -188,9 +188,8 @@ test('empty spectator hand restores board gap before any compact positioning', (
 
   assert.match(emptyHandGuard, /restoreHandBoardGap\(\)/);
   assert.match(emptyHandGuard, /scrubCompactHandInlineStyle\(handContainer\)/);
-  assert.match(emptyHandGuard, /spectatorMode/);
-  assert.match(emptyHandGuard, /handContainer\.dataset\.bgaAgriV10SpectatorHide\s*=\s*'1'/);
-  assert.match(emptyHandGuard, /altWrapper\.dataset\.bgaAgriV10SpectatorHide\s*=\s*'1'/);
+  assert.match(emptyHandGuard, /handContainer\.dataset\.bgaAgriV10HandEmpty\s*=\s*'1'/);
+  assert.match(emptyHandGuard, /altWrapper\.dataset\.bgaAgriV10HandEmpty\s*=\s*'1'/);
   assert.match(emptyHandGuard, /return/);
 
   const beforeEmptyHandGuard = layoutHandCardsBody.slice(0, layoutHandCardsBody.indexOf("const allCards = [...handContainer.querySelectorAll(':scope > .player-card')]"));
@@ -202,13 +201,13 @@ test('hand active state is managed on alternative-hand-wrapper', () => {
   assert.match(handLayoutSource, /const\s+altWrapper\s*=\s*handContainer\.closest\('#alternative-hand-wrapper'\);/);
   assert.match(handLayoutSource, /altWrapper\.dataset\.bgaAgriV10HandActive\s*=\s*'1';/);
   assert.match(handLayoutSource, /delete\s+wrapper\.dataset\.bgaAgriV10HandActive;/);
-  assert.match(handLayoutSource, /delete\s+wrapper\.dataset\.bgaAgriV10SpectatorHide;/);
+  assert.match(handLayoutSource, /delete\s+wrapper\.dataset\.bgaAgriV10HandEmpty;/);
   assert.match(
     handLayoutSource,
-    /document\.querySelectorAll\('#alternative-hand-wrapper'\)\.forEach\(\s*wrapper\s*=>\s*\{[\s\S]*?delete\s+wrapper\.dataset\.bgaAgriV10HandActive;[\s\S]*?delete\s+wrapper\.dataset\.bgaAgriV10SpectatorHide;/
+    /document\.querySelectorAll\('#alternative-hand-wrapper'\)\.forEach\(\s*wrapper\s*=>\s*\{[\s\S]*?delete\s+wrapper\.dataset\.bgaAgriV10HandActive;[\s\S]*?delete\s+wrapper\.dataset\.bgaAgriV10HandEmpty;/
   );
   assert.match(
     handLayoutSource,
-    /document\.querySelectorAll\('#hand-container'\)\.forEach\(\s*hc\s*=>\s*\{[\s\S]*?delete\s+hc\.dataset\.bgaAgriV10SpectatorHide;/
+    /document\.querySelectorAll\('#hand-container'\)\.forEach\(\s*hc\s*=>\s*\{[\s\S]*?delete\s+hc\.dataset\.bgaAgriV10HandEmpty;/
   );
 });

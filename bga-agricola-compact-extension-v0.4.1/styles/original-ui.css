@@ -15,9 +15,17 @@ html.bga-agri-v10-open.bga-agri-v10-original-compact #alternative-hand-wrapper[d
   overflow: visible !important;
 }
 
-html.bga-agri-v10-open.bga-agri-v10-original-compact #alternative-hand-wrapper[data-bga-agri-v10-spectator-hide="1"],
-html.bga-agri-v10-open.bga-agri-v10-original-compact #hand-container[data-bga-agri-v10-spectator-hide="1"] {
-  display: none !important;
+html.bga-agri-v10-open.bga-agri-v10-original-compact #alternative-hand-wrapper[data-bga-agri-v10-hand-empty="1"],
+html.bga-agri-v10-open.bga-agri-v10-original-compact #hand-container[data-bga-agri-v10-hand-empty="1"] {
+  position: fixed !important;
+  left: -9999px !important;
+  top: -9999px !important;
+  width: 100% !important;
+  height: 200px !important;
+  border: none !important;
+  box-shadow: none !important;
+  background: transparent !important;
+  pointer-events: none !important;
 }
 
 

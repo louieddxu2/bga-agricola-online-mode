@@ -118,12 +118,12 @@
 
     delete handContainer.dataset.bgaAgriV10HandFixed;
     delete handContainer.dataset.bgaAgriV10OriginalParentId;
-    delete handContainer.dataset.bgaAgriV10SpectatorHide;
+    delete handContainer.dataset.bgaAgriV10HandEmpty;
 
     const wrapper = handContainer.closest('#alternative-hand-wrapper');
     if (wrapper) {
       delete wrapper.dataset.bgaAgriV10HandActive;
-      delete wrapper.dataset.bgaAgriV10SpectatorHide;
+      delete wrapper.dataset.bgaAgriV10HandEmpty;
     }
   }
 
@@ -245,23 +245,20 @@
     if (!allCards.length) {
       restoreHandBoardGap();
       scrubCompactHandInlineStyle(handContainer);
-      const isSpectator = !!window.g_spectator || document.querySelector('.spectatorMode') !== null;
-      if (isSpectator) {
-        handContainer.dataset.bgaAgriV10SpectatorHide = '1';
-        const altWrapper = handContainer.closest('#alternative-hand-wrapper');
-        if (altWrapper) {
-          altWrapper.dataset.bgaAgriV10SpectatorHide = '1';
-        }
+      handContainer.dataset.bgaAgriV10HandEmpty = '1';
+      const altWrapper = handContainer.closest('#alternative-hand-wrapper');
+      if (altWrapper) {
+        altWrapper.dataset.bgaAgriV10HandEmpty = '1';
       }
       return;
     }
 
     prepareHandAncestors(handContainer);
 
-    delete handContainer.dataset.bgaAgriV10SpectatorHide;
+    delete handContainer.dataset.bgaAgriV10HandEmpty;
     const altWrapper = handContainer.closest('#alternative-hand-wrapper');
     if (altWrapper) {
-      delete altWrapper.dataset.bgaAgriV10SpectatorHide;
+      delete altWrapper.dataset.bgaAgriV10HandEmpty;
       altWrapper.dataset.bgaAgriV10HandActive = '1';
     }
 
@@ -491,11 +488,11 @@
 
     document.querySelectorAll('#alternative-hand-wrapper').forEach(wrapper => {
       delete wrapper.dataset.bgaAgriV10HandActive;
-      delete wrapper.dataset.bgaAgriV10SpectatorHide;
+      delete wrapper.dataset.bgaAgriV10HandEmpty;
     });
 
     document.querySelectorAll('#hand-container').forEach(hc => {
-      delete hc.dataset.bgaAgriV10SpectatorHide;
+      delete hc.dataset.bgaAgriV10HandEmpty;
     });
 
     restoreHandBoardGap();
