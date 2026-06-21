@@ -81,44 +81,60 @@
     holder.style.setProperty('left', '0px', 'important');
     holder.style.setProperty('top', '0px', 'important');
 
+    const central = document.querySelector('#central-board');
+    const zoomScale = central ? (central.getBoundingClientRect().width / central.offsetWidth) : 1;
+
+    const localLayout = {
+      ...layout,
+      width: layout.width / zoomScale,
+      height: layout.height / zoomScale,
+      slotW: layout.slotW / zoomScale,
+      slotH: layout.slotH / zoomScale,
+      gap: layout.gap / zoomScale
+    };
+
     const zeroRect = holder.getBoundingClientRect();
     const targetLeft = layout.left - zeroRect.left;
     const targetTop = layout.top - zeroRect.top;
 
-    holder.style.setProperty('left', `${Math.round(targetLeft)}px`, 'important');
-    holder.style.setProperty('top', `${Math.round(targetTop)}px`, 'important');
-    holder.style.setProperty('width', `${Math.round(layout.width)}px`, 'important');
-    holder.style.setProperty('height', `${Math.round(layout.height)}px`, 'important');
+    holder.style.setProperty('left', `${Math.round(targetLeft / zoomScale)}px`, 'important');
+    holder.style.setProperty('top', `${Math.round(targetTop / zoomScale)}px`, 'important');
+    holder.style.setProperty('width', `${Math.round(localLayout.width)}px`, 'important');
+    holder.style.setProperty('height', `${Math.round(localLayout.height)}px`, 'important');
     holder.style.setProperty('margin', '0', 'important');
     holder.style.setProperty('padding', '0', 'important');
     holder.style.setProperty('background', 'transparent', 'important');
     holder.style.setProperty('overflow', 'visible', 'important');
     holder.style.setProperty('z-index', '110', 'important');
     holder.style.setProperty('pointer-events', 'auto', 'important');
-    const actionCardBaseSize = Math.max(40, Math.min(layout.slotW, layout.slotH - 32));
-    const cardW = 211.5;
-    const cardH = 336.6;
+    const actionCardBaseSize = Math.max(40, Math.min(localLayout.slotW, localLayout.slotH - 32));
+    const isMini = activeGroups.some(group => group.querySelector('.player-card.mini'));
+    const cardW = isMini ? localLayout.slotW : 211.5;
+    const cardH = isMini ? localLayout.slotW : 336.6;
     holder.style.setProperty('--agricolaCardWidth', `${cardW}px`, 'important');
     holder.style.setProperty('--agricolaCardHeight', `${cardH}px`, 'important');
-    holder.style.setProperty('--agricolaCardScale', `${layout.slotW / cardW}`, 'important');
+    holder.style.setProperty('--agricolaCardScale', `${isMini ? (localLayout.slotW / 235) : (localLayout.slotW / cardW)}`, 'important');
 
     const firstActionCard = activeGroups[0]?.querySelector('.player-card');
     const actionCardStyle = firstActionCard ? getComputedStyle(firstActionCard) : null;
     const actionCardRect = firstActionCard?.getBoundingClientRect?.();
     const actionCardW = Math.max(
-      parseFloat(actionCardStyle?.width) || 0,
-      firstActionCard?.offsetWidth || 0,
-      actionCardRect?.width || 0,
+      isMini ? 0 : (parseFloat(actionCardStyle?.width) || 0),
+      isMini ? 0 : (firstActionCard?.offsetWidth || 0),
+      isMini ? 0 : ((actionCardRect?.width || 0) / zoomScale),
       cardW
     );
     const actionCardH = Math.max(
-      parseFloat(actionCardStyle?.height) || 0,
-      firstActionCard?.offsetHeight || 0,
-      actionCardRect?.height || 0,
+      isMini ? 0 : (parseFloat(actionCardStyle?.height) || 0),
+      isMini ? 0 : (firstActionCard?.offsetHeight || 0),
+      isMini ? 0 : ((actionCardRect?.height || 0) / zoomScale),
       cardH
     );
     const groupCardCounts = activeGroups.map(group => group.querySelectorAll('.player-card').length);
-    const plan = models.computePlayerActionCardPlan(groupCardCounts, layout);
+    const firstHeader = activeGroups[0]?.querySelector('.action-cards-player-header');
+    const headerH = firstHeader ? Math.max(18, Math.min(28, firstHeader.getBoundingClientRect().height || 22)) : 22;
+    const planLayout = { ...localLayout, headerH };
+    const plan = models.computePlayerActionCardPlan(groupCardCounts, planLayout);
 
     groups.forEach(group => {
       styleState.backupStyle(group, 'bgaAgriV10ActionCardsOriginalStyle');
@@ -145,7 +161,7 @@
       const groupLayout = models.computePlayerActionCardGroupLayout({
         cardCount: cards.length,
         plan,
-        layout,
+        layout: localLayout,
         cardW: actionCardW,
         cardH: actionCardH,
         headerH,
@@ -156,8 +172,8 @@
       group.dataset.bgaAgriV10ActionCardsManaged = '1';
       group.style.setProperty('display', 'block', 'important');
       group.style.setProperty('position', 'absolute', 'important');
-      group.style.setProperty('left', `${Math.round(col * (groupW + layout.gap))}px`, 'important');
-      group.style.setProperty('top', `${Math.round(row * (groupH + layout.gap))}px`, 'important');
+      group.style.setProperty('left', `${Math.round(col * (groupW + localLayout.gap))}px`, 'important');
+      group.style.setProperty('top', `${Math.round(row * (groupH + localLayout.gap))}px`, 'important');
       group.style.setProperty('width', `${Math.round(groupW)}px`, 'important');
       group.style.setProperty('height', `${Math.round(groupH)}px`, 'important');
       group.style.setProperty('margin', '0', 'important');
@@ -195,8 +211,8 @@
         card.style.setProperty('position', 'absolute', 'important');
         const cardCol = plan.useClearLayout ? cardIndex % cardColumns : 0;
         const cardRow = plan.useClearLayout ? Math.floor(cardIndex / cardColumns) : cardIndex;
-        const cellLeft = cardCol * (cardCellW + layout.gap);
-        const cellTop = plan.useClearLayout ? cardRow * (cardCellH + layout.gap) : cardIndex * overlapStep;
+        const cellLeft = cardCol * (cardCellW + localLayout.gap);
+        const cellTop = plan.useClearLayout ? cardRow * (cardCellH + localLayout.gap) : cardIndex * overlapStep;
         const innerLeft = cellLeft + Math.max(0, (cardCellW - scaledCardW) / 2);
         const innerTop = cellTop + (plan.useClearLayout ? Math.max(0, (cardCellH - groupLayout.scaledCardH) / 2) : 0);
         card.style.setProperty('left', `${Math.round(innerLeft)}px`, 'important');

@@ -84,9 +84,11 @@
     const groupCount = groupCardCounts.length;
     const twoColumnGroups = layout.columns >= 2 && groupCount === 4 && groupCardCounts.every(count => count === 1);
     const rows = twoColumnGroups ? 2 : groupCount;
+    const headerSpace = layout.headerH !== undefined ? layout.headerH + 4 : 26;
+    const maxRowH = layout.slotH + headerSpace;
     const rowH = rows > 0
-      ? Math.min(layout.slotH, (layout.height - layout.gap * Math.max(0, rows - 1)) / rows)
-      : layout.slotH;
+      ? Math.min(maxRowH, (layout.height - layout.gap * Math.max(0, rows - 1)) / rows)
+      : maxRowH;
 
     return {
       totalCards,
@@ -144,11 +146,11 @@
     const availableW = Math.max(0, rightLimit - left - 8);
     if (availableW < 40) return null;
 
-    const slotMaxW = Math.max(40, Math.min(roundWidth || turnW, availableW));
+    const slotMaxW = Math.max(50, Math.min(roundWidth || turnW, availableW));
     const slotMaxH = Math.max(40, roundHeight || turnH);
     const gap = 8;
     const columns = availableW >= (slotMaxW * 2 + gap) ? 2 : 1;
-    const slotW = Math.max(40, Math.min(slotMaxW, (availableW - gap * (columns - 1)) / columns));
+    const slotW = Math.max(50, Math.min(slotMaxW, (availableW - gap * (columns - 1)) / columns));
     const slotH = slotMaxH;
     const height = Math.max(slotH, centralBottom - roundTop);
 

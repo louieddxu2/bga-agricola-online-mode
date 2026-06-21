@@ -62,6 +62,22 @@ test('action card region starts at round 14 right edge and includes the right-si
   assert.equal(region.width, 492);
 });
 
+test('action card region keeps a 50px minimum slot width in narrow right-side space', () => {
+  const region = computeActionCardRegion({
+    centralBottom: 620,
+    roundTop: 100,
+    roundRight: 1200,
+    roundWidth: 140,
+    roundHeight: 140,
+    turnW: 140,
+    turnH: 140,
+    rightLimit: 1258
+  });
+
+  assert.equal(region.columns, 1);
+  assert.equal(region.slotW, 50);
+});
+
 test('three players with action cards stay as three player rows', () => {
   const plan = computePlayerActionCardPlan([1, 1, 1], twoColumnRegion);
 
@@ -159,4 +175,17 @@ test('action card layout gives the native holder its own mini-card size variable
   assert.match(actionCardsSource, /cardW:\s*actionCardW/);
   assert.match(actionCardsSource, /cardH:\s*actionCardH/);
   assert.match(actionCardsSource, /maxScale:\s*1/);
+});
+
+test('action card plan row height accommodates header space when headerH is provided', () => {
+  const customRegion = {
+    columns: 2,
+    slotW: 140,
+    slotH: 140,
+    height: 440,
+    gap: 8,
+    headerH: 22
+  };
+  const plan = computePlayerActionCardPlan([1], customRegion);
+  assert.equal(plan.groupH, 140 + 22 + 4);
 });
