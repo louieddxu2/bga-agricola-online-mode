@@ -147,7 +147,8 @@ test('below-board hand size is capped at the configured maximum', () => {
     boardsHeight: 170,
     boardsViewportBottom: 907,
     viewportHeight: 1400,
-    rightEdge: 2200
+    rightEdge: 2200,
+    maxScale: 0.9
   });
 
   assert.equal(result.mode, 'below-boards-row');

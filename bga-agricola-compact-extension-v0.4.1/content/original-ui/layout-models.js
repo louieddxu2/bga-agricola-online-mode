@@ -26,7 +26,7 @@
       cardW,
       cardH,
       minScale = 0.16,
-      maxScale = 0.9
+      maxScale = 1
     } = input;
 
     const availableW = Math.max(120, targetViewportRight - targetViewportLeft);
@@ -53,7 +53,10 @@
           : viewportHeight - lowerSpace - 4;
         handAvailableW = Math.max(120, rightEdge - handViewportLeft - 12);
         const safeCardCount = Math.max(1, cardCount);
-        const heightScale = lowerSpace / cardH;
+        const actualLowerSpace = Number.isFinite(boardsViewportBottom)
+          ? Math.max(0, viewportHeight - boardsViewportBottom - 20)
+          : lowerSpace;
+        const heightScale = Math.max(0, actualLowerSpace - 4) / cardH;
         const noOverlapWidthScale = handAvailableW / (safeCardCount * cardW);
         cardScale = clamp(Math.min(heightScale, noOverlapWidthScale, maxScale), minScale, maxScale);
         scaledCardH = cardH * cardScale;
