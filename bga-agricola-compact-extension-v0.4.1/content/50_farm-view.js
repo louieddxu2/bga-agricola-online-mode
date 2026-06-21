@@ -68,6 +68,42 @@
     return Math.max(0, window.innerHeight - (boardTop + scaledBoardHeight) - 20);
   }
 
+  function updateOverallMinHeight(overall) {
+    const handH = parseFloat(overall.dataset.bgaAgriV10HandClipHeight) || 0;
+    const playedH = parseFloat(overall.dataset.bgaAgriV10PlayedClipHeight) || 0;
+    const maxH = Math.max(handH, playedH);
+    if (maxH > 0) {
+      overall.style.setProperty('min-height', `${maxH}px`, 'important');
+    } else {
+      const orig = overall.dataset.bgaAgriV10HandClipOriginalStyle || overall.dataset.bgaAgriV10PlayedCardsClipOriginalStyle;
+      if (orig !== undefined) {
+        overall.setAttribute('style', orig);
+      } else {
+        overall.style.removeProperty('min-height');
+      }
+    }
+  }
+
+  function reservePlayedCardClipSpace(cardViewportBottom) {
+    const overall = document.querySelector('#overall-content');
+    if (!overall) return;
+    if (!Number.isFinite(cardViewportBottom)) {
+      delete overall.dataset.bgaAgriV10PlayedClipHeight;
+    } else {
+      if (overall.dataset.bgaAgriV10PlayedCardsClipOriginalStyle === undefined) {
+        overall.dataset.bgaAgriV10PlayedCardsClipOriginalStyle = overall.getAttribute('style') || '';
+      }
+      const overallRect = overall.getBoundingClientRect();
+      const neededH = Math.ceil(cardViewportBottom - overallRect.top + 8);
+      if (neededH > 0) {
+        overall.dataset.bgaAgriV10PlayedClipHeight = String(neededH);
+      } else {
+        delete overall.dataset.bgaAgriV10PlayedClipHeight;
+      }
+    }
+    updateOverallMinHeight(overall);
+  }
+
   // v0.12.10: original-DOM player boards in a normal-flow four-column row.
   // Important DOM finding from runtime inspection: .cards-wrapper is inside
   // .player-board-holder, not a sibling of .player-board-holder. Therefore the
@@ -93,6 +129,7 @@
     const farmRatio = 0.67;
     const farmTargetW = playerTargetW * farmRatio;
     const cardTargetW = playerTargetW - farmTargetW;
+    let maxCardViewportBottom = 0;
 
     boards.forEach(board => {
       if (!board.dataset.bgaAgriV11OriginalStyle) {
@@ -311,6 +348,7 @@
         cards.style.setProperty('width', `${sideW}px`, 'important');
         const cardsH = holderH + lowerSpaceUnscaled;
         cards.style.setProperty('height', `${cardsH}px`, 'important');
+        maxCardViewportBottom = Math.max(maxCardViewportBottom, board.getBoundingClientRect().top + (cardBandTop + cardsH) * scale);
         cards.style.setProperty('margin', '0', 'important');
         cards.style.setProperty('padding', '0', 'important');
         cards.style.setProperty('overflow', 'visible', 'important');
@@ -361,6 +399,8 @@
       }
     });
 
+    reservePlayedCardClipSpace(maxCardViewportBottom);
+
     requestAnimationFrame(() => AC.positionToolbarAboveOriginalBoards?.());
   };
 
@@ -397,6 +437,16 @@
       root.querySelectorAll('*').forEach(el => restoreStyle(el, key));
       restoreStyle(root, key);
     });
+
+    const overall = document.querySelector('#overall-content');
+    if (overall) {
+      delete overall.dataset.bgaAgriV10PlayedClipHeight;
+      updateOverallMinHeight(overall);
+      if (overall.dataset.bgaAgriV10PlayedCardsClipOriginalStyle !== undefined) {
+        overall.setAttribute('style', overall.dataset.bgaAgriV10PlayedCardsClipOriginalStyle);
+        delete overall.dataset.bgaAgriV10PlayedCardsClipOriginalStyle;
+      }
+    }
 
     root.querySelectorAll('[data-bga-agri-v1211-stack]').forEach(card => {
       delete card.dataset.bgaAgriV1211Stack;

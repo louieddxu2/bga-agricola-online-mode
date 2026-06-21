@@ -209,17 +209,40 @@
     return rect && rect.height > 0 ? rect.height : 0;
   }
 
+  function updateOverallMinHeight(overall) {
+    const handH = parseFloat(overall.dataset.bgaAgriV10HandClipHeight) || 0;
+    const playedH = parseFloat(overall.dataset.bgaAgriV10PlayedClipHeight) || 0;
+    const maxH = Math.max(handH, playedH);
+    if (maxH > 0) {
+      overall.style.setProperty('min-height', `${maxH}px`, 'important');
+    } else {
+      const orig = overall.dataset.bgaAgriV10HandClipOriginalStyle || overall.dataset.bgaAgriV10PlayedCardsClipOriginalStyle;
+      if (orig !== undefined) {
+        overall.setAttribute('style', orig);
+      } else {
+        overall.style.removeProperty('min-height');
+      }
+    }
+  }
+
   function reserveHandClipSpace(handViewportBottom) {
     const overall = document.querySelector('#overall-content');
-    if (!overall || !Number.isFinite(handViewportBottom)) return;
-    if (overall.dataset.bgaAgriV10HandClipOriginalStyle === undefined) {
-      overall.dataset.bgaAgriV10HandClipOriginalStyle = overall.getAttribute('style') || '';
+    if (!overall) return;
+    if (!Number.isFinite(handViewportBottom)) {
+      delete overall.dataset.bgaAgriV10HandClipHeight;
+    } else {
+      if (overall.dataset.bgaAgriV10HandClipOriginalStyle === undefined) {
+        overall.dataset.bgaAgriV10HandClipOriginalStyle = overall.getAttribute('style') || '';
+      }
+      const overallRect = overall.getBoundingClientRect();
+      const neededH = Math.ceil(handViewportBottom - overallRect.top + 8);
+      if (neededH > 0) {
+        overall.dataset.bgaAgriV10HandClipHeight = String(neededH);
+      } else {
+        delete overall.dataset.bgaAgriV10HandClipHeight;
+      }
     }
-    const overallRect = overall.getBoundingClientRect();
-    const neededH = Math.ceil(handViewportBottom - overallRect.top + 8);
-    if (neededH > 0) {
-      overall.style.setProperty('min-height', `${neededH}px`, 'important');
-    }
+    updateOverallMinHeight(overall);
   }
 
   function layoutHandCards() {
@@ -493,6 +516,16 @@
     document.querySelectorAll('#hand-container').forEach(hc => {
       delete hc.dataset.bgaAgriV10HandEmpty;
     });
+
+    const overall = document.querySelector('#overall-content');
+    if (overall) {
+      delete overall.dataset.bgaAgriV10HandClipHeight;
+      updateOverallMinHeight(overall);
+      if (overall.dataset.bgaAgriV10HandClipOriginalStyle !== undefined) {
+        overall.setAttribute('style', overall.dataset.bgaAgriV10HandClipOriginalStyle);
+        delete overall.dataset.bgaAgriV10HandClipOriginalStyle;
+      }
+    }
 
     restoreHandBoardGap();
     restoreHandAncestors();
