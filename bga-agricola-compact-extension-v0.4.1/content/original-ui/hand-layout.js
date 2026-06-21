@@ -118,6 +118,11 @@
 
     delete handContainer.dataset.bgaAgriV10HandFixed;
     delete handContainer.dataset.bgaAgriV10OriginalParentId;
+
+    const wrapper = handContainer.closest('#alternative-hand-wrapper');
+    if (wrapper) {
+      delete wrapper.dataset.bgaAgriV10HandActive;
+    }
   }
 
   function handDisplayMode(handContainer) {
@@ -242,6 +247,11 @@
     }
 
     prepareHandAncestors(handContainer);
+
+    const wrapper = handContainer.closest('#alternative-hand-wrapper');
+    if (wrapper) {
+      wrapper.dataset.bgaAgriV10HandActive = '1';
+    }
 
     if (!handContainer.dataset.bgaAgriV10OriginalStyle) {
       handContainer.dataset.bgaAgriV10OriginalStyle = handContainer.getAttribute('style') || '';
@@ -465,6 +475,10 @@
       delete handContainer.dataset.bgaAgriV10HandFixed;
       delete handContainer.dataset.bgaAgriV10OriginalParentId;
       delete handContainer.dataset.bgaAgriV10HandLayoutMode;
+    });
+
+    document.querySelectorAll('#alternative-hand-wrapper').forEach(wrapper => {
+      delete wrapper.dataset.bgaAgriV10HandActive;
     });
 
     restoreHandBoardGap();

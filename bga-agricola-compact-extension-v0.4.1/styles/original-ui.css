@@ -9,7 +9,7 @@ html.bga-agri-v10-open.bga-agri-v10-original-compact #player-boards {
   display: none !important;
 }
 
-html.bga-agri-v10-open.bga-agri-v10-original-compact #alternative-hand-wrapper {
+html.bga-agri-v10-open.bga-agri-v10-original-compact #alternative-hand-wrapper[data-bga-agri-v10-hand-active="1"] {
   display: block !important;
   visibility: visible !important;
   overflow: visible !important;
