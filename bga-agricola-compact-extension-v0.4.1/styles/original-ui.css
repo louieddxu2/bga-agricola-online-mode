@@ -15,6 +15,11 @@ html.bga-agri-v10-open.bga-agri-v10-original-compact #alternative-hand-wrapper[d
   overflow: visible !important;
 }
 
+html.bga-agri-v10-open.bga-agri-v10-original-compact #alternative-hand-wrapper[data-bga-agri-v10-spectator-hide="1"],
+html.bga-agri-v10-open.bga-agri-v10-original-compact #hand-container[data-bga-agri-v10-spectator-hide="1"] {
+  display: none !important;
+}
+
 
 html.bga-agri-v10-open.bga-agri-v10-original-compact #game_play_area {
   margin-top: 0 !important;

@@ -118,10 +118,12 @@
 
     delete handContainer.dataset.bgaAgriV10HandFixed;
     delete handContainer.dataset.bgaAgriV10OriginalParentId;
+    delete handContainer.dataset.bgaAgriV10SpectatorHide;
 
     const wrapper = handContainer.closest('#alternative-hand-wrapper');
     if (wrapper) {
       delete wrapper.dataset.bgaAgriV10HandActive;
+      delete wrapper.dataset.bgaAgriV10SpectatorHide;
     }
   }
 
@@ -243,13 +245,22 @@
     if (!allCards.length) {
       restoreHandBoardGap();
       scrubCompactHandInlineStyle(handContainer);
+      if (window.g_spectator) {
+        handContainer.dataset.bgaAgriV10SpectatorHide = '1';
+        const altWrapper = handContainer.closest('#alternative-hand-wrapper');
+        if (altWrapper) {
+          altWrapper.dataset.bgaAgriV10SpectatorHide = '1';
+        }
+      }
       return;
     }
 
     prepareHandAncestors(handContainer);
 
+    delete handContainer.dataset.bgaAgriV10SpectatorHide;
     const altWrapper = handContainer.closest('#alternative-hand-wrapper');
     if (altWrapper) {
+      delete altWrapper.dataset.bgaAgriV10SpectatorHide;
       altWrapper.dataset.bgaAgriV10HandActive = '1';
     }
 
@@ -479,6 +490,11 @@
 
     document.querySelectorAll('#alternative-hand-wrapper').forEach(wrapper => {
       delete wrapper.dataset.bgaAgriV10HandActive;
+      delete wrapper.dataset.bgaAgriV10SpectatorHide;
+    });
+
+    document.querySelectorAll('#hand-container').forEach(hc => {
+      delete hc.dataset.bgaAgriV10SpectatorHide;
     });
 
     restoreHandBoardGap();
