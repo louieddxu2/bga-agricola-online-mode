@@ -166,7 +166,7 @@ test('hand layout measures player boards by their visual child rects', () => {
   assert.match(handLayoutSource, /const\s+boardRoots\s*=\s*\[\.\.\.playerBoards\.querySelectorAll\(':scope > \.player-board-resizable'\)\]/);
   assert.match(handLayoutSource, /\.\.\.board\.querySelectorAll\('\.player-board-wrapper'\)/);
   assert.match(handLayoutSource, /\.\.\.board\.querySelectorAll\('\.agricola-player-board'\)/);
-  assert.match(handLayoutSource, /\.\.\.board\.querySelectorAll\('\.cards-wrapper'\)/);
+  assert.doesNotMatch(handLayoutSource, /\.\.\.board\.querySelectorAll\('\.cards-wrapper'\)/);
   assert.doesNotMatch(handLayoutSource, /prevMode:\s*previousHandLayoutMode/);
   assert.match(handLayoutSource, /topStatusHeight:\s*getTopStatusHeight\(\)/);
   assert.match(handLayoutSource, /centralHeight:\s*centralRect\.height/);

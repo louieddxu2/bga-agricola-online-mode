@@ -195,8 +195,7 @@
       board,
       ...board.querySelectorAll('.player-board-wrapper'),
       ...board.querySelectorAll('.player-board-holder'),
-      ...board.querySelectorAll('.agricola-player-board'),
-      ...board.querySelectorAll('.cards-wrapper')
+      ...board.querySelectorAll('.agricola-player-board')
     ]);
 
     return mergeRects(nodes.map(el => el.getBoundingClientRect()), fallback);
