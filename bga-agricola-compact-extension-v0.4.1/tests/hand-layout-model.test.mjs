@@ -188,7 +188,7 @@ test('empty spectator hand restores board gap before any compact positioning', (
 
   assert.match(emptyHandGuard, /restoreHandBoardGap\(\)/);
   assert.match(emptyHandGuard, /scrubCompactHandInlineStyle\(handContainer\)/);
-  assert.match(emptyHandGuard, /window\.g_spectator/);
+  assert.match(emptyHandGuard, /spectatorMode/);
   assert.match(emptyHandGuard, /handContainer\.dataset\.bgaAgriV10SpectatorHide\s*=\s*'1'/);
   assert.match(emptyHandGuard, /altWrapper\.dataset\.bgaAgriV10SpectatorHide\s*=\s*'1'/);
   assert.match(emptyHandGuard, /return/);

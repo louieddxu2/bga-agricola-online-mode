@@ -245,7 +245,8 @@
     if (!allCards.length) {
       restoreHandBoardGap();
       scrubCompactHandInlineStyle(handContainer);
-      if (window.g_spectator) {
+      const isSpectator = !!window.g_spectator || document.querySelector('.spectatorMode') !== null;
+      if (isSpectator) {
         handContainer.dataset.bgaAgriV10SpectatorHide = '1';
         const altWrapper = handContainer.closest('#alternative-hand-wrapper');
         if (altWrapper) {
