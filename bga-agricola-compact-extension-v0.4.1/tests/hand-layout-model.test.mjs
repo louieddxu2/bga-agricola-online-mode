@@ -196,8 +196,8 @@ test('empty spectator hand restores board gap before any compact positioning', (
 });
 
 test('hand active state is managed on alternative-hand-wrapper', () => {
-  assert.match(handLayoutSource, /const\s+wrapper\s*=\s*handContainer\.closest\('#alternative-hand-wrapper'\);/);
-  assert.match(handLayoutSource, /wrapper\.dataset\.bgaAgriV10HandActive\s*=\s*'1';/);
+  assert.match(handLayoutSource, /const\s+altWrapper\s*=\s*handContainer\.closest\('#alternative-hand-wrapper'\);/);
+  assert.match(handLayoutSource, /altWrapper\.dataset\.bgaAgriV10HandActive\s*=\s*'1';/);
   assert.match(handLayoutSource, /delete\s+wrapper\.dataset\.bgaAgriV10HandActive;/);
   assert.match(
     handLayoutSource,

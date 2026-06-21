@@ -248,9 +248,9 @@
 
     prepareHandAncestors(handContainer);
 
-    const wrapper = handContainer.closest('#alternative-hand-wrapper');
-    if (wrapper) {
-      wrapper.dataset.bgaAgriV10HandActive = '1';
+    const altWrapper = handContainer.closest('#alternative-hand-wrapper');
+    if (altWrapper) {
+      altWrapper.dataset.bgaAgriV10HandActive = '1';
     }
 
     if (!handContainer.dataset.bgaAgriV10OriginalStyle) {
