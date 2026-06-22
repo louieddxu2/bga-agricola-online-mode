@@ -360,6 +360,9 @@
       });
     }
     const handModel = models.computeHandLayout(handModelInput);
+    if (AC.state) {
+      AC.state.lastHandModel = handModel;
+    }
     const {
       mode: handLayoutMode,
       cardScale,
@@ -525,6 +528,10 @@
         overall.setAttribute('style', overall.dataset.bgaAgriV10HandClipOriginalStyle);
         delete overall.dataset.bgaAgriV10HandClipOriginalStyle;
       }
+    }
+
+    if (AC.state) {
+      delete AC.state.lastHandModel;
     }
 
     restoreHandBoardGap();

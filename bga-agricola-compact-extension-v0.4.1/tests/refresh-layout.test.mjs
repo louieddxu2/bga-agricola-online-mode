@@ -49,10 +49,10 @@ test('played card layout clears stale hand transforms before sizing farm-side ca
 test('played card columns extend only into actual viewport space below the farm board', () => {
   assert.match(farmSource, /function\s+handIsBelowBoards\s*\(\)\s*\{/);
   assert.match(farmSource, /dataset\.bgaAgriV10HandLayoutMode === 'below-boards-row'/);
-  assert.match(farmSource, /function\s+playedCardLowerSpaceViewport\s*\(boardTop,\s*scaledBoardHeight\)\s*\{/);
-  assert.match(farmSource, /if\s*\(handIsBelowBoards\(\)\)\s*return\s*0/);
+  assert.match(farmSource, /function\s+playedCardLowerSpaceViewport\s*\(boardTop,\s*scaledBoardHeight,\s*cardsLeft,\s*cardsRight\)\s*\{/);
+  assert.match(farmSource, /if\s*\(handIsBelowBoards\(\)\)\s*\{/);
   assert.match(farmSource, /window\.innerHeight\s*-\s*\(boardTop\s*\+\s*scaledBoardHeight\)\s*-\s*20/);
-  assert.match(farmSource, /const\s+lowerSpaceViewport\s*=\s*playedCardLowerSpaceViewport\(board\.getBoundingClientRect\(\)\.top,\s*scaledH\)/);
+  assert.match(farmSource, /const\s+lowerSpaceViewport\s*=\s*playedCardLowerSpaceViewport\(boardRect\.top,\s*scaledH,\s*cardsLeft,\s*cardsRight\)/);
   assert.match(farmSource, /const\s+lowerSpaceUnscaled\s*=\s*lowerSpaceViewport\s*\/\s*Math\.max\(scale,\s*0\.05\)/);
   assert.match(farmSource, /const\s+cardsH\s*=\s*holderH\s*\+\s*lowerSpaceUnscaled/);
   assert.match(farmSource, /cards\.style\.setProperty\('height',\s*`\$\{cardsH\}px`,\s*'important'\)/);

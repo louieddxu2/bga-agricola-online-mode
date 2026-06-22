@@ -62,9 +62,40 @@
       !!handContainer.querySelector(':scope > .player-card');
   }
 
-  function playedCardLowerSpaceViewport(boardTop, scaledBoardHeight) {
-    if (handIsBelowBoards()) return 0;
+  function playedCardLowerSpaceViewport(boardTop, scaledBoardHeight, cardsLeft, cardsRight) {
     if (!Number.isFinite(boardTop) || !Number.isFinite(scaledBoardHeight)) return 0;
+
+    if (handIsBelowBoards()) {
+      const handModel = window.AgriCompact?.state?.lastHandModel;
+      if (handModel && handModel.mode === 'below-boards-row') {
+        const handContainer = document.querySelector('#hand-container');
+        if (handContainer) {
+          const allCards = [...handContainer.querySelectorAll(':scope > .player-card')];
+          const n = allCards.length;
+          if (n > 0) {
+            const handLeft = handModel.handViewportLeft;
+            const scaledCardW = handModel.scaledCardW;
+            const stepX = n <= 1
+              ? 0
+              : Math.max(0, Math.min(scaledCardW + 8, (handModel.handAvailableW - scaledCardW) / (n - 1)));
+            const handRight = handLeft + (n - 1) * stepX + scaledCardW;
+            const handTop = handModel.handViewportTop;
+
+            if (Number.isFinite(cardsLeft) && Number.isFinite(cardsRight)) {
+              const overlap = !(cardsRight + 8 < handLeft || cardsLeft - 8 > handRight);
+              if (overlap) {
+                return Math.max(0, handTop - (boardTop + scaledBoardHeight) - 8);
+              }
+            }
+          }
+        }
+      } else {
+        // Safe default: when handModel is not ready, return 0 (no extension).
+        // This is safe and avoids overlap during initial layout pass.
+        return 0;
+      }
+    }
+
     return Math.max(0, window.innerHeight - (boardTop + scaledBoardHeight) - 20);
   }
 
@@ -203,7 +234,10 @@
       const fenceOverhang = 20;
       const holderH = Math.max(nonCardBottom, cardBandH, 1) + fenceOverhang;
       const scaledH = Math.ceil(holderH * scale);
-      const lowerSpaceViewport = playedCardLowerSpaceViewport(board.getBoundingClientRect().top, scaledH);
+      const boardRect = board.getBoundingClientRect();
+      const cardsLeft = cards ? boardRect.left + farmW * scale : undefined;
+      const cardsRight = cards ? boardRect.left + holderW * scale : undefined;
+      const lowerSpaceViewport = playedCardLowerSpaceViewport(boardRect.top, scaledH, cardsLeft, cardsRight);
       const lowerSpaceUnscaled = lowerSpaceViewport / Math.max(scale, 0.05);
 
       board.style.setProperty('width', '100%', 'important');
