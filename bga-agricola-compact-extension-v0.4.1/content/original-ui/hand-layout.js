@@ -475,6 +475,19 @@
         card.style.setProperty('--bga-agri-v10-card-title-font-size', `${cardText.cardTitleFontSize(card, cardW, cardScale)}px`);
         card.style.setProperty('--bga-agri-v10-card-title-width', `${cardW}px`);
       });
+
+      // v1.0.0: In below-boards-row mode the container was sized to the full
+      // player-boards width (handAvailableW), leaving a wide empty hit-zone to
+      // the right of the last hand card.  That empty space blocked hover events
+      // on played cards belonging to other players whose card columns extend into
+      // the hand row.  Shrink the width to the actual right edge of the cards so
+      // only pixels with a real hand card capture pointer events.
+      // right-one-row does not need this trim because it is positioned to the
+      // right of the central board and does not overlap played-card columns.
+      if (handLayoutMode === 'below-boards-row' && n > 0) {
+        const actualFootprintW = n === 1 ? scaledCardW : (n - 1) * stepX + scaledCardW;
+        handContainer.style.setProperty('width', `${Math.ceil(actualFootprintW + 2)}px`, 'important');
+      }
     } else {
       stackRow(occupationCards, 0);
       stackRow(improvementCards, 1);
