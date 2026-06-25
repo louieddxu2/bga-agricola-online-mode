@@ -1,6 +1,6 @@
 {
   "manifest_version": 3,
-  "name": "Agricola Online Mode",
+  "name": "BGA PlayAgricolaOnline Mode",
   "version": "1.0.0",
   "description": "Compacts BGA Agricola with original-DOM board, hand, action-card, and log layouts.",
   "permissions": [

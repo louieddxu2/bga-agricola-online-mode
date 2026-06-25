@@ -48,7 +48,7 @@ jobs:
           prerelease: false
           name: Release ${{ github.ref_name }}
           body: |
-            ## Agricola Online Mode ${{ github.ref_name }}
+            ## BGA PlayAgricolaOnline Mode ${{ github.ref_name }}
             
             雙語說明請參閱 [README.md](https://github.com/${{ github.repository }}/blob/master/README.md)
             Please refer to the [README.md](https://github.com/${{ github.repository }}/blob/master/README.md) for bilingual documentation.

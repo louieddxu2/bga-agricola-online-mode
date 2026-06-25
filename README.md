@@ -1,4 +1,4 @@
-# Agricola Online Mode (農家樂線上排版助手)
+# BGA PlayAgricolaOnline Mode (BGA農家樂緊湊排版模式)
 
 [繁體中文](#繁體中文) | [English](#english)
 
@@ -21,7 +21,7 @@
 - **行動格卡片**：若設定顯示玩家行動卡，會顯示在14回合格的右側。
 - **遊戲記錄**：過濾掉好友上線/下線等雜音，只顯示具備遊戲意義的步驟。
 - 保留所有 BGA 原有的懸停提示（tooltips）、拖放操作（drag-and-drop）、動畫以及卡牌點擊互動。
-- 隨時可以使用右下角的 **Agricola Online Mode** 按鈕切換開啟或關閉緊湊排版。
+- 隨時可以使用右下角的 **BGA PlayAgricolaOnline Mode** 按鈕切換開啟或關閉緊湊排版。
 
 ---
 
@@ -31,7 +31,7 @@
 2. 開啟 Chrome 瀏覽器，進入 `chrome://extensions/`（擴充功能管理頁面）。
 3. 開啟右上角的 **「開發者模式」** (Developer mode) 開關。
 4. 點擊左上角的 **「載入解壓縮開發中擴充功能」** (Load unpacked)，並選擇您剛剛解壓縮的資料夾。
-5. 進入 BGA 的任何一局農家樂遊戲——**Agricola Online Mode** 按鈕將會出現在網頁的右下角。
+5. 進入 BGA 的任何一局農家樂遊戲——**BGA PlayAgricolaOnline Mode** 按鈕將會出現在網頁的右下角。
 
 > ⚠️ **注意**：部分 Chrome 版本在啟動時可能會提醒您「開發者模式正在運行」，這是正常且安全的現象，直接關閉該提示（或若無提示）即可。
 
@@ -39,7 +39,7 @@
 
 ### 使用方式
 
-- 點擊 **Agricola Online Mode** 按鈕即可啟用緊湊排版。
+- 點擊 **BGA PlayAgricolaOnline Mode** 按鈕即可啟用緊湊排版。
 - 點擊控制面板上的 **收合 v1.0.0** 可隨時還原為 BGA 原本的排版。
 - 遇到排版跑版的情況，可以嘗試收合後再次展開此功能。
 
@@ -80,7 +80,7 @@ A Chrome / Chromium browser extension for [Board Game Arena](https://boardgamear
 - **Action spaces cards**: If configured to display player action cards, they are shown to the right of the Round 14 slot.
 - **Game log** is filtered to show only meaningful game moves — not friend online/offline noise.
 - All BGA tooltips, drag-and-drop, animations, and card interactions remain fully functional.
-- Toggle the compact layout on/off at any time with the **Agricola Online Mode** button.
+- Toggle the compact layout on/off at any time with the **BGA PlayAgricolaOnline Mode** button.
 
 ---
 
@@ -90,7 +90,7 @@ A Chrome / Chromium browser extension for [Board Game Arena](https://boardgamear
 2. Open Chrome and go to `chrome://extensions/`.
 3. Enable **Developer mode** (toggle in the top-right corner).
 4. Click **Load unpacked** and select the folder you just unzipped.
-5. Navigate to any Agricola game on BGA — the **Agricola Online Mode** button will appear in the bottom-right corner of the page.
+5. Navigate to any Agricola game on BGA — the **BGA PlayAgricolaOnline Mode** button will appear in the bottom-right corner of the page.
 
 > ⚠️ **Note:** Some Chrome versions may remind you on startup that developer mode is active. This is normal and harmless; you can simply dismiss the notification (or ignore this note if you don't see any warning).
 
@@ -98,7 +98,7 @@ A Chrome / Chromium browser extension for [Board Game Arena](https://boardgamear
 
 ### Usage
 
-- Click **Agricola Online Mode** to enable the compact layout.
+- Click **BGA PlayAgricolaOnline Mode** to enable the compact layout.
 - Click **收合 v1.0.0** to return to the original BGA layout.
 - If the layout appears broken or misaligned, try collapsing and re-expanding the feature.
 
