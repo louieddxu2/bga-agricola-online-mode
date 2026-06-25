@@ -13,10 +13,6 @@ html.bga-agri-v10-open.bga-agri-v10-original-compact #alternative-hand-wrapper[d
   display: block !important;
   visibility: visible !important;
   overflow: visible !important;
-  /* v1.0.0: the wrapper spans the full layout width; disable its own pointer
-     capture so played cards behind the hand row remain hoverable.
-     #hand-container inside it is still set to pointer-events: auto by JS. */
-  pointer-events: none !important;
 }
 
 html.bga-agri-v10-open.bga-agri-v10-original-compact #alternative-hand-wrapper[data-bga-agri-v10-hand-empty="1"],
