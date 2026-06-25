@@ -30,8 +30,8 @@
 1. **下載**：至 [Releases](../../releases) 頁面下載最新版的 `bga-agricola-online-mode-v*.zip`，並將其解壓縮到電腦中的固定資料夾。
 2. 開啟 Chrome 瀏覽器，進入 `chrome://extensions/`（擴充功能管理頁面）。
 3. 開啟右上角的 **「開發者模式」** (Developer mode) 開關。
-4. 點擊左上角的 **「載入解壓縮開發中擴充功能」** (Load unpacked)，並選擇您剛剛解壓縮的資料夾。
-5. 進入 BGA 的任何一局農家樂遊戲——**BGA PlayAgricolaOnline Mode** 按鈕將會出現在網頁的右下角。
+4. 點擊左上角的 **「載入未封裝項目」** (Load unpacked)，並選擇您剛剛解壓縮的資料夾。
+5. 進入 BGA 的任何一局農家樂遊戲——**Agricola Online Mode** 按鈕將會出現在網頁的右下角。
 
 > ⚠️ **注意**：部分 Chrome 版本在啟動時可能會提醒您「開發者模式正在運行」，這是正常且安全的現象，直接關閉該提示（或若無提示）即可。
 
