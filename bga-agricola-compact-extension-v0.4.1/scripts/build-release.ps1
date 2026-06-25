@@ -24,7 +24,8 @@ $items = @(
   "content",
   "styles",
   "README.md",
-  "RELEASE.md"
+  "RELEASE.md",
+  "LICENSE"
 )
 
 foreach ($item in $items) {
