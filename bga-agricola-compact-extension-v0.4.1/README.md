@@ -27,7 +27,7 @@
 
 ### 安裝方式 (手動安裝，無需透過 Web Store)
 
-1. **下載**：至 [Releases](../../releases) 頁面下載最新版的 `bga-agricola-online-mode-v*.zip`，並將其解壓縮到電腦中的固定資料夾。
+1. **下載**：至 [Releases](../../releases) 頁面下載最新版的 `bga-agricola-compact-panel-v*.zip`，並將其解壓縮到電腦中的固定資料夾。
 2. 開啟 Chrome 瀏覽器，進入 `chrome://extensions/`（擴充功能管理頁面）。
 3. 開啟右上角的 **「開發者模式」** (Developer mode) 開關。
 4. 點擊左上角的 **「載入未封裝項目」** (Load unpacked)，並選擇您剛剛解壓縮的資料夾。
@@ -39,7 +39,7 @@
 
 ### 使用方式
 
-- 點擊 **BGA PlayAgricolaOnline Mode** 按鈕即可啟用緊湊排版。
+- 點擊 **Agricola Online Mode** 按鈕即可啟用緊湊排版。
 - 點擊控制面板上的 **收合 v1.0.1** 可隨時還原為 BGA 原本的排版。
 - 遇到排版跑版的情況，可以嘗試收合後再次展開此功能。
 
@@ -86,11 +86,11 @@ A Chrome / Chromium browser extension for [Board Game Arena](https://boardgamear
 
 ### Installation (manual, no Web Store required)
 
-1. **Download** the latest `bga-agricola-online-mode-v*.zip` from the [Releases](../../releases) page and unzip it to a permanent folder on your computer.
+1. **Download** the latest `bga-agricola-compact-panel-v*.zip` from the [Releases](../../releases) page and unzip it to a permanent folder on your computer.
 2. Open Chrome and go to `chrome://extensions/`.
 3. Enable **Developer mode** (toggle in the top-right corner).
 4. Click **Load unpacked** and select the folder you just unzipped.
-5. Navigate to any Agricola game on BGA — the **BGA PlayAgricolaOnline Mode** button will appear in the bottom-right corner of the page.
+5. Navigate to any Agricola game on BGA — the **Agricola Online Mode** button will appear in the bottom-right corner of the page.
 
 > ⚠️ **Note:** Some Chrome versions may remind you on startup that developer mode is active. This is normal and harmless; you can simply dismiss the notification (or ignore this note if you don't see any warning).
 
@@ -98,7 +98,7 @@ A Chrome / Chromium browser extension for [Board Game Arena](https://boardgamear
 
 ### Usage
 
-- Click **BGA PlayAgricolaOnline Mode** to enable the compact layout.
+- Click **Agricola Online Mode** to enable the compact layout.
 - Click **收合 v1.0.1** to return to the original BGA layout.
 - If the layout appears broken or misaligned, try collapsing and re-expanding the feature.
 
