@@ -126,16 +126,16 @@ Download the new zip from [Releases](../../releases), replace the contents of yo
 
 ```powershell
 # Syntax-check all content scripts
-Get-ChildItem content -Recurse -Filter *.js | ForEach-Object { node --check $_.FullName }
+Get-ChildItem bga-agricola-compact-extension-v0.4.1\content -Recurse -Filter *.js | ForEach-Object { node --check $_.FullName }
 
 # Run layout-model and CSS-scope tests
-node --test tests\*.test.mjs
+node --test bga-agricola-compact-extension-v0.4.1\tests\*.test.mjs
 
 # Build a release zip (output goes to dist\)
-.\scripts\build-release.ps1
+.\bga-agricola-compact-extension-v0.4.1\scripts\build-release.ps1
 ```
 
-See [RELEASE.md](RELEASE.md) for the full release checklist.
+See [RELEASE.md](bga-agricola-compact-extension-v0.4.1/RELEASE.md) for the full release checklist.
 
 ---
 
