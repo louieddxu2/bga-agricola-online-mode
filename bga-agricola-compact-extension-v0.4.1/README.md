@@ -16,9 +16,9 @@
 
 **主要功能：**
 - **農莊板塊**：緊湊地排列在視窗底部，並依比例縮放以適應螢幕。
-- **手牌區域**：當垂直空間足夠時顯示在中央圖板下方，否則會移至右側。
+- **手牌區域**：顯示在中央版圖右下側，若農莊版圖下側的空間足夠(透過縮放螢幕大小)，會移動到農莊版圖下側。
 - **已打出卡牌**（職業與改善）：從每位玩家的板塊向下延伸，善用剩餘空間。
-- **行動卡**：放置在中央圖板的卡牌會顯示在右側的專屬欄位中。
+- **行動格卡片**：若設定顯示玩家行動卡，會顯示在14回合格的右側。
 - **遊戲記錄**：過濾掉好友上線/下線等雜音，只顯示具備遊戲意義的步驟。
 - 保留所有 BGA 原有的懸停提示（tooltips）、拖放操作（drag-and-drop）、動畫以及卡牌點擊互動。
 - 隨時可以使用右下角的 **Agricola Online Mode** 按鈕切換開啟或關閉緊湊排版。
@@ -41,7 +41,7 @@
 
 - 點擊 **Agricola Online Mode** 按鈕即可啟用緊湊排版。
 - 點擊控制面板上的 **收合 v1.0.0** 可隨時還原為 BGA 原本的排版。
-- 使用面板內部的 ▲▼ 按鈕，可以自由調整遊戲板塊與手牌的卡片大小。
+- 遇到排版跑版的情況，可以嘗試收合後再次展開此功能。
 
 ---
 
@@ -75,9 +75,9 @@ A Chrome / Chromium browser extension for [Board Game Arena](https://boardgamear
 
 **Key features:**
 - **Farm boards** are arranged in a compact row at the bottom of the viewport, scaled to fit.
-- **Hand cards** sit below the central board when there is enough vertical room, or to the right side otherwise.
+- **Hand cards**: Displayed on the bottom-right of the central board. If there is enough space below the farm boards (e.g. by scaling/resizing the viewport), they will move below the farm boards.
 - **Played cards** (occupations & improvements) extend downward from each player board into available space.
-- **Action cards** played on the central board are shown in a dedicated column on the right.
+- **Action spaces cards**: If configured to display player action cards, they are shown to the right of the Round 14 slot.
 - **Game log** is filtered to show only meaningful game moves — not friend online/offline noise.
 - All BGA tooltips, drag-and-drop, animations, and card interactions remain fully functional.
 - Toggle the compact layout on/off at any time with the **Agricola Online Mode** button.
@@ -100,7 +100,7 @@ A Chrome / Chromium browser extension for [Board Game Arena](https://boardgamear
 
 - Click **Agricola Online Mode** to enable the compact layout.
 - Click **收合 v1.0.0** to return to the original BGA layout.
-- Use the ▲▼ buttons inside the panel to adjust board and hand card sizes to your preference.
+- If the layout appears broken or misaligned, try collapsing and re-expanding the feature.
 
 ---
 
