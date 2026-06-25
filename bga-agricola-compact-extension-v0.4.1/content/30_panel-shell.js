@@ -15,7 +15,7 @@
     const btn = document.createElement('button');
     btn.id = AC.IDS.toggle;
     btn.type = 'button';
-    btn.textContent = 'Agricola Compact';
+    btn.textContent = 'Agricola Online Mode';
     btn.addEventListener('click', () => AC.state.settings.enabled ? AC.closePanel() : AC.openPanel());
     document.documentElement.appendChild(btn);
   };
@@ -89,7 +89,7 @@
   AC.positionToggle = function positionToggle() {
     const btn = document.getElementById(AC.IDS.toggle);
     if (!btn) return;
-    btn.textContent = AC.state.settings?.enabled ? `收合 v${AC.VERSION}` : 'Agricola Compact';
+    btn.textContent = AC.state.settings?.enabled ? `收合 v${AC.VERSION}` : 'Agricola Online Mode';
 
     btn.style.setProperty('display', 'inline-flex', 'important');
     btn.style.setProperty('width', 'max-content', 'important');
