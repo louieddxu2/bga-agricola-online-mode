@@ -33,7 +33,7 @@
 4. 點擊左上角的 **「載入解壓縮開發中擴充功能」** (Load unpacked)，並選擇您剛剛解壓縮的資料夾。
 5. 進入 BGA 的任何一局農家樂遊戲——**Agricola Online Mode** 按鈕將會出現在網頁的右下角。
 
-> ⚠️ **注意**：因為這是手動載入的擴充功能，Chrome 在每次啟動時都會提醒您「開發者模式正在運行」，這是正常且安全的現象，直接關閉該提示即可。
+> ⚠️ **注意**：部分 Chrome 版本在啟動時可能會提醒您「開發者模式正在運行」，這是正常且安全的現象，直接關閉該提示（或若無提示）即可。
 
 ---
 
@@ -92,7 +92,7 @@ A Chrome / Chromium browser extension for [Board Game Arena](https://boardgamear
 4. Click **Load unpacked** and select the folder you just unzipped.
 5. Navigate to any Agricola game on BGA — the **Agricola Online Mode** button will appear in the bottom-right corner of the page.
 
-> ⚠️ **Note:** Because this is a manually loaded extension, Chrome will remind you on startup that developer mode is active. This is normal and harmless.
+> ⚠️ **Note:** Some Chrome versions may remind you on startup that developer mode is active. This is normal and harmless; you can simply dismiss the notification (or ignore this note if you don't see any warning).
 
 ---
 
