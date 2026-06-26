@@ -89,7 +89,9 @@
   AC.positionToggle = function positionToggle() {
     const btn = document.getElementById(AC.IDS.toggle);
     if (!btn) return;
-    btn.textContent = AC.state.settings?.enabled ? `收合 v${AC.VERSION}` : 'Agricola Online Mode';
+    const isChinese = /zh/i.test(document.documentElement.lang || '');
+    const collapseText = isChinese ? `收合 v${AC.VERSION}` : `Collapse v${AC.VERSION}`;
+    btn.textContent = AC.state.settings?.enabled ? collapseText : 'Agricola Online Mode';
 
     btn.style.setProperty('display', 'inline-flex', 'important');
     btn.style.setProperty('width', 'max-content', 'important');
