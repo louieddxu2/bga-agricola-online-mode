@@ -18,10 +18,17 @@
 - **農莊板塊**：緊湊地排列在視窗底部，並依比例縮放以適應螢幕。
 - **手牌區域**：顯示在中央版圖右下側，若農莊版圖下側的空間足夠(透過縮放螢幕大小)，會移動到農莊版圖下側。
 - **已打出卡牌**（職業與改善）：從每位玩家的板塊向下延伸，善用剩餘空間。
+- **卡片標題自適應**：中文卡牌完全維持原版單行（`nowrap`）排版，並在職業卡達 5 字以上、次要發展卡達 4 字以上時，動態加上描白邊的陰影（`text-shadow`）效果以保證可讀性；外語長卡名則啟用折行（最多兩行）與自適應字級微縮以避免遮擋。
 - **行動格卡片**：若設定顯示玩家行動卡，會顯示在14回合格的右側。
 - **遊戲記錄**：過濾掉好友上線/下線等雜音，只顯示具備遊戲意義的步驟。
 - 保留所有 BGA 原有的懸停提示（tooltips）、拖放操作（drag-and-drop）、動畫以及卡牌點擊互動。
 - 隨時可以使用右下角的 **BGA PlayAgricolaOnline Mode** 按鈕切換開啟或關閉緊湊排版。
+
+### 介面對照 (Before & After)
+
+| 緊湊排版啟用前 (Before) | 緊湊排版啟用後 (After) |
+| :---: | :---: |
+| ![啟用前](screenshot_before_zh.png) | ![啟用後](screenshot_after_zh.png) |
 
 ---
 
@@ -40,7 +47,7 @@
 ### 使用方式
 
 - 點擊 **Agricola Online Mode** 按鈕即可啟用緊湊排版。
-- 點擊控制面板上的 **收合 v1.0.1** 可隨時還原為 BGA 原本的排版。
+- 點擊控制面板上的 **收合** (非中文語系顯示 **Collapse**) 可隨時還原為 BGA 原本的排版。
 - 遇到排版跑版的情況，可以嘗試收合後再次展開此功能。
 
 ---
@@ -77,10 +84,17 @@ A Chrome / Chromium browser extension for [Board Game Arena](https://boardgamear
 - **Farm boards** are arranged in a compact row at the bottom of the viewport, scaled to fit.
 - **Hand cards**: Displayed on the bottom-right of the central board. If there is enough space below the farm boards (e.g. by scaling/resizing the viewport), they will move below the farm boards.
 - **Played cards** (occupations & improvements) extend downward from each player board into available space.
+- **Card Titles Adaptation**: Preserves the original single-line (`nowrap`) layout for Chinese cards, with a dynamic text-shadow outline for 5+ characters (Occupations) or 4+ characters (Improvements) to enhance legibility. Automatically wraps and scales long card names (up to two lines) in English and other languages.
 - **Action spaces cards**: If configured to display player action cards, they are shown to the right of the Round 14 slot.
 - **Game log** is filtered to show only meaningful game moves — not friend online/offline noise.
 - All BGA tooltips, drag-and-drop, animations, and card interactions remain fully functional.
 - Toggle the compact layout on/off at any time with the **BGA PlayAgricolaOnline Mode** button.
+
+### Layout Comparison (Before & After)
+
+| Original Layout (Before) | Compact Layout (After) |
+| :---: | :---: |
+| ![Before](screenshot_before_en.png) | ![After](screenshot_after_en.png) |
 
 ---
 
@@ -99,7 +113,7 @@ A Chrome / Chromium browser extension for [Board Game Arena](https://boardgamear
 ### Usage
 
 - Click **Agricola Online Mode** to enable the compact layout.
-- Click **收合 v1.0.1** to return to the original BGA layout.
+- Click **Collapse** (or **收合** for Chinese) to return to the original BGA layout.
 - If the layout appears broken or misaligned, try collapsing and re-expanding the feature.
 
 ---
@@ -126,16 +140,16 @@ Download the new zip from [Releases](../../releases), replace the contents of yo
 
 ```powershell
 # Syntax-check all content scripts
-Get-ChildItem bga-agricola-compact-extension-v0.4.1\content -Recurse -Filter *.js | ForEach-Object { node --check $_.FullName }
+Get-ChildItem content -Recurse -Filter *.js | ForEach-Object { node --check $_.FullName }
 
 # Run layout-model and CSS-scope tests
-node --test bga-agricola-compact-extension-v0.4.1\tests\*.test.mjs
+node --test tests\*.test.mjs
 
 # Build a release zip (output goes to dist\)
-.\bga-agricola-compact-extension-v0.4.1\scripts\build-release.ps1
+.\scripts\build-release.ps1
 ```
 
-See [RELEASE.md](bga-agricola-compact-extension-v0.4.1/RELEASE.md) for the full release checklist.
+See [RELEASE.md](RELEASE.md) for the full release checklist.
 
 ---
 
