@@ -42,24 +42,25 @@
     // 2. Get the base/initial font size
     const initialFontSize = cardTitleFontSize(card, unscaledTitleW, cardScale);
 
-    // 3. Try layout as single line (nowrap)
+    // Primarily Chinese Han characters: has Han, no Kana, no Hangul
+    const isMainlyChinese = scriptInfo.hasHan && !scriptInfo.hasKana && !scriptInfo.hasHangul;
+
+    if (isMainlyChinese) {
+      // For Chinese cards, completely preserve original nowrap behavior with initial font size
+      titleEl.setAttribute('data-title-mode', 'nowrap');
+      titleEl.style.setProperty('--bga-agri-v10-card-title-font-size', `${initialFontSize}px`);
+      return;
+    }
+
+    // 3. Try layout as single line (nowrap) for other languages
     titleEl.setAttribute('data-title-mode', 'nowrap');
     titleEl.style.setProperty('--bga-agri-v10-card-title-font-size', `${initialFontSize}px`);
 
     // 4. Measure client size in Layout Space
     const titleW = titleEl.clientWidth || unscaledTitleW || 211.5;
-    const maxTitleHeight = titleW * 0.16;
 
     // Check if the single line fits inside clientWidth
     const singleLineFits = titleEl.scrollWidth <= titleEl.clientWidth + 1;
-
-    // Primarily Chinese Han characters: has Han, no Kana, no Hangul
-    const isMainlyChinese = scriptInfo.hasHan && !scriptInfo.hasKana && !scriptInfo.hasHangul;
-
-    if (isMainlyChinese && singleLineFits) {
-      // Keep single line large Chinese font logic
-      return;
-    }
 
     // Short English/other languages: keep single line if it fits
     if (singleLineFits) {
