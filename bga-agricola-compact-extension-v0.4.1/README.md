@@ -23,8 +23,11 @@
 - 保留所有 BGA 原有的懸停提示（tooltips）、拖放操作（drag-and-drop）、動畫以及卡牌點擊互動。
 - 隨時可以使用右下角的 **BGA PlayAgricolaOnline Mode** 按鈕切換開啟或關閉緊湊排版。
 
-### 介面截圖
-![繁體中文介面截圖](screenshot_zh.png)
+### 介面對照 (Before & After)
+
+| 緊湊排版啟用前 (Before) | 緊湊排版啟用後 (After) |
+| :---: | :---: |
+| ![啟用前](screenshot_before_zh.png) | ![啟用後](screenshot_after_zh.png) |
 
 ---
 
@@ -85,8 +88,11 @@ A Chrome / Chromium browser extension for [Board Game Arena](https://boardgamear
 - All BGA tooltips, drag-and-drop, animations, and card interactions remain fully functional.
 - Toggle the compact layout on/off at any time with the **BGA PlayAgricolaOnline Mode** button.
 
-### Screenshot
-![English Interface Screenshot](screenshot_en.png)
+### Layout Comparison (Before & After)
+
+| Original Layout (Before) | Compact Layout (After) |
+| :---: | :---: |
+| ![Before](screenshot_before_en.png) | ![After](screenshot_after_en.png) |
 
 ---
 
