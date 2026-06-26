@@ -1015,4 +1015,25 @@ html.bga-agri-v10-open.bga-agri-v10-original-compact .table_infomsg_red {
   display: none !important;
 }
 
+/* v1.0.2: support two-line layout with ellipsis/truncation and custom height limit.
+   Use high-specificity selectors to properly override the nowrap style rules on compact layout titles. */
+html.bga-agri-v10-open.bga-agri-v10-original-compact #action-cards-holder[data-bga-agri-v10-action-cards-managed="1"] .player-card .card-title[data-title-mode="twoline"],
+html.bga-agri-v10-open.bga-agri-v10-original-compact #player-boards .cards-wrapper > .player-card .card-title[data-title-mode="twoline"],
+html.bga-agri-v10-open.bga-agri-v10-original-compact #hand-container[data-bga-agri-v10-hand-fixed="1"] .player-card .card-title[data-title-mode="twoline"] {
+  white-space: normal !important;
+  display: -webkit-box !important;
+  -webkit-line-clamp: 2 !important;
+  -webkit-box-orient: vertical !important;
+  line-height: 0.98 !important;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+  height: auto !important;
+  max-height: none !important;
+  text-shadow: 1px 1px 0 #fff, -1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff, 0 1px 0 #fff, 0 -1px 0 #fff, 1px 0 0 #fff, -1px 0 0 #fff !important;
+  overflow: hidden !important;
+  text-overflow: clip !important;
+  overflow-wrap: normal !important;
+  word-break: normal !important;
+}
+
 

@@ -448,6 +448,7 @@
         // full card width, matching the played-card logic beside player boards.
         card.style.setProperty('--bga-agri-v10-card-title-font-size', `${cardText.cardTitleFontSize(card, cardW, cardScale)}px`);
         card.style.setProperty('--bga-agri-v10-card-title-width', `${cardW}px`);
+        cardText.adjustCardTitle(card, cardW, cardScale);
       });
     };
 
@@ -474,6 +475,7 @@
         card.style.setProperty('transform-origin', 'top left', 'important');
         card.style.setProperty('--bga-agri-v10-card-title-font-size', `${cardText.cardTitleFontSize(card, cardW, cardScale)}px`);
         card.style.setProperty('--bga-agri-v10-card-title-width', `${cardW}px`);
+        cardText.adjustCardTitle(card, cardW, cardScale);
       });
 
       // v1.0.0: In below-boards-row mode the container was sized to the full

@@ -40,21 +40,6 @@
     });
   };
 
-  function titleWeight(text) {
-    return [...String(text || '').trim()].reduce((sum, ch) => {
-      if (/\s/.test(ch)) return sum + 0.3;
-      if (/[\u0000-\u007f]/.test(ch)) return sum + 0.58;
-      return sum + 1;
-    }, 0);
-  }
-
-  function cardTitleFontSize(card, unscaledCardW, boardScale) {
-    const title = card.querySelector('.card-title')?.textContent || '';
-    const visibleCardW = Math.max(1, unscaledCardW * boardScale);
-    const weight = Math.max(4, titleWeight(title));
-    const visibleFontSize = AC.utils.clamp((visibleCardW * 1.08) / weight, 15, 20);
-    return AC.utils.round(visibleFontSize / Math.max(boardScale, 0.05));
-  }
 
   function handIsBelowBoards() {
     const handContainer = document.querySelector('#hand-container');
@@ -423,8 +408,9 @@
             card.style.setProperty('overflow', 'visible', 'important');
             card.style.setProperty('box-sizing', 'border-box', 'important');
             card.style.setProperty('z-index', `${10 + index}`, 'important');
-            card.style.setProperty('--bga-agri-v10-card-title-font-size', `${cardTitleFontSize(card, colW, scale)}px`);
+            card.style.setProperty('--bga-agri-v10-card-title-font-size', `${AC.originalUiCardText.cardTitleFontSize(card, colW, scale)}px`);
             card.style.setProperty('--bga-agri-v10-card-title-width', `${colW}px`);
+            AC.originalUiCardText.adjustCardTitle(card, colW, scale);
           });
         };
 

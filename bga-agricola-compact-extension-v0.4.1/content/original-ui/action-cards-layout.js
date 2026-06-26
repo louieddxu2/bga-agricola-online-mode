@@ -228,6 +228,7 @@
         card.style.setProperty('z-index', `${20 + cardIndex}`, 'important');
         card.style.setProperty('--bga-agri-v10-card-title-font-size', `${cardText.cardTitleFontSize(card, actionCardW, scale)}px`);
         card.style.setProperty('--bga-agri-v10-card-title-width', `${actionCardW}px`);
+        cardText.adjustCardTitle(card, actionCardW, scale);
       });
     });
   }
