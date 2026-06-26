@@ -40,7 +40,7 @@
 ### 使用方式
 
 - 點擊 **Agricola Online Mode** 按鈕即可啟用緊湊排版。
-- 點擊控制面板上的 **收合 v1.0.1** 可隨時還原為 BGA 原本的排版。
+- 點擊控制面板上的 **收合 v1.0.2** (非中文語系顯示 **Collapse v1.0.2**) 可隨時還原為 BGA 原本的排版。
 - 遇到排版跑版的情況，可以嘗試收合後再次展開此功能。
 
 ---
@@ -99,7 +99,7 @@ A Chrome / Chromium browser extension for [Board Game Arena](https://boardgamear
 ### Usage
 
 - Click **Agricola Online Mode** to enable the compact layout.
-- Click **收合 v1.0.1** to return to the original BGA layout.
+- Click **Collapse v1.0.2** (or **收合 v1.0.2** for Chinese) to return to the original BGA layout.
 - If the layout appears broken or misaligned, try collapsing and re-expanding the feature.
 
 ---
