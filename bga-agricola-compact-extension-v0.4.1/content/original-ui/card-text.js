@@ -38,6 +38,7 @@
     // 1. Reset dynamic style override and custom attributes
     titleEl.removeAttribute('data-title-mode');
     titleEl.style.removeProperty('--bga-agri-v10-card-title-font-size');
+    titleEl.style.removeProperty('text-shadow');
 
     // 2. Get the base/initial font size
     const initialFontSize = cardTitleFontSize(card, unscaledTitleW, cardScale);
@@ -49,6 +50,18 @@
       // For Chinese cards, completely preserve original nowrap behavior with initial font size
       titleEl.setAttribute('data-title-mode', 'nowrap');
       titleEl.style.setProperty('--bga-agri-v10-card-title-font-size', `${initialFontSize}px`);
+
+      // Add text shadow outline for readability when character count meets threshold
+      const charCount = [...text.trim()].length;
+      const isOccupation = card.classList.contains('occupation');
+      const threshold = isOccupation ? 5 : 4;
+      if (charCount >= threshold) {
+        titleEl.style.setProperty(
+          'text-shadow',
+          '1px 1px 0 #fff, -1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff, 0 1px 0 #fff, 0 -1px 0 #fff, 1px 0 0 #fff, -1px 0 0 #fff',
+          'important'
+        );
+      }
       return;
     }
 
