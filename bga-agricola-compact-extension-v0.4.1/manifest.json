@@ -16,6 +16,7 @@
         "https://boardgamearena.com/*/agricola*",
         "https://*.boardgamearena.com/*/agricola*"
       ],
+      "all_frames": true,
       "js": [
         "content/00_bootstrap.js",
         "content/10_settings.js",
