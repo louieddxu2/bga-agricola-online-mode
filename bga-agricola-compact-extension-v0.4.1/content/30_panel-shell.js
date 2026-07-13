@@ -5,7 +5,6 @@
   AC.init = async function init() {
     await AC.settings.load();
     AC.injectToggle();
-    AC.removeSettings();
     AC.applyVars();
     AC.positionToggle?.();
     if (AC.state.settings.enabled) AC.openPanel();
@@ -33,7 +32,6 @@
     const panel = document.createElement('section');
     panel.id = AC.IDS.panel;
     document.documentElement.appendChild(panel);
-    AC.injectSettings();
 
     AC.refresh();
     AC.positionToggle();
@@ -54,7 +52,6 @@
     AC.restoreOriginalPlayerBoards?.();
     document.documentElement.classList.remove('bga-agri-v10-open');
     document.getElementById(AC.IDS.panel)?.remove();
-    AC.removeSettings();
     document.getElementById(AC.IDS.zoom)?.remove();
     AC.observer.stop();
 
@@ -62,40 +59,6 @@
       window.removeEventListener('resize', AC.onResize);
     }
     AC.positionToggle();
-  };
-
-  AC.injectSettings = function injectSettings() {
-    if (document.getElementById(AC.IDS.settings) || !AC.state.settings?.enabled) return;
-
-    const isChinese = /zh/i.test(document.documentElement.lang || '');
-    const settings = document.createElement('div');
-    settings.id = AC.IDS.settings;
-
-    const label = document.createElement('label');
-    label.className = 'bga-agri-v10-setting';
-
-    const checkbox = document.createElement('input');
-    checkbox.type = 'checkbox';
-    checkbox.checked = !!AC.state.settings.resourcesAboveBoard;
-    checkbox.dataset.setting = 'resourcesAboveBoard';
-    checkbox.addEventListener('change', () => {
-      AC.settings.save({ resourcesAboveBoard: checkbox.checked });
-      AC.layoutOriginalPlayerBoards?.();
-      AC.positionToggle?.();
-    });
-
-    const text = document.createElement('span');
-    text.textContent = isChinese
-      ? '資源列置於玩家版圖上方'
-      : 'Place resource bar above player board';
-
-    label.append(checkbox, text);
-    settings.appendChild(label);
-    document.documentElement.appendChild(settings);
-  };
-
-  AC.removeSettings = function removeSettings() {
-    document.getElementById(AC.IDS.settings)?.remove();
   };
 
   AC.handleAction = function handleAction(action) {

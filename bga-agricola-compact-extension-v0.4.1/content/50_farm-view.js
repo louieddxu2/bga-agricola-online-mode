@@ -276,10 +276,7 @@
         resourcesBar.style.setProperty('display', 'block', 'important');
         resourcesBar.style.setProperty('position', 'relative', 'important');
         resourcesBar.style.setProperty('left', '0px', 'important');
-        const resourcesTop = AC.state.settings?.resourcesAboveBoard
-          ? originalFarmTop - panelH
-          : 0;
-        resourcesBar.style.setProperty('top', `${resourcesTop}px`, 'important');
+        resourcesBar.style.setProperty('top', '0px', 'important');
         resourcesBar.style.setProperty('width', `${farmW}px`, 'important');
         resourcesBar.style.setProperty('height', `${panelH}px`, 'important');
         resourcesBar.style.setProperty('margin', '0', 'important');

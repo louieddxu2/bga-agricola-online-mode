@@ -15,7 +15,6 @@
     IDS: {
       toggle: 'bga-agri-v10-toggle',
       panel: 'bga-agri-v10-panel',
-      settings: 'bga-agri-v10-settings',
       hand: 'bga-agri-v10-hand',
       boards: 'bga-agri-v10-boards',
       zoom: 'bga-agri-v10-zoom',
