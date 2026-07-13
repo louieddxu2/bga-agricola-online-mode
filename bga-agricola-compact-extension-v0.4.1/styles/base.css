@@ -70,3 +70,32 @@ html.bga-agri-v10-open #bga-agri-v10-toggle {
   font: 700 13px/1.3 Arial, "Noto Sans TC", sans-serif !important;
 }
 
+#bga-agri-v10-settings {
+  position: fixed !important;
+  right: 14px !important;
+  bottom: 54px !important;
+  z-index: 2147483000 !important;
+  padding: 7px 10px !important;
+  border: 1px solid #80653b !important;
+  border-radius: 8px !important;
+  background: #f3e1b0 !important;
+  color: #1f1308 !important;
+  font: 700 13px/1.2 Arial, "Noto Sans TC", sans-serif !important;
+  box-shadow: 0 2px 10px rgba(0,0,0,.28) !important;
+}
+
+#bga-agri-v10-settings .bga-agri-v10-setting {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 7px !important;
+  cursor: pointer !important;
+  white-space: nowrap !important;
+}
+
+#bga-agri-v10-settings input {
+  inline-size: 15px !important;
+  block-size: 15px !important;
+  margin: 0 !important;
+  accent-color: #80653b !important;
+  cursor: pointer !important;
+}

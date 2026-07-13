@@ -5,6 +5,7 @@
   AC.DEFAULTS = {
     version: AC.VERSION,
     enabled: false,
+    resourcesAboveBoard: false,
     boardHeight: 34,
     handHeight: 96,
     handCardScale: 0.28,
