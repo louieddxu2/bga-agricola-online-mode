@@ -12,6 +12,13 @@ test('compact mode forces only the hand native source', () => {
   assert.doesNotMatch(preferencesSource, /actionCardsPref/);
 });
 
+test('compact mode checks BGA resource-near-board preference and restores it', () => {
+  assert.match(preferencesSource, /findResourcesNearBoardPreference/);
+  assert.match(preferencesSource, /setCheckboxValue\(resourcesPref,\s*true\)/);
+  assert.match(preferencesSource, /bgaAgriV10OriginalChecked/);
+  assert.match(preferencesSource, /setCheckboxValue\(resourcesPref,\s*oldChecked\)/);
+});
+
 test('action card layout is driven by active card DOM, not preference 150 location', () => {
   assert.match(actionCardsSource, /const\s+activeGroups\s*=\s*groups\.filter\(group\s*=>\s*group\.querySelector\('\.player-card'\)\)/);
   assert.doesNotMatch(actionCardsSource, /function\s+playerActionCardsEnabled/);
