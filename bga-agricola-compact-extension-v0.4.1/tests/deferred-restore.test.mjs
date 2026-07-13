@@ -16,6 +16,12 @@ test('compact disable schedules deferred restore passes after preference restora
   assert.match(disableBody, /scheduleDeferredRestore\(\)/);
 });
 
+test('close restores player boards before native preferences', () => {
+  const closeBody = compactSource.match(/patchedClosePanel\([^)]*\)\s*\{([\s\S]*?)\n  \};/)?.[1] || '';
+  assert.ok(closeBody.indexOf('originalClose.apply') >= 0);
+  assert.ok(closeBody.indexOf('originalUiCompact.disable') > closeBody.indexOf('originalClose.apply'));
+});
+
 test('hand restore scrubs compact-only positioning from unmanaged residue', () => {
   assert.match(handSource, /function\s+clearHandLayoutFromCard\s*\(/);
   assert.match(handSource, /function\s+cleanupFormerHandCards\s*\(/);

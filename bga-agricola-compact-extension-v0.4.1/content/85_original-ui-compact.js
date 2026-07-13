@@ -543,7 +543,11 @@
 
   const originalClose = AC.closePanel;
   AC.closePanel = function patchedClosePanel(...args) {
+    // Restore the original player-board inline styles before changing BGA's
+    // native preferences. Those preference changes can trigger a late layout
+    // pass; doing them first leaves compact positioning active during that pass.
+    const result = originalClose.apply(this, args);
     AC.originalUiCompact.disable();
-    return originalClose.apply(this, args);
+    return result;
   };
 })();
