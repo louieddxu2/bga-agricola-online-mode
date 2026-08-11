@@ -18,6 +18,8 @@ Before packaging, verify:
 - `manifest.json` `version` matches `content/00_bootstrap.js` `VERSION`.
 - `manifest.json` description reflects the current feature set.
 - `manifest.json` lists every content script in dependency order.
+- The README source map lists every JavaScript and stylesheet path loaded by
+  `manifest.json`.
 - Compact mode can be enabled and disabled repeatedly without stale inline
   styles on hand cards, player action cards, or player boards.
 - BGA hand preference restoration still returns the user's original setting.
@@ -52,6 +54,7 @@ The zip is written to `dist\` and intentionally includes only:
 - `styles\`
 - `README.md`
 - `RELEASE.md`
+- `LICENSE`
 
 Do not package local BGA HTML snapshots, screenshots, tests, Codex attachments,
 or handoff notes.

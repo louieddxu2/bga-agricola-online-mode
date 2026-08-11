@@ -21,7 +21,7 @@ bga-agricola-compact-extension-v0.4.1\
 Current extension version:
 
 ```text
-0.12.39
+1.0.5
 ```
 
 Current branch:
@@ -192,6 +192,11 @@ current preference is:
 - log container: scrollable, with hidden scrollbar visuals
 
 ## Files To Know
+
+The complete runtime source map is maintained in the packaged
+`bga-agricola-compact-extension-v0.4.1/README.md`. Every JavaScript and CSS
+file listed in `manifest.json` is documented there, including the helper
+modules that are not covered by the shorter notes below.
 
 ### `content/00_bootstrap.js`
 

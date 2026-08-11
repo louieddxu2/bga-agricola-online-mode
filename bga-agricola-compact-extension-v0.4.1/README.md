@@ -138,6 +138,55 @@ Download the new zip from [Releases](../../releases), replace the contents of yo
 
 ## Development / 開發
 
+### Source map / 程式碼對照
+
+The extension is a set of classic content scripts that share the
+`window.AgriCompact` namespace. There are no ES module imports; the JavaScript
+order below is the execution/dependency order declared by `manifest.json`.
+
+#### Content scripts
+
+| Load order | File | Responsibility |
+|---:|---|---|
+| 1 | `content/00_bootstrap.js` | Page guard, global namespace, IDs, runtime version, state, and shared utilities. |
+| 2 | `content/10_settings.js` | Default settings, `chrome.storage.local` persistence, and CSS custom properties. |
+| 3 | `content/20_dom-query.js` | BGA player-board discovery, source/clone bookkeeping, and resource helpers. |
+| 4 | `content/30_panel-shell.js` | Floating toggle, compact-mode lifecycle, user actions, and toggle positioning. |
+| 5 | `content/50_farm-view.js` | Original-DOM player-board layout, farm/resource/card sizing, and style restoration. |
+| 6 | `content/60_card-columns.js` | Refresh orchestration and compatibility cleanup for the former clone-based card UI. |
+| 7 | `content/70_interactions.js` | Panel event delegation, card zoom, and activation of the original BGA card. |
+| 8 | `content/80_observer.js` | Mutation observation and debounced refresh after BGA updates the table. |
+| 9 | `content/original-ui/layout-models.js` | Pure geometry models for hand and player-action-card placement. |
+| 10 | `content/original-ui/style-state.js` | Inline-style backup and restoration helpers. |
+| 11 | `content/original-ui/preferences.js` | Stable BGA preference application and restoration. |
+| 12 | `content/original-ui/card-text.js` | Card-title script detection, sizing, and wrapping/nowrap behavior. |
+| 13 | `content/original-ui/action-cards-layout.js` | Native player-action-card positioning and restoration. |
+| 14 | `content/original-ui/hand-layout.js` | Native hand-card positioning, sizing, cleanup, and restoration. |
+| 15 | `content/85_original-ui-compact.js` | Compact-mode coordinator, physical round layout, board-background reconstruction, right-panel/log layout, and lifecycle hooks. |
+| 16 | `content/90_debug.js` | Optional runtime layout and hit-testing diagnostics exposed through `AC.debug`. |
+
+#### Stylesheets
+
+| File | Responsibility |
+|---|---|
+| `styles/base.css` | Shared CSS variables, toggle/toast styling, and the legacy panel defaults. |
+| `styles/panel.css` | Compatibility styles for the hidden legacy panel and clone containers. |
+| `styles/farm-view.css` | Farm-board clone fallback styling and animal-capacity readability. |
+| `styles/card-columns.css` | Legacy hand/played-card clone styling and card-column scrollbar behavior. |
+| `styles/debug.css` | Card-preview/debug overlay styling. |
+| `styles/original-ui.css` | Active compact overrides for BGA's original board, hand, action cards, right panel, and card titles. |
+
+#### Verification and packaging files
+
+- `manifest.json` is the source of truth for content-script order, match
+  patterns, permissions, and the extension version.
+- `tests/*.test.mjs` contains the Node test suite for settings storage,
+  geometry models, layout restoration, CSS scope, manifest order/readiness, and
+  documentation coverage.
+- `scripts/build-release.ps1` creates the versioned release zip in `dist\`.
+- `RELEASE.md` documents the automated checks and the live BGA smoke-test
+  checklist.
+
 ```powershell
 # Syntax-check all content scripts
 Get-ChildItem content -Recurse -Filter *.js | ForEach-Object { node --check $_.FullName }
