@@ -20,6 +20,8 @@ Before packaging, verify:
 - `manifest.json` lists every content script in dependency order.
 - The README source map lists every JavaScript and stylesheet path loaded by
   `manifest.json`.
+- `NOTICE.md` documents every external runtime reference and distribution
+  boundary used by the extension.
 - Compact mode can be enabled and disabled repeatedly without stale inline
   styles on hand cards, player action cards, or player boards.
 - BGA hand preference restoration still returns the user's original setting.
@@ -54,6 +56,7 @@ The zip is written to `dist\` and intentionally includes only:
 - `styles\`
 - `README.md`
 - `RELEASE.md`
+- `NOTICE.md`
 - `LICENSE`
 
 Do not package local BGA HTML snapshots, screenshots, tests, Codex attachments,

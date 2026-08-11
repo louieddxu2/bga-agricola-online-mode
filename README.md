@@ -128,6 +128,31 @@ A Chrome / Chromium browser extension for [Board Game Arena](https://boardgamear
 
 Works with **BGA Agricola** (all expansions). Only the table view is modified; lobby, profile, and other BGA pages are untouched.
 
+## Code provenance and references / 程式碼引用與來源
+
+The extension does not bundle BGA source code or a third-party JavaScript/CSS
+library. It uses project-authored DOM/CSS layout code and integrates with the
+live BGA Agricola page through documented runtime references:
+
+- BGA's live DOM IDs/classes and preference controls are referenced by the
+  content scripts and `styles/original-ui.css`; the selectors are not copied
+  BGA source code.
+- The main integration points are `#central-board`, `#player-boards`,
+  `#hand-container`, `#right-side`, `#logs_wrap`, `#ActionFishing`, and
+  `#preference_control_108`.
+- `content/85_original-ui-compact.js` discovers BGA's live Agricola
+  `central.png` background and uses it at runtime. The image is not included in
+  the release zip.
+- Chrome Manifest V3, `chrome.storage.local`, DOM APIs, and
+  `MutationObserver` are platform APIs used by the extension, not bundled
+  dependencies.
+- Tests use Node's built-in `node:test`, `node:assert/strict`, and `node:fs`
+  modules. There is no third-party test dependency.
+
+See [NOTICE.md](NOTICE.md) for the complete attribution, runtime-reference,
+and asset-distribution notes. The [source map](#source-map--程式碼對照) shows
+which project file owns each integration area.
+
 ---
 
 ### Updating

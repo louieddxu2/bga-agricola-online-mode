@@ -21,7 +21,7 @@ bga-agricola-compact-extension-v0.4.1\
 Current extension version:
 
 ```text
-1.0.5
+1.0.6
 ```
 
 Current branch:
@@ -49,8 +49,10 @@ Recent important commits:
 - `46fbf01 fix: adapt card titles and hide compact scrollbars`
 - `04fe322 chore: remove obsolete visual test scripts`
 
-The tracked zip package was removed because the extension has not been
-released yet. Use the source folder directly while iterating.
+Release packages are built from the source folder by
+`scripts/build-release.ps1`; the package includes `NOTICE.md` with the
+runtime-reference and asset-distribution notes. Use the source folder directly
+while iterating.
 
 ## Product Direction
 
@@ -197,6 +199,10 @@ The complete runtime source map is maintained in the packaged
 `bga-agricola-compact-extension-v0.4.1/README.md`. Every JavaScript and CSS
 file listed in `manifest.json` is documented there, including the helper
 modules that are not covered by the shorter notes below.
+
+External runtime references and attribution boundaries are documented in
+`bga-agricola-compact-extension-v0.4.1/NOTICE.md`. Keep it synchronized when
+adding a new external API, live BGA asset, or bundled dependency.
 
 ### `content/00_bootstrap.js`
 

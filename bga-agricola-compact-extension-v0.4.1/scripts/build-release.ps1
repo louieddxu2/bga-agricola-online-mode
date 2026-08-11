@@ -25,6 +25,7 @@ $items = @(
   "styles",
   "README.md",
   "RELEASE.md",
+  "NOTICE.md",
   "LICENSE"
 )
 
