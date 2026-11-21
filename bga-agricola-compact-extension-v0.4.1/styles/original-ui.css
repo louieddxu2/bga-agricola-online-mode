@@ -506,6 +506,20 @@ html.bga-agri-v10-open.bga-agri-v10-original-compact #logs_wrap {
   overflow-x: hidden !important;
 }
 
+html.bga-agri-v10-open.bga-agri-v10-original-compact.bga-agri-v10-log-limited #right-side-second-part {
+  height: var(--bga-agri-v10-log-panel-height) !important;
+  max-height: var(--bga-agri-v10-log-panel-height) !important;
+  min-height: 0 !important;
+  box-sizing: border-box !important;
+}
+
+html.bga-agri-v10-open.bga-agri-v10-original-compact.bga-agri-v10-log-limited #logs_wrap {
+  height: var(--bga-agri-v10-logs-height) !important;
+  max-height: var(--bga-agri-v10-logs-height) !important;
+  min-height: 0 !important;
+  box-sizing: border-box !important;
+}
+
 
 /* v0.11.0 original-player-boards prototype.
    Do not display:none #player-boards: BGA uses these original nodes as animation

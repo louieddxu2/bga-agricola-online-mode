@@ -377,40 +377,110 @@
 
 
 
+  const rightLogAnchors = '#ActionFishing, #player-boards, #right-side, #right-side-first-part, #right-side-second-part, #logs_wrap';
+  const rightLogLimitClass = 'bga-agri-v10-log-limited';
+  const rightLogPanelHeight = '--bga-agri-v10-log-panel-height';
+  const rightLogHeight = '--bga-agri-v10-logs-height';
+  let rightLogMutationObserver;
+  let rightLogResizeObserver;
+  let observedLogAnchors = [];
+  let rightLogFrame = null;
+  let rightSidebarLeft;
+
+  function setLogHeight(property, height) {
+    const style = document.documentElement.style;
+    const value = `${Math.max(0, Math.floor(height))}px`;
+    if (style.getPropertyValue(property) !== value) style.setProperty(property, value);
+  }
+
   function layoutRightLogLimit() {
     const fishing = document.querySelector('#ActionFishing');
     const rightLogPanel = document.querySelector('#right-side-second-part');
     const logsWrap = document.querySelector('#logs_wrap');
-    if (!fishing || !rightLogPanel || !logsWrap) return;
+    const fishingRect = fishing?.getBoundingClientRect();
+    const logsRect = logsWrap?.getBoundingClientRect();
+    if (!rightLogPanel || !fishingRect?.height || !logsRect?.width) {
+      clearRightLogLimit();
+      return;
+    }
 
-    const fishingRect = fishing.getBoundingClientRect();
-    const panelRect = rightLogPanel.getBoundingClientRect();
-    const targetHeight = Math.floor(fishingRect.bottom - panelRect.top);
-    if (!Number.isFinite(targetHeight) || targetHeight < 80) return;
+    let bottom = fishingRect.bottom;
+    const boards = document.querySelector('#player-boards')?.getBoundingClientRect();
+    if (boards?.height && boards.left < logsRect.right && boards.right > logsRect.left) {
+      bottom = Math.min(bottom, boards.top);
+    }
 
-    rightLogPanel.style.setProperty('height', `${targetHeight}px`, 'important');
-    rightLogPanel.style.setProperty('max-height', `${targetHeight}px`, 'important');
-    rightLogPanel.style.removeProperty('overflow');
-
-    const logsRect = logsWrap.getBoundingClientRect();
-    const logsHeight = Math.max(40, Math.floor(fishingRect.bottom - logsRect.top));
-    logsWrap.style.setProperty('height', `${logsHeight}px`, 'important');
-    logsWrap.style.setProperty('max-height', `${logsHeight}px`, 'important');
-    logsWrap.style.setProperty('overflow-y', 'auto', 'important');
-    logsWrap.style.setProperty('overflow-x', 'hidden', 'important');
+    setLogHeight(rightLogPanelHeight, bottom - rightLogPanel.getBoundingClientRect().top);
+    document.documentElement.classList.toggle(rightLogLimitClass, true);
+    // Measure the log's own top after sizing its parent. Sidebar content above
+    // the log can arrive after the compact board has already been rendered.
+    setLogHeight(rightLogHeight, bottom - logsWrap.getBoundingClientRect().top);
   }
 
   function clearRightLogLimit() {
-    const rightLogPanel = document.querySelector('#right-side-second-part');
-    const logsWrap = document.querySelector('#logs_wrap');
-    [rightLogPanel, logsWrap].forEach(el => {
-      if (!el) return;
-      el.style.removeProperty('height');
-      el.style.removeProperty('max-height');
-      el.style.removeProperty('overflow');
-      el.style.removeProperty('overflow-y');
-      el.style.removeProperty('overflow-x');
+    const root = document.documentElement;
+    root.classList.remove(rightLogLimitClass);
+    root.style.removeProperty(rightLogPanelHeight);
+    root.style.removeProperty(rightLogHeight);
+  }
+
+  function scheduleRightLogLayout() {
+    if (!rightLogMutationObserver || rightLogFrame !== null) return;
+    rightLogFrame = requestAnimationFrame(() => {
+      rightLogFrame = null;
+      const anchors = [...document.querySelectorAll(rightLogAnchors)];
+      if (anchors.length !== observedLogAnchors.length ||
+          anchors.some((node, index) => node !== observedLogAnchors[index])) {
+        observedLogAnchors = anchors;
+        rightLogResizeObserver.disconnect();
+        rightLogMutationObserver.disconnect();
+        rightLogMutationObserver.observe(document.body, { childList: true, subtree: true });
+        for (const node of anchors) {
+          rightLogResizeObserver.observe(node);
+          rightLogMutationObserver.observe(node, {
+            attributes: true,
+            attributeFilter: ['class', 'style', 'hidden']
+          });
+        }
+      }
+
+      const sidebar = document.querySelector('#right-side') || document.querySelector('#right-side-second-part');
+      const left = sidebar?.getBoundingClientRect().left || window.innerWidth;
+      if (left !== rightSidebarLeft) {
+        rightSidebarLeft = left;
+        hand.layoutHandCards();
+        actionCards.layoutPlayerActionCards();
+      }
+      layoutRightLogLimit();
     });
+  }
+
+  function startRightLogLayout() {
+    if (rightLogMutationObserver) return;
+    rightLogResizeObserver = new ResizeObserver(scheduleRightLogLayout);
+    rightLogMutationObserver = new MutationObserver(mutations => {
+      if (mutations.some(mutation =>
+        mutation.type === 'attributes' ||
+        (mutation.target.closest?.('#right-side') && !mutation.target.closest('#logs_wrap')) ||
+        [...mutation.addedNodes, ...mutation.removedNodes].some(node =>
+          node.nodeType === 1 && (node.matches(rightLogAnchors) || node.querySelector(rightLogAnchors))
+        )
+      )) scheduleRightLogLayout();
+    });
+    rightLogMutationObserver.observe(document.body, { childList: true, subtree: true });
+    scheduleRightLogLayout();
+  }
+
+  function stopRightLogLayout() {
+    rightLogResizeObserver?.disconnect();
+    rightLogMutationObserver?.disconnect();
+    rightLogResizeObserver = null;
+    rightLogMutationObserver = null;
+    observedLogAnchors = [];
+    rightSidebarLeft = undefined;
+    if (rightLogFrame !== null) cancelAnimationFrame(rightLogFrame);
+    rightLogFrame = null;
+    clearRightLogLimit();
   }
 
   function isFirstGameHintText(text) {
@@ -501,32 +571,32 @@
       document.documentElement.classList.add('bga-agri-v10-original-compact');
       // Native #page-title is kept visible; no duplicate compact topline is created.
       requestAnimationFrame(() => {
+        if (!rightLogMutationObserver) return;
         layoutRightPanelChrome();
         layoutPhysicalRounds();
-        layoutRightLogLimit();
-        hand.layoutHandCards();
-        actionCards.layoutPlayerActionCards();
       });
+      startRightLogLayout();
       if (!AC.originalUiCompact._onResize) {
         AC.originalUiCompact._onResize = () => requestAnimationFrame(() => {
+          if (!rightLogMutationObserver) return;
           layoutRightPanelChrome();
           layoutPhysicalRounds();
-          layoutRightLogLimit();
           hand.layoutHandCards();
           actionCards.layoutPlayerActionCards();
+          scheduleRightLogLayout();
         });
       }
       window.addEventListener('resize', AC.originalUiCompact._onResize);
     },
 
     disable() {
+      stopRightLogLayout();
       restoreOriginalUiFragments();
       preferences.restoreStableBgaPreferences();
       document.documentElement.classList.remove('bga-agri-v10-original-compact');
       if (AC.originalUiCompact._onResize) window.removeEventListener('resize', AC.originalUiCompact._onResize);
       clearPhysicalRoundLayout();
       clearRoundBackgroundLayer();
-      clearRightLogLimit();
       restoreRightPanelFirstGameHints();
       restoreRightPanelHeaderControls();
       document.getElementById('bga-agri-v10-original-topline')?.remove();
