@@ -4,6 +4,7 @@ import { readFileSync } from 'node:fs';
 import { runInNewContext } from 'node:vm';
 
 const compactSource = readFileSync(new URL('../content/85_original-ui-compact.js', import.meta.url), 'utf8');
+const refreshSource = readFileSync(new URL('../content/60_card-columns.js', import.meta.url), 'utf8');
 const panelHeight = '--bga-agri-v10-log-panel-height';
 const logsHeight = '--bga-agri-v10-logs-height';
 
@@ -13,22 +14,23 @@ function createPage() {
   const classes = new Set();
   const styles = new Map();
   const listeners = new Map();
+  const timers = new Map();
   const cardLayouts = [];
   let nextFrame = 0;
-  let mutations;
-  let resize;
-  const body = {};
+  let nextTimer = 0;
+  let now = 0;
 
   const noop = () => {};
   const AC = {
-    state: {},
-    openPanel: noop,
-    closePanel: noop,
+    IDS: { hand: 'compact-hand', boards: 'compact-boards' },
+    state: { settings: { enabled: false } },
+    openPanel() { AC.state.settings.enabled = true; },
+    closePanel() { AC.state.settings.enabled = false; },
     originalUiPreferences: { applyStableBgaPreferences: noop, restoreStableBgaPreferences: noop },
     originalUiHand: { layoutHandCards: () => cardLayouts.push('hand'), restoreHandCards: noop },
     originalUiActionCards: { layoutPlayerActionCards: () => cardLayouts.push('action cards'), restorePlayerActionCards: noop }
   };
-  runInNewContext(compactSource, {
+  runInNewContext(refreshSource + '\n' + compactSource, {
     window: {
       AgriCompact: AC,
       innerWidth: 1200,
@@ -36,7 +38,6 @@ function createPage() {
       removeEventListener: name => listeners.delete(name)
     },
     document: {
-      body,
       documentElement: {
         classList: {
           add: name => classes.add(name),
@@ -54,49 +55,40 @@ function createPage() {
       querySelectorAll: selectors => selectors.split(', ').map(selector => elements.get(selector)).filter(Boolean),
       getElementById: id => elements.get('#' + id)
     },
-    MutationObserver: class {
-      constructor(callback) { mutations = callback; }
-      observe() {}
-      disconnect() {}
-    },
-    ResizeObserver: class {
-      constructor(callback) { resize = this; this.callback = callback; }
-      observed = new Set();
-      observe(node) { this.observed.add(node); }
-      disconnect() { this.observed.clear(); }
-    },
     requestAnimationFrame(callback) { frames.set(++nextFrame, callback); return nextFrame; },
     cancelAnimationFrame(id) { frames.delete(id); },
-    setTimeout: noop
+    setTimeout(callback, delay) {
+      timers.set(++nextTimer, { callback, at: now + delay });
+      return nextTimer;
+    },
+    clearTimeout(id) { timers.delete(id); }
   });
 
   return {
     AC, styles, classes, listeners, cardLayouts,
     add(selector, rect) {
-      const node = {
-        nodeType: 1,
-        matches: selectors => selectors.split(', ').includes(selector),
-        getBoundingClientRect: () => rect
-      };
-      const previous = elements.get(selector);
-      elements.set(selector, node);
-      mutations?.([{ type: 'childList', target: body, addedNodes: [node], removedNodes: previous ? [previous] : [] }]);
-      return node;
+      elements.set(selector, { offsetHeight: rect.height, getBoundingClientRect: () => rect });
     },
     flushFrame() {
       const callbacks = [...frames.values()];
       frames.clear();
       callbacks.forEach(callback => callback());
     },
-    resize(node) {
-      assert.ok(resize.observed.has(node), 'layout anchor is observed');
-      resize.callback();
+    advanceTime(ms) {
+      const end = now + ms;
+      for (const [id, timer] of timers) {
+        if (timer.at > end) continue;
+        now = timer.at;
+        timers.delete(id);
+        timer.callback();
+      }
+      now = end;
     },
-    observed: () => [...resize.observed]
+    pendingTimers: () => timers.size
   };
 }
 
-test('compact mode sizes late and replaced history panels, and responds to layout changes', () => {
+test('startup retries stop when the delayed sidebar and player list become measurable', () => {
   const page = createPage();
   page.AC.openPanel();
   page.flushFrame();
@@ -105,55 +97,76 @@ test('compact mode sizes late and replaced history panels, and responds to layou
   page.add('#ActionFishing', { bottom: 510, height: 100 });
   page.add('#right-side-second-part', { top: 220, left: 1000 });
   const boardsRect = { left: 0, right: 1200, top: 470, height: 200 };
-  const boards = page.add('#player-boards', boardsRect);
-  const firstPart = page.add('#right-side-first-part', {});
+  page.add('#player-boards', boardsRect);
   const logsRect = { left: 1000, right: 1200, top: 260, width: 200 };
-  const logs = page.add('#logs_wrap', logsRect);
-  page.flushFrame();
+  page.add('#logs_wrap', logsRect);
+  page.advanceTime(80);
 
   assert.equal(page.styles.get(panelHeight), '250px');
   assert.equal(page.styles.get(logsHeight), '210px');
   assert.deepEqual(page.cardLayouts, ['hand', 'action cards', 'hand', 'action cards']);
+  assert.equal(page.pendingTimers(), 1);
 
   logsRect.top = 320;
-  page.resize(firstPart);
-  page.flushFrame();
+  page.add('#right-side-first-part', { height: 60 });
+  page.advanceTime(160);
   assert.equal(page.styles.get(logsHeight), '150px');
+  assert.equal(page.pendingTimers(), 0);
+  assert.equal(page.cardLayouts.length, 4);
 
   boardsRect.top = 340;
-  page.resize(boards);
+  page.AC.refresh();
   page.flushFrame();
   assert.equal(page.styles.get(logsHeight), '20px');
 
-  const replacement = page.add('#logs_wrap', { ...logsRect, top: 350 });
+  page.add('#logs_wrap', { ...logsRect, top: 350 });
+  page.advanceTime(5000);
+  assert.equal(page.styles.get(logsHeight), '20px');
+  page.AC.refresh();
   page.flushFrame();
   assert.equal(page.styles.get(logsHeight), '0px');
-  assert.ok(page.observed().includes(replacement));
-  assert.ok(!page.observed().includes(logs));
 
   boardsRect.top = 600;
-  page.resize(boards);
+  page.listeners.get('resize')();
   page.flushFrame();
   assert.equal(page.styles.get(logsHeight), '160px');
-  assert.equal(page.cardLayouts.length, 4);
+  assert.equal(page.pendingTimers(), 0);
 });
 
-test('closing compact mode cancels a pending right-log update and clears its CSS overrides', () => {
+test('missing sidebar stops startup retries after four seconds and can still use regular refresh', () => {
+  const page = createPage();
+  page.AC.openPanel();
+  page.flushFrame();
+  page.advanceTime(3999);
+  assert.equal(page.pendingTimers(), 1);
+  page.advanceTime(1);
+  assert.equal(page.pendingTimers(), 0);
+
+  page.add('#ActionFishing', { bottom: 510, height: 100 });
+  page.add('#right-side-second-part', { top: 220 });
+  page.add('#logs_wrap', { left: 1000, right: 1200, top: 260, width: 200 });
+  page.AC.refresh();
+  page.flushFrame();
+  assert.equal(page.styles.get(logsHeight), '250px');
+  assert.equal(page.pendingTimers(), 0);
+});
+
+test('closing compact mode cancels a pending startup retry and clears its CSS overrides', () => {
   const page = createPage();
   page.add('#ActionFishing', { bottom: 510, height: 100 });
   page.add('#right-side-second-part', { top: 220 });
-  const logs = page.add('#logs_wrap', { left: 1000, right: 1200, top: 260, width: 200 });
+  page.add('#logs_wrap', { left: 1000, right: 1200, top: 260, width: 200 });
   page.AC.openPanel();
   page.flushFrame();
   assert.equal(page.styles.get(logsHeight), '250px');
+  assert.equal(page.pendingTimers(), 1);
 
-  page.resize(logs);
   page.listeners.get('resize')();
   page.AC.closePanel();
   page.flushFrame();
-  page.flushFrame();
+  page.advanceTime(5000);
 
   assert.equal(page.styles.size, 0);
   assert.equal(page.classes.has('bga-agri-v10-log-limited'), false);
-  assert.deepEqual(page.observed(), []);
+  assert.equal(page.pendingTimers(), 0);
 });

@@ -86,6 +86,7 @@
         AC.originalUiCompact?.layoutRightPanelHints?.();
         AC.originalUiCompact?.layoutHandCards?.();
         AC.originalUiCompact?.layoutPlayerActionCards?.();
+        AC.originalUiCompact?.layoutRightLogLimit?.();
       }
     });
   };

@@ -21,7 +21,7 @@ bga-agricola-compact-extension-v0.4.1\
 Current extension version:
 
 ```text
-1.0.7
+1.0.8
 ```
 
 Current branch:
